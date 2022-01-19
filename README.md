@@ -17,13 +17,6 @@
 
 >>> board = cchess.Board()
 
->>> board.legal_moves
-<LegalMoveGenerator at ... (i3i4, g3g4, e3e4, c3c4, ...)>
->>> cchess.Move.from_uci("h2h8") in board.legal_moves
-False
->>> cchess.Move.from_uci("h2h9") in board.legal_moves
-True
-
 >>> board.push(cchess.Move.from_uci("h2h4"))
 >>> board.push(cchess.Move.from_uci('d9e8'))
 >>> board.push(cchess.Move.from_uci('h4g4'))
@@ -93,13 +86,59 @@ R N B A K A B N R
 0 俥傌相仕帥仕相傌俥
   ａｂｃｄｅｆｇｈｉ
 ```
-
-- 支持将军、将死检验与困毙检验
-
+- （伪）合法着法生成、合法性判断
 ```python
->>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
+>>> board = cchess.Board()
+>>> legal_moves = board.legal_moves
+>>> board.legal_moves
+<LegalMoveGenerator at ... (i3i4, g3g4, e3e4, c3c4, ...)>
+>>> cchess.Move.from_uci("h2h8") in board.legal_moves
+False
+>>> cchess.Move.from_uci("h2h9") in board.legal_moves
+True
+>>> board.is_legal(cchess.Move.from_uci("h2h9"))
+True
+
+>>> board = cchess.Board('4k3R/2N2n3/5N3/9/9/9/9/9/9/3K5 b')
+>>> board.pseudo_legal_moves
+<PseudoLegalMoveGenerator at 0x7fd14c5f9510 (e9f9, e9d9, e9e8, f8h9, f8d9, f8h7, f8d7)>
+>>> board.is_pseudo_legal(cchess.Move.from_uci("e9d9"))
+True
+>>> board.is_legal(cchess.Move.from_uci("e9d9"))
+False
+```
+
+- 攻击（特殊情况：将军）检测
+```python
+>>> board= cchess.Board('4k4/2N6/9/9/9/9/9/9/9/3K5 b')
+>>> board.is_attacked_by(cchess.RED, cchess.E9)
+True
 >>> board.is_check()
 True
+```
+
+- 攻击者检测
+```python
+>>> board = cchess.Board('4k3R/2N2n3/5N3/9/9/9/9/9/9/3K5 b')
+>>> attackers = board.attackers(cchess.RED, cchess.E9)
+>>> attackers
+SquareSet(0x20004000000000000000000)
+>>> print(attackers)
+. . . . . . . . 1
+. . 1 . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+```
+
+- 将杀、困毙检测
+```python
+>>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 >>> board.is_checkmate()
 True
 
@@ -112,11 +151,13 @@ True
 
 - 局面合法性检验，包含棋子数量、棋子位置、将帅照面等情况
 ```python
->>> board = cchess.Board('3k5/R8/9/9/9/9/9/9/9/4K4 b')
+>>> board = cchess.Board('3k5/R8/9/9/9/9/9/9/9/4K4')
 >>> board.status()
 <Status.VALID: 0>
 
->>> board = cchess.Board('4k4/9/9/9/9/9/9/9/9/4K4 b')
+>>> board = cchess.Board('4k4/9/9/9/9/9/9/9/9/4K4')
+>>> board.is_white_face()
+True
 >>> board.status()
 <Status.WHITE_FACE: 268435456>
 ```
@@ -135,7 +176,7 @@ False
 >>> board.is_fifty_moves()
 False
 >>> n = 75
->>> board._is_halfmoves(2 * n)
+>>> board.is_halfmoves(2 * n)
 False
 ```
 
