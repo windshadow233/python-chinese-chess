@@ -3,7 +3,7 @@
 
 ## 基本操作
 ```python
->>> import chess
+>>> import cchess
 >>> import cchess.svg
 
 >>> board = cchess.Board()
