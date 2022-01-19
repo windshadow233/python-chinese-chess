@@ -1,6 +1,15 @@
 # Python-Chinese-Chess
 这是一个使用纯Python编写的中国象棋库，改写自[Python-Chess](https://github.com/niklasf/python-chess)项目的核心部分。
 
+![MIT](https://img.shields.io/github/license/windshadow233/python-chinese-chess?style=plastic)
+![Python 3.7](https://img.shields.io/badge/Python-3.7-blue?style=plastic)
+
+## 特点
+- 代码风格与主要功能和[Python-Chess](https://github.com/niklasf/python-chess)项目的核心部分高度相似
+- 支持Python 3.7及以上的版本，且不依赖任何第三方库
+- 采用坐标表示法表示棋子位置与着法
+- 采用经典的棋盘与棋子的 svg 代码渲染UI
+
 ## 基本操作
 ```python
 >>> import cchess
@@ -83,6 +92,51 @@ R N B A K A B N R
 1 ．．．．．．．．．
 0 俥傌相仕帥仕相傌俥
   ａｂｃｄｅｆｇｈｉ
+```
+
+- 支持将军、将死检验与困毙检验
+
+```python
+>>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
+>>> board.is_check()
+True
+>>> board.is_checkmate()
+True
+
+>>> board = cchess.Board('3k5/R8/9/9/9/9/9/9/9/4K4 b')
+>>> board.is_checkmate()
+False
+>>> board.is_stalemate()
+True
+```
+
+- 局面合法性检验，包含棋子数量、棋子位置、将帅照面等情况
+```python
+>>> board = cchess.Board('3k5/R8/9/9/9/9/9/9/9/4K4 b')
+>>> board.status()
+<Status.VALID: 0>
+
+>>> board = cchess.Board('4k4/9/9/9/9/9/9/9/9/4K4 b')
+>>> board.status()
+<Status.WHITE_FACE: 268435456>
+```
+
+- 重复局面检验
+```python
+>>> board.is_fivefold_repetition()
+False
+>>> n = 10
+>>> board.is_repetition(n)
+False
+```
+
+- 自然限着检验
+```python
+>>> board.is_fifty_moves()
+False
+>>> n = 75
+>>> board._is_halfmoves(2 * n)
+False
 ```
 
 ## 待补充...
