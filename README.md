@@ -28,7 +28,7 @@ True
 >>> board
 Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 
->>> with open('board.svg', 'w') as f:
+>>> with open('images/board.svg', 'w') as f:
 >>>    f.write(svg)
 ```
 
@@ -41,7 +41,7 @@ git clone https://github.com/windshadow233/cchess.git
 ## 功能
 
 - 简单的 svg 棋盘渲染，可以设置上一步（以四个直角符号包含始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
-![](board.svg)
+![](images/board.svg)
 
 - 行棋、悔棋
 
