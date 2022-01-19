@@ -122,7 +122,7 @@ SQUARE_NAMES = [c + r for r in ROW_NAMES for c in COLUMN_NAMES]
 def parse_square(name: str):
     """
     Gets the square index for the given square *name*
-    (e.g., ``a1`` returns ``0``).
+    (e.g., ``a0`` returns ``0``).
 
     :raises: :exc:`ValueError` if the square name is invalid.
     """
