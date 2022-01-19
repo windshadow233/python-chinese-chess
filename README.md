@@ -55,7 +55,6 @@ Move.from_uci("h2h4")
 
 - ASCII 棋盘
 ```python
->>> board = cchess.Board()
 >>> print(board)
 r n b a k a b n r
 . . . . . . . . .
