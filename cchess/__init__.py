@@ -391,7 +391,6 @@ def _cannon_attacks(square: Square, occupied: BitBoard):
                 occupied_num += 1
                 if occupied_num == 2:
                     attacks |= BB_SQUARES[sq]
-                if occupied_num == 3:
                     break
 
     return attacks
