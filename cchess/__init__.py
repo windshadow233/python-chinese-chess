@@ -31,7 +31,7 @@ def piece_name(piece_type: PieceType) -> str:
     return PIECE_NAMES[piece_type]
 
 
-STARTING_FEN = 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR r - - 0 1'
+STARTING_FEN = 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1'
 STARTING_BOARD_FEN = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR"
 
 
@@ -1068,7 +1068,7 @@ class Board(BaseBoard):
         Gets a FEN representation of the position.
 
         A FEN string (e.g.,
-        ``rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR r - - 0 1``) consists
+        ``rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1``) consists
         of the board part :func:`~chess.Board.board_fen()`, the
         :data:`~chess.Board.turn`,
         the :data:`~chess.Board.halfmove_clock`
@@ -1085,7 +1085,7 @@ class Board(BaseBoard):
         Gets an EPD representation of the current position.
         """
         epd = [self.board_fen(),
-               "r" if self.turn == RED else "b",
+               "w" if self.turn == RED else "b",
                '-', "-"]
 
         return " ".join(epd)
