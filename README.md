@@ -41,7 +41,8 @@ git clone https://github.com/windshadow233/cchess.git
 ## 功能
 
 - 简单的 svg 棋盘渲染，可以设置上一步（以四个直角符号包含始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
-![](images/board.svg)
+
+<div align=center><img width="150" height="150" src="images/board.svg"/></div>
 
 - 行棋、悔棋
 
