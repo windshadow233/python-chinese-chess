@@ -2,7 +2,6 @@ from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple
 import copy
 import dataclasses
 import enum
-import chess
 
 Color = bool
 COLORS = [BLACK, RED] = [False, True]
