@@ -107,10 +107,10 @@ class Termination(enum.Enum):
     """See :func:`chess.Board.is_checkmate()`."""
     STALEMATE = enum.auto()
     """See :func:`chess.Board.is_stalemate()`."""
-    FIVEFOLD_REPETITION = enum.auto()
+    THREEFOLD_REPETITION = enum.auto()
     """See :func:`chess.Board.is_fivefold_repetition()`."""
-    FIFTY_MOVES = enum.auto()
-    """See :func:`chess.Board.is_fifty_moves()`."""
+    SIXTY_MOVES = enum.auto()
+    """See :func:`chess.Board.is_sixty_moves()`."""
 
 
 @dataclasses.dataclass
@@ -1587,6 +1587,9 @@ class Board(BaseBoard):
     def is_fivefold_repetition(self) -> bool:
         return self.is_repetition(5)
 
+    def is_threefold_repetition(self) -> bool:
+        return self.is_repetition(3)
+
     def is_capture(self, move: Move) -> bool:
         touched = BB_SQUARES[move.from_square] ^ BB_SQUARES[move.to_square]
         return bool(touched & self.occupied_co[not self.turn])
@@ -1612,17 +1615,10 @@ class Board(BaseBoard):
             return Outcome(Termination.STALEMATE, None)
 
         # Automatic draws.
-        if self.is_fifty_moves():
-            return Outcome(Termination.FIFTY_MOVES, None)
-        if self.is_fivefold_repetition():
-            return Outcome(Termination.FIVEFOLD_REPETITION, None)
-
-        # # Claimable draws.
-        # if claim_draw:
-        #     if self.can_claim_fifty_moves():
-        #         return Outcome(Termination.FIFTY_MOVES, None)
-        #     if self.can_claim_threefold_repetition():
-        #         return Outcome(Termination.THREEFOLD_REPETITION, None)
+        if self.is_sixty_moves():
+            return Outcome(Termination.SIXTY_MOVES, None)
+        if self.is_threefold_repetition():
+            return Outcome(Termination.THREEFOLD_REPETITION, None)
 
         return None
 
