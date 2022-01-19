@@ -9,7 +9,7 @@
 - 支持Python 3.7及以上的版本，且不依赖任何第三方库
 - 采用坐标表示法表示棋子位置与着法
 - 采用经典的棋盘与棋子的 svg 代码渲染UI
-- 和棋判断默认采用60步自然限着、3次重复局面
+- 和棋判断默认采用60步自然限着、3次重复局面或子力不足(双方均无能过河的棋子)
 - 由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，且十分复杂，因此代码中没有对其进行实现。
 
 ## 基本操作
@@ -138,7 +138,7 @@ SquareSet(0x20004000000000000000000)
 . . . . . . . . .
 ```
 
-- 将杀、困毙检测
+- 将杀、困毙、子力不足检测
 ```python
 >>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 >>> board.is_checkmate()
@@ -148,6 +148,10 @@ True
 >>> board.is_checkmate()
 False
 >>> board.is_stalemate()
+True
+
+>>> board = cchess.Board('2b1k4/9/4b4/9/9/9/9/9/4A4/4KA3')
+>>> board.is_insufficient_material()
 True
 ```
 
