@@ -110,7 +110,7 @@ class Termination(enum.Enum):
     INSUFFICIENT_MATERIAL = enum.auto()
     """See :func:`chess.Board.is_insufficient_material()`."""
     THREEFOLD_REPETITION = enum.auto()
-    """See :func:`chess.Board.is_fivefold_repetition()`."""
+    """See :func:`chess.Board.is_threefold_repetition()`."""
     SIXTY_MOVES = enum.auto()
     """See :func:`chess.Board.is_sixty_moves()`."""
 
