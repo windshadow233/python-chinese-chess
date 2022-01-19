@@ -706,7 +706,7 @@ class BaseBoard:
         Returns a string representation of the board with Unicode pieces.
         Useful for pretty-printing to a terminal.
 
-        :param invert_color: Invert color of the Unicode pieces.
+        :param invert_color: Invert c.olor of the Unicode pieces.
         :param axes: Show a coordinate axes margin.
         """
         builder = []
@@ -1095,7 +1095,7 @@ class Board(BaseBoard):
         import cchess.svg
         return cchess.svg.board(
             board=self,
-            size=600,
+            size=450,
             lastmove=self.peek() if self.move_stack else None,
             checkers=self.checkers() if self.is_check() else None)
 
