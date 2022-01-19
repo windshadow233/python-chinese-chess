@@ -2,6 +2,7 @@ from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple
 import copy
 import dataclasses
 import enum
+import chess
 
 Color = bool
 COLORS = [BLACK, RED] = [False, True]
@@ -98,6 +99,38 @@ STATUS_TOO_MANY_RED_CANNONS = Status.TOO_MANY_RED_CANNONS
 STATUS_TOO_MANY_BLACK_CANNONS = Status.TOO_MANY_BLACK_CANNONS
 STATUS_OPPOSITE_CHECK = Status.OPPOSITE_CHECK
 STATUS_WHITE_FACE = Status.WHITE_FACE
+
+
+class Termination(enum.Enum):
+    """Enum with reasons for a game to be over."""
+
+    CHECKMATE = enum.auto()
+    """See :func:`chess.Board.is_checkmate()`."""
+    STALEMATE = enum.auto()
+    """See :func:`chess.Board.is_stalemate()`."""
+    FIVEFOLD_REPETITION = enum.auto()
+    """See :func:`chess.Board.is_fivefold_repetition()`."""
+    FIFTY_MOVES = enum.auto()
+    """See :func:`chess.Board.is_fifty_moves()`."""
+
+
+@dataclasses.dataclass
+class Outcome:
+    """
+    Information about the outcome of an ended game, usually obtained from
+    :func:`chess.Board.outcome()`.
+    """
+
+    termination: Termination
+    """The reason for the game to have ended."""
+
+    winner: Optional[Color]
+    """The winning color or ``None`` if drawn."""
+
+    def result(self) -> str:
+        """Returns ``1-0``, ``0-1`` or ``1/2-1/2``."""
+        return "1/2-1/2" if self.winner is None else ("1-0" if self.winner else "0-1")
+
 
 Square = int
 
@@ -1512,10 +1545,6 @@ class Board(BaseBoard):
         Checks if the current position has repeated 3 (or a given number of)
         times.
 
-        Unlike :func:`~chess.Board.can_claim_threefold_repetition()`,
-        this does not consider a repetition that can be played on the next
-        move.
-
         Note that checking this can be slow: In the worst case, the entire
         game has to be replayed because there is no incremental transposition
         table.
@@ -1562,6 +1591,44 @@ class Board(BaseBoard):
     def is_capture(self, move: Move) -> bool:
         touched = BB_SQUARES[move.from_square] ^ BB_SQUARES[move.to_square]
         return bool(touched & self.occupied_co[not self.turn])
+
+    def outcome(self) -> Optional[Outcome]:
+        """
+        Checks if the game is over due to
+        :func:`checkmate <chess.Board.is_checkmate()>`,
+        :func:`stalemate <chess.Board.is_stalemate()>`,
+        the :func:`fifty-move rule <chess.Board.is_fifty_moves()>`,
+        :func:`fivefold repetition <chess.Board.is_fivefold_repetition()>`,
+        Returns the :class:`chess.Outcome` if the game has ended, otherwise
+        ``None``.
+
+        Alternatively, use :func:`~chess.Board.is_game_over()` if you are not
+        interested in who won the game and why.
+        """
+
+        # Normal game end.
+        if self.is_checkmate():
+            return Outcome(Termination.CHECKMATE, not self.turn)
+        if not any(self.generate_legal_moves()):
+            return Outcome(Termination.STALEMATE, None)
+
+        # Automatic draws.
+        if self.is_fifty_moves():
+            return Outcome(Termination.FIFTY_MOVES, None)
+        if self.is_fivefold_repetition():
+            return Outcome(Termination.FIVEFOLD_REPETITION, None)
+
+        # # Claimable draws.
+        # if claim_draw:
+        #     if self.can_claim_fifty_moves():
+        #         return Outcome(Termination.FIFTY_MOVES, None)
+        #     if self.can_claim_threefold_repetition():
+        #         return Outcome(Termination.THREEFOLD_REPETITION, None)
+
+        return None
+
+    def is_game_over(self):
+        return self.outcome() is not None
 
     def status(self) -> Status:
         """
