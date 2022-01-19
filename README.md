@@ -35,7 +35,7 @@ Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 ## 安装方法
 
 ```shell script
-git clone https://github.com/windshadow233/cchess.git
+git clone https://github.com/windshadow233/python-chinese-chess.git
 ```
 
 ## 功能
