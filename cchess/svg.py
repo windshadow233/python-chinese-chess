@@ -205,22 +205,23 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
             })
 
         # Lastmove
-        if lastmove.from_square == square:
-            red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
-            top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-red-corners"})
-            ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner"})
-            ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner",
-                                                   "transform": "translate(100,0) scale(-1,1)"})
-            ET.SubElement(red_corners, "use", {"xlink:href": "#top-red-corners",
-                                               "transform": "translate(0, 100) scale(1,-1)"})
-        elif lastmove.to_square == square:
-            red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
-            top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-green-corners"})
-            ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner"})
-            ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner",
-                                                   "transform": "translate(100,0) scale(-1,1)"})
-            ET.SubElement(red_corners, "use", {"xlink:href": "#top-green-corners",
-                                               "transform": "translate(0, 100) scale(1,-1)"})
+        if lastmove is not None:
+            if lastmove.from_square == square:
+                red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
+                top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-red-corners"})
+                ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner"})
+                ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner",
+                                                       "transform": "translate(100,0) scale(-1,1)"})
+                ET.SubElement(red_corners, "use", {"xlink:href": "#top-red-corners",
+                                                   "transform": "translate(0, 100) scale(1,-1)"})
+            elif lastmove.to_square == square:
+                red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
+                top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-green-corners"})
+                ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner"})
+                ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner",
+                                                       "transform": "translate(100,0) scale(-1,1)"})
+                ET.SubElement(red_corners, "use", {"xlink:href": "#top-green-corners",
+                                                   "transform": "translate(0, 100) scale(1,-1)"})
 
 
     # Check
