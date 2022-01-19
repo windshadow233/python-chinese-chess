@@ -1622,6 +1622,10 @@ class Board(BaseBoard):
 
         return None
 
+    def result(self) -> str:
+        outcome = self.outcome()
+        return outcome.result() if outcome else "*"
+
     def is_game_over(self):
         return self.outcome() is not None
 
