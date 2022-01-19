@@ -42,7 +42,7 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 
 ## 功能
 
-- 简单的 svg 棋盘渲染，可以显示上一步（以四个直角符号包含始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
+- 简单的 svg 棋盘渲染，可以显示上一步（以一对红绿直角框标记始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
 
 <div align=center><img width="450" height="450" src="images/board.svg"/></div>
 
