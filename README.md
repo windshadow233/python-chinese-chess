@@ -4,11 +4,13 @@
 ![MIT](https://img.shields.io/github/license/windshadow233/python-chinese-chess?style=plastic)
 ![Python 3.7](https://img.shields.io/badge/Python-3.7-blue?style=plastic)
 
-## 特点
+## 特点与说明
 - 代码风格与主要功能和[Python-Chess](https://github.com/niklasf/python-chess)项目的核心部分高度相似
 - 支持Python 3.7及以上的版本，且不依赖任何第三方库
 - 采用坐标表示法表示棋子位置与着法
 - 采用经典的棋盘与棋子的 svg 代码渲染UI
+- 和棋判断默认采用60步自然限着、3次重复局面
+- 由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，且十分复杂，因此代码中没有对其进行实现。
 
 ## 基本操作
 ```python
@@ -164,22 +166,29 @@ True
 
 - 重复局面检测
 ```python
->>> board.is_fivefold_repetition()
+>>> board.is_threefold_repetition()  # 一般比赛规定出现三次重复即不变作和
 False
->>> n = 10
->>> board.is_repetition(n)
+>>> n = 7
+>>> board.is_repetition(n)  # 也可以根据情况任意指定不变作和需要达到的重复次数
 False
 ```
 
 - 自然限着检测
 ```python
->>> board.is_fifty_moves()
+>>> board.is_sixty_moves()  # 一般比赛规定60回合为自然限着数
 False
 >>> n = 75
->>> board.is_halfmoves(2 * n)
+>>> board.is_halfmoves(2 * n)  # 也可以根据情况任意指定限着数
 False
 ```
 
-由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，且十分复杂，这代码中没有对其进行实现。
+- 终局判断
+```python
+>>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
+>>> board.is_game_over()  # 简单判断是否结束
+True
+>>> board.outcome()  # 棋局的结束状态(若非终局则返回None)
+Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
+```
 
 ## 待补充...
