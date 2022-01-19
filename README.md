@@ -2,7 +2,7 @@
 这是一个使用纯Python编写的中国象棋库，改写自[Python-Chess](https://github.com/niklasf/python-chess)项目的核心部分。
 
 ## 基本操作
-```code:: python
+```python
 >>> import chess
 >>> import cchess.svg
 
@@ -42,11 +42,11 @@ git clone https://github.com/windshadow233/cchess.git
 
 - 简单的 svg 棋盘渲染，可以设置上一步（以四个直角符号包含始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
 
-<div align=center><img width="150" height="150" src="images/board.svg"/></div>
+<div align=center><img width="450" height="450" src="images/board.svg"/></div>
 
 - 行棋、悔棋
 
-```code:: python
+```python
 >>> board = cchess.Board()
 >>> board.push(cchess.Move.from_uci("h2h4"))  # 行一步棋
 >>> board.pop()  # 撤销上一步棋
@@ -54,7 +54,7 @@ Move.from_uci("h2h4")
 ```
 
 - ASCII 棋盘
-```code:: python
+```python
 >>> board = cchess.Board()
 >>> print(board)
 r n b a k a b n r
@@ -70,7 +70,7 @@ R N B A K A B N R
 ```
 
 - Unicode 棋盘
-```code:: python
+```python
 print(board.unicode(axes=True))
   ａｂｃｄｅｆｇｈｉ
 9 車馬象士將士象馬車
