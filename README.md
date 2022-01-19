@@ -20,7 +20,6 @@ True
 >>> board.push(cchess.Move.from_uci('h4g4'))
 >>> board.push(cchess.Move.from_uci('g6g5'))
 >>> board.push(cchess.Move.from_uci('g4g9'))
->>> svg = cchess.svg.board(board, size=600, orientation=cchess.RED, lastmove=board.peek(), check=board.checkers())
 
 >>> board.is_checkmate()
 True
@@ -28,6 +27,7 @@ True
 >>> board
 Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 
+>>> svg = cchess.svg.board(board, size=600, orientation=cchess.RED, lastmove=board.peek(), check=board.checkers())
 >>> with open('images/board.svg', 'w') as f:
 >>>    f.write(svg)
 ```
