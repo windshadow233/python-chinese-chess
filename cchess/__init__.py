@@ -107,6 +107,8 @@ class Termination(enum.Enum):
     """See :func:`chess.Board.is_checkmate()`."""
     STALEMATE = enum.auto()
     """See :func:`chess.Board.is_stalemate()`."""
+    INSUFFICIENT_MATERIAL = enum.auto()
+    """See :func:`chess.Board.is_insufficient_material()`."""
     THREEFOLD_REPETITION = enum.auto()
     """See :func:`chess.Board.is_fivefold_repetition()`."""
     SIXTY_MOVES = enum.auto()
@@ -1518,6 +1520,14 @@ class Board(BaseBoard):
 
         return not any(self.generate_legal_moves())
 
+    def is_insufficient_material(self) -> bool:
+        """Checks if neither side has sufficient winning material.
+        For simplicity, it returns True if and only if neither side has pieces that can cross the river.
+        """
+        if self.pawns == self.rooks == self.knights == self.cannons == BB_EMPTY:
+            return True
+        return False
+
     def is_halfmoves(self, n: int) -> bool:
         return self.halfmove_clock >= n and any(self.generate_legal_moves())
 
@@ -1611,6 +1621,8 @@ class Board(BaseBoard):
         # Normal game end.
         if self.is_checkmate():
             return Outcome(Termination.CHECKMATE, not self.turn)
+        if self.is_insufficient_material():
+            return Outcome(Termination.INSUFFICIENT_MATERIAL, None)
         if not any(self.generate_legal_moves()):
             return Outcome(Termination.STALEMATE, None)
 
