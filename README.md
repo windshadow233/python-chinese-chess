@@ -27,7 +27,7 @@ True
 >>> board
 Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 
->>> svg = cchess.svg.board(board, size=600, orientation=cchess.RED, lastmove=board.peek(), check=board.checkers())
+>>> svg = cchess.svg.board(board, size=600, orientation=cchess.RED, lastmove=board.peek(), checkers=board.checkers())
 >>> with open('images/board.svg', 'w') as f:
 >>>    f.write(svg)
 ```
