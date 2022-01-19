@@ -1608,9 +1608,10 @@ class Board(BaseBoard):
         """
         Checks if the game is over due to
         :func:`checkmate <chess.Board.is_checkmate()>`,
+        :func:`insufficient_material <chess.Board.is_insufficient_material()>`,
         :func:`stalemate <chess.Board.is_stalemate()>`,
-        the :func:`fifty-move rule <chess.Board.is_fifty_moves()>`,
-        :func:`fivefold repetition <chess.Board.is_fivefold_repetition()>`,
+        the :func:`sixty-move rule <chess.Board.is_sixty_moves()>`,
+        :func:`threefold repetition <chess.Board.is_threefold_repetition()>`,
         Returns the :class:`chess.Outcome` if the game has ended, otherwise
         ``None``.
 
