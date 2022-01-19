@@ -1486,17 +1486,17 @@ class Board(BaseBoard):
 
         return not any(self.generate_legal_moves())
 
-    def _is_halfmoves(self, n: int) -> bool:
+    def is_halfmoves(self, n: int) -> bool:
         return self.halfmove_clock >= n and any(self.generate_legal_moves())
 
     def is_forty_moves(self) -> bool:
-        return self._is_halfmoves(80)
+        return self.is_halfmoves(80)
 
     def is_fifty_moves(self) -> bool:
-        return self._is_halfmoves(100)
+        return self.is_halfmoves(100)
 
     def is_sixty_moves(self) -> bool:
-        return self._is_halfmoves(120)
+        return self.is_halfmoves(120)
 
     def _transposition_key(self):
         return (self.pawns, self.rooks, self.knights, self.bishops,
