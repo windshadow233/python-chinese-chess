@@ -162,7 +162,7 @@ True
 <Status.WHITE_FACE: 268435456>
 ```
 
-- 重复局面检验
+- 重复局面检测
 ```python
 >>> board.is_fivefold_repetition()
 False
@@ -171,7 +171,7 @@ False
 False
 ```
 
-- 自然限着检验
+- 自然限着检测
 ```python
 >>> board.is_fifty_moves()
 False
@@ -180,6 +180,6 @@ False
 False
 ```
 
-由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，这里代码中没有对其进行检测。
+由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，且十分复杂，这代码中没有对其进行实现。
 
 ## 待补充...
