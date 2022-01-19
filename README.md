@@ -70,7 +70,7 @@ R N B A K A B N R
 
 - Unicode 棋盘
 ```python
-print(board.unicode(axes=True))
+>>> print(board.unicode(axes=True))
   ａｂｃｄｅｆｇｈｉ
 9 車馬象士將士象馬車
 8 ．．．．．．．．．
