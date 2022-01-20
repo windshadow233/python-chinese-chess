@@ -57,8 +57,10 @@ svg = cchess.svg.board(board,  # 渲染的棋盘
                        orientation=cchess.RED  # 棋盘方向
                        )
 ```
-<img width="450" height="450" src="images/board_axes_type_0.svg"/>
-<img width="450" height="450" src="images/board_axes_type_1.svg"/>
+<div>
+<img width="400" height="400" src="images/board_axes_type_0.svg"/>
+<img width="400" height="400" src="images/board_axes_type_1.svg"/>
+</div>
 - 行棋、悔棋
 
 ```python
