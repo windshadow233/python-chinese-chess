@@ -106,6 +106,7 @@ def piece(piece: cchess.Piece, size: Optional[int] = None) -> str:
 
 
 def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
+          coordinate: bool = True,
           lastmove: Optional[cchess.Move] = None,
           checkers: Optional[cchess.IntoSquareSet] = None,
           squares: Optional[cchess.IntoSquareSet] = None,
@@ -163,25 +164,26 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
     # River
     svg.append(ET.fromstring(RIVER))
 
-    # Column Coordinate
-    col_coord = ET.SubElement(svg, "g", {"transform": "scale(0.267)"})
-    upper_coord = ET.SubElement(col_coord, "g", {"transform": "translate(0,-2067)", "id": "upper-coord"})
-    # lower_coord = ET.SubElement(col_coord, "g", {"transform": "translate(0,2017)"})
-    for index, col in enumerate(cchess.COLUMN_NAMES):
-        x = index if orientation else 8 - index
-        y = COORDS_DELTA_Y[col]
-        col_letter = _coord(col, -1560 + x * 380, -40 + y)
-        upper_coord.append(col_letter)
-    ET.SubElement(col_coord, "use", {"xlink:href": "#upper-coord", "transform": "translate(0, 4084)"})
+    if coordinate:
+        # Column Coordinate
+        col_coord = ET.SubElement(svg, "g", {"transform": "scale(0.267)"})
+        upper_coord = ET.SubElement(col_coord, "g", {"transform": "translate(0,-2067)", "id": "upper-coord"})
+        # lower_coord = ET.SubElement(col_coord, "g", {"transform": "translate(0,2017)"})
+        for index, col in enumerate(cchess.COLUMN_NAMES):
+            x = index if orientation else 8 - index
+            y = COORDS_DELTA_Y[col]
+            col_letter = _coord(col, -1560 + x * 380, -40 + y)
+            upper_coord.append(col_letter)
+        ET.SubElement(col_coord, "use", {"xlink:href": "#upper-coord", "transform": "translate(0, 4084)"})
 
-    # Row Coordinate
-    row_coord = ET.SubElement(svg, "g")
-    left_coord = ET.SubElement(row_coord, "g", {"transform": "translate(-500,0)", "id": "left-coord"})
-    for index, row in enumerate(cchess.ROW_NAMES):
-        y = index if orientation else 9 - index
-        row_number = _coord(row, 0, 428 - 102 * y)
-        left_coord.append(row_number)
-    ET.SubElement(row_coord, "use", {"xlink:href": "#left-coord", "transform": "translate(970,0)"})
+        # Row Coordinate
+        row_coord = ET.SubElement(svg, "g")
+        left_coord = ET.SubElement(row_coord, "g", {"transform": "translate(-500,0)", "id": "left-coord"})
+        for index, row in enumerate(cchess.ROW_NAMES):
+            y = index if orientation else 9 - index
+            row_number = _coord(row, 0, 428 - 102 * y)
+            left_coord.append(row_number)
+        ET.SubElement(row_coord, "use", {"xlink:href": "#left-coord", "transform": "translate(970,0)"})
     # Pieces
     for square, bb in enumerate(cchess.BB_SQUARES):
         col_index = cchess.square_column(square)
