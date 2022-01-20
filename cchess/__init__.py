@@ -529,9 +529,6 @@ class Move:
         self.from_square = from_square
         self.to_square = to_square
 
-    def _uci(self):
-        return SQUARE_NAMES[self.from_square] + SQUARE_NAMES[self.to_square]
-
     def uci(self) -> str:
         """
         Gets a UCI string for the move.
@@ -557,6 +554,16 @@ class Move:
 
     def __str__(self) -> str:
         return self.uci()
+
+    def xboard(self) -> str:
+        return self.uci() if self else "@@@@"
+
+    def __bool__(self):
+        return bool(self.from_square or self.to_square)
+
+    @classmethod
+    def null(cls):
+        return cls(0, 0)
 
 
 class BaseBoard:
@@ -2006,7 +2013,7 @@ class SquareSet:
         self.mask = BB_EMPTY
 
     def tolist(self) -> List[bool]:
-        """Converts the set to a list of 64 bools."""
+        """Converts the set to a list of 90 bools."""
         result = [False] * 90
         for square in self:
             result[square] = True
