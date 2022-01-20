@@ -57,7 +57,7 @@ svg = cchess.svg.board(board,  # 渲染的棋盘
                        orientation=cchess.RED  # 棋盘方向
                        )
 ```
-<div>
+<div align="center">
 <img width="400" height="400" src="images/board_axes_type_0.svg"/>
 <img width="400" height="400" src="images/board_axes_type_1.svg"/>
 </div>
