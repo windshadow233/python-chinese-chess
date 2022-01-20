@@ -744,7 +744,7 @@ class BaseBoard:
         :param axes_type: Coordinate axes type, 0 for modern and 1 for traditional.
         """
         builder = []
-        assert axes_type in [0, 1], "Axes type must value 0 or 1."
+        assert axes_type in [0, 1], f"axes_type must value 0 or 1, got {axes_type}"
         if axes:
             if axes_type == 0:
                 builder.append('  ａｂｃｄｅｆｇｈｉ\n')
