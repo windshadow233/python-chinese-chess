@@ -23,6 +23,33 @@ UNICODE_PIECE_SYMBOLS = {
 }
 
 
+TRADITIONAL_NOTATION_COORDINATES = [{
+    0: "1",
+    1: "2",
+    2: "3",
+    3: "4",
+    4: "5",
+    5: "6",
+    6: "7",
+    7: "8",
+    8: "9"
+}, {
+    0: "九",
+    1: "八",
+    2: "七",
+    3: "六",
+    4: "五",
+    5: "四",
+    6: "三",
+    7: "二",
+    8: "一"
+}]
+
+
+TRADITIONAL_VERTICAL_DIRECTION = [{True: "退", False: "进"}, {True: "进", False: "退"}]
+TRADITIONAL_VERTICAL_POS = [{True: "后", False: "前"}, {True: "前", False: "后"}]
+
+
 def piece_symbol(piece_type: PieceType) -> str:
     return PIECE_SYMBOLS[piece_type]
 
@@ -707,20 +734,25 @@ class BaseBoard:
 
         return "".join(builder)
 
-    def unicode(self, *, invert_color: bool = False, axes: bool = True) -> str:
+    def unicode(self, *, invert_color: bool = False, axes: bool = True, axes_type: int = 0) -> str:
         """
         Returns a string representation of the board with Unicode pieces.
         Useful for pretty-printing to a terminal.
 
         :param invert_color: Invert c.olor of the Unicode pieces.
         :param axes: Show a coordinate axes margin.
+        :param axes_type: Coordinate axes type, 0 for modern and 1 for traditional.
         """
         builder = []
+        assert axes_type in [0, 1], "Axes type must value 0 or 1."
         if axes:
-            builder.append('  ａｂｃｄｅｆｇｈｉ\n')
+            if axes_type == 0:
+                builder.append('  ａｂｃｄｅｆｇｈｉ\n')
+            else:
+                builder.append('１２３４５６７８９\n')
 
         for row_index in range(9, -1, -1):
-            if axes:
+            if axes and axes_type == 0:
                 builder.append(ROW_NAMES[row_index])
                 builder.append(' ')
 
@@ -738,7 +770,10 @@ class BaseBoard:
                 builder.append("\n")
 
         if axes:
-            builder.append('  ａｂｃｄｅｆｇｈｉ')
+            if axes_type == 0:
+                builder.append('  ａｂｃｄｅｆｇｈｉ')
+            else:
+                builder.append('九八七六五四三二一')
 
         return "".join(builder)
 
@@ -1754,6 +1789,110 @@ class Board(BaseBoard):
         See :func:`~chess.Board.status()` for details.
         """
         return self.status() == STATUS_VALID
+
+    def move_to_notation(self, move: Move):
+        from_square, to_square = move.from_square, move.to_square
+        piece = self.piece_at(from_square)
+        if not piece:
+            return ""
+        piece_type = piece.piece_type
+        from_column = square_column(from_square)
+        from_row = square_row(from_square)
+        to_column = square_column(to_square)
+        to_row = square_row(to_square)
+        symbol = piece.unicode_symbol()
+        color = piece.color
+        if piece_type == KING:
+            column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+            piece_symbol = symbol + column_notation
+            if from_row == to_row:
+                direction = '平'
+                move_to = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+            else:
+                direction = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
+                move_to = str(abs(to_row - from_row))
+        elif piece_type in [ROOK, CANNON]:
+            bb_pieces = self.rooks if piece_type == ROOK else self.cannons
+            same = bb_pieces & self.occupied_co[color] & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
+            if same == 0:
+                column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                piece_symbol = symbol + column_notation
+            else:
+                same_square = msb(same)
+                same_row = square_row(same_square)
+                piece_symbol = TRADITIONAL_VERTICAL_POS[color][from_row > same_row] + symbol
+            if from_row == to_row:
+                direction = '平'
+                move_to = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+            else:
+                direction = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
+                move_to = str(abs(to_row - from_row))
+        elif piece_type in [KNIGHT, BISHOP, ADVISOR]:
+            if piece_type == KNIGHT:
+                bb_pieces = self.knights
+            elif piece_type == BISHOP:
+                bb_pieces = self.bishops
+            else:
+                bb_pieces = self.advisors
+            same = bb_pieces & self.occupied_co[color] & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
+            if same == 0:
+                column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                piece_symbol = symbol + column_notation
+            else:
+                same_square = msb(same)
+                same_row = square_row(same_square)
+                piece_symbol = TRADITIONAL_VERTICAL_POS[color][from_row > same_row] + symbol
+            direction = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
+            move_to = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+        else:
+            pawns = self.pawns & self.occupied_co[color]
+            same = pawns & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
+            front_count = 0
+            for square in scan_forward(same):
+                if (color and square > from_square) or (not color and square < from_square):
+                    front_count += 1
+            count = popcount(same)
+            if count == 0:
+                column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                piece_symbol = symbol + column_notation
+            elif count == 1:
+                other_columns_gt_one = any([popcount(BB_COLUMNS[col] & pawns) >= 2
+                                            for col in range(9) if col != from_column])
+                if not other_columns_gt_one:
+                    piece_symbol = ['前', '后'][front_count] + symbol
+                else:
+                    piece_symbol = ['前', '后'][front_count] + TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+            elif count == 2:
+                other_columns_gt_one = any([popcount(BB_COLUMNS[col] & pawns) >= 2
+                                            for col in range(9) if col != from_column])
+                if not other_columns_gt_one:
+                    piece_symbol = ['前', '中', '后'][front_count] + symbol
+                else:
+                    piece_symbol = ['前', '中', '后'][front_count] + TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+            elif count == 3:
+                piece_symbol = ['前', '二', '三', '四'][front_count] + symbol
+            else:
+                piece_symbol = ['前', '二', '三', '四', '五'][front_count] + symbol
+            if from_row == to_row:
+                direction = '平'
+                move_to = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+            else:
+                direction = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
+                move_to = str(abs(to_row - from_row))
+        return piece_symbol + direction + move_to
+
+    def notations(self):
+        move_stack = copy.copy(self.move_stack)
+        self.reset()
+        notations = ""
+        for move in move_stack:
+            notations += self.move_to_notation(move)
+            self.push(move)
+            if not self.turn:
+                notations += "\t"
+            else:
+                notations += "\n"
+        return notations
 
 
 IntoSquareSet = Union[SupportsInt, Iterable[Square]]
