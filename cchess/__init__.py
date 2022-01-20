@@ -138,7 +138,6 @@ Square = int
 COLUMN_NAMES = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 ROW_NAMES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-
 SQUARES = [
     A0, B0, C0, D0, E0, F0, G0, H0, I0,
     A1, B1, C1, D1, E1, F1, G1, H1, I1,
@@ -1372,8 +1371,7 @@ class Board(BaseBoard):
                 for to_square in scan_reversed(slides):
                     yield Move(from_square, to_square)  # cannons slide
 
-    def generate_pseudo_legal_captures(self, from_mask: BitBoard = BB_ALL, to_mask: BitBoard = BB_ALL) -> Iterator[
-        Move]:
+    def generate_pseudo_legal_captures(self, from_mask: BitBoard = BB_ALL, to_mask: BitBoard = BB_ALL) -> Iterator[Move]:
         return self.generate_pseudo_legal_moves(from_mask, to_mask & self.occupied_co[not self.turn])
 
     def generate_legal_moves(self, from_mask: BitBoard = BB_ALL, to_mask: BitBoard = BB_ALL) -> Iterator[Move]:
