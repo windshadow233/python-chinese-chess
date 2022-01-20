@@ -48,6 +48,7 @@ COORDS = {
 
 
 XX = """<g id="xx" transform="scale(2)"><path d="M35.865 9.135a1.89 1.89 0 0 1 0 2.673L25.173 22.5l10.692 10.692a1.89 1.89 0 0 1 0 2.673 1.89 1.89 0 0 1-2.673 0L22.5 25.173 11.808 35.865a1.89 1.89 0 0 1-2.673 0 1.89 1.89 0 0 1 0-2.673L19.827 22.5 9.135 11.808a1.89 1.89 0 0 1 0-2.673 1.89 1.89 0 0 1 2.673 0L22.5 19.827 33.192 9.135a1.89 1.89 0 0 1 2.673 0z" fill="#000" stroke="#fff" stroke-width="1.688"/></g>"""  # noqa: E501
+ARROW_MARKER = """<marker id="triangle" markerUnits="strokeWidth" markerWidth="5" markerHeight="4" refX="0" refY="2" orient="auto" fill="blue"><path d="M 0 0 L 5 2 L 0 4 z"/></marker>"""  # noqa: E501
 
 
 COORDS_DELTA_Y = {
@@ -110,8 +111,9 @@ def piece(piece: cchess.Piece, size: Optional[int] = None) -> str:
     return SvgWrapper(ET.tostring(svg).decode("utf-8"))
 
 
-def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
-          coordinate: bool = True,
+def board(board: cchess.BaseBoard, *,
+          orientation: cchess.Color = cchess.RED,
+          coordinates: bool = True,
           lastmove: Optional[cchess.Move] = None,
           checkers: Optional[cchess.IntoSquareSet] = None,
           squares: Optional[cchess.IntoSquareSet] = None,
@@ -128,12 +130,11 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
         for piece_type in cchess.PIECE_TYPES:
             if board.pieces_mask(piece_type, piece_color):
                 defs.append(ET.fromstring(PIECES[cchess.Piece(piece_type, piece_color).symbol()]))
-    if squares:
-        defs.append(ET.fromstring(XX))
     if lastmove:
         defs.append(ET.fromstring("""<path id="red-corner" d="M5 20 V 5 H 20" stroke-width="5" stroke="red" fill="none"/>"""))  # noqa: E501
         defs.append(ET.fromstring("""<path id="green-corner" d="M5 20 V 5 H 20" stroke-width="5" stroke="green" fill="none"/>"""))  # noqa: E501
-
+    if squares:
+        defs.append(ET.fromstring(XX))
     ET.SubElement(svg, "rect", {"width": "1200", "height": "1200",
                                 "x": "-600", "y": "-600",
                                 "stroke-width": "15", "stroke": "#cd853f",
@@ -169,7 +170,7 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
     # River
     svg.append(ET.fromstring(RIVER))
 
-    if coordinate:
+    if coordinates:
         # Column Coordinate
         col_coord = ET.SubElement(svg, "g")
         upper_coord = ET.SubElement(col_coord, "g", {"transform": "translate(-428,-560)", "id": "upper-coord"})
@@ -210,26 +211,30 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
                 "y": y + 5
             }))
 
-        # Lastmove
-        if lastmove is not None:
-            if lastmove.from_square == square:
-                red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
-                top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-red-corners"})
-                ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner"})
-                ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner",
-                                                       "transform": "translate(100,0) scale(-1,1)"})
-                ET.SubElement(red_corners, "use", {"xlink:href": "#top-red-corners",
-                                                   "transform": "translate(0, 100) scale(1,-1)"})
-            elif lastmove.to_square == square:
-                red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
-                top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-green-corners"})
-                ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner"})
-                ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner",
-                                                       "transform": "translate(100,0) scale(-1,1)"})
-                ET.SubElement(red_corners, "use", {"xlink:href": "#top-green-corners",
-                                                   "transform": "translate(0, 100) scale(1,-1)"})
-
-
+    # Lastmove
+    if lastmove is not None:
+        col_index = cchess.square_column(lastmove.from_square)
+        row_index = cchess.square_row(lastmove.from_square)
+        x = (col_index if orientation else 8 - col_index) * SQUARE_SIZE - 450
+        y = (9 - row_index if orientation else row_index) * SQUARE_SIZE - 500
+        red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
+        top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-red-corners"})
+        ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner"})
+        ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner",
+                                               "transform": "translate(100,0) scale(-1,1)"})
+        ET.SubElement(red_corners, "use", {"xlink:href": "#top-red-corners",
+                                           "transform": "translate(0, 100) scale(1,-1)"})
+        col_index = cchess.square_column(lastmove.to_square)
+        row_index = cchess.square_row(lastmove.to_square)
+        x = (col_index if orientation else 8 - col_index) * SQUARE_SIZE - 450
+        y = (9 - row_index if orientation else row_index) * SQUARE_SIZE - 500
+        red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
+        top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-green-corners"})
+        ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner"})
+        ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner",
+                                               "transform": "translate(100,0) scale(-1,1)"})
+        ET.SubElement(red_corners, "use", {"xlink:href": "#top-green-corners",
+                                           "transform": "translate(0, 100) scale(1,-1)"})
     # Check
     if checkers is not None:
         for square in checkers:
