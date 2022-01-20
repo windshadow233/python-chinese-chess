@@ -56,7 +56,7 @@ svg = cchess.svg.board(board,  # 渲染的棋盘
                        orientation=cchess.RED  # 棋盘方向
                        )
 ```
-<div align=center><img width="450" height="450" src="images/board.svg"/></div>
+<img width="450" height="450" src="images/board.svg"/>
 
 - 行棋、悔棋
 
