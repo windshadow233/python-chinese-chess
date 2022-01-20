@@ -31,7 +31,7 @@ True
 >>> board
 Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 
->>> svg = cchess.svg.board(board, size=600, coordinate=True, orientation=cchess.RED, lastmove=board.peek(), checkers=board.checkers())
+>>> svg = cchess.svg.board(board, size=600, coordinates=True, orientation=cchess.RED, lastmove=board.peek(), checkers=board.checkers())
 >>> with open('images/board.svg', 'w') as f:
 >>>    f.write(svg)
 ```
@@ -50,7 +50,7 @@ import cchess.svg
 board = cchess.Board()
 svg = cchess.svg.board(board,  # 渲染的棋盘
                        size=600,  # 棋盘尺寸
-                       coordinate=True,  # 是否显示坐标系
+                       coordinates=True,  # 是否显示坐标系
                        lastmove=board.peek(),  # 上一步
                        checkers=board.checkers(),  # 将军棋子
                        orientation=cchess.RED  # 棋盘方向
