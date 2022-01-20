@@ -31,7 +31,7 @@ True
 >>> board
 Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 
->>> svg = cchess.svg.board(board, size=600, orientation=cchess.RED, lastmove=board.peek(), checkers=board.checkers())
+>>> svg = cchess.svg.board(board, size=600, coordinate=True, orientation=cchess.RED, lastmove=board.peek(), checkers=board.checkers())
 >>> with open('images/board.svg', 'w') as f:
 >>>    f.write(svg)
 ```
@@ -44,8 +44,18 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 
 ## 功能
 
-- 简单的 svg 棋盘渲染，可以显示上一步（以一对红绿直角框标记始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
-
+- 简单的 svg (带坐标系)棋盘渲染，可以显示上一步（以一对红绿直角框标记始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
+```python
+import cchess.svg
+board = cchess.Board()
+svg = cchess.svg.board(board,  # 渲染的棋盘
+                       size=600,  # 棋盘尺寸
+                       coordinate=True,  # 是否显示坐标系
+                       lastmove=board.peek(),  # 上一步
+                       checkers=board.checkers(),  # 将军棋子
+                       orientation=cchess.RED  # 棋盘方向
+                       )
+```
 <div align=center><img width="450" height="450" src="images/board.svg"/></div>
 
 - 行棋、悔棋
