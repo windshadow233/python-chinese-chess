@@ -113,7 +113,7 @@ True
 
 >>> board = cchess.Board('4k3R/2N2n3/5N3/9/9/9/9/9/9/3K5 b')
 >>> board.pseudo_legal_moves
-<PseudoLegalMoveGenerator at 0x7fd14c5f9510 (e9f9, e9d9, e9e8, f8h9, f8d9, f8h7, f8d7)>
+<PseudoLegalMoveGenerator at ... (e9f9, e9d9, e9e8, f8h9, f8d9, f8h7, f8d7)>
 >>> board.is_pseudo_legal(cchess.Move.from_uci("e9d9"))
 True
 >>> board.is_legal(cchess.Move.from_uci("e9d9"))
