@@ -82,9 +82,9 @@ P . P . P . P . P
 R N B A K A B N R
 ```
 
-- Unicode 棋盘
+- Unicode 棋盘(两种坐标系)
 ```python
->>> print(board.unicode(axes=True))
+>>> print(board.unicode(axes=True, axes_type=0))
   ａｂｃｄｅｆｇｈｉ
 9 車馬象士將士象馬車
 8 ．．．．．．．．．
@@ -97,6 +97,20 @@ R N B A K A B N R
 1 ．．．．．．．．．
 0 俥傌相仕帥仕相傌俥
   ａｂｃｄｅｆｇｈｉ
+
+>>> print(board.unicode(axes=True, axes_type=1))
+１２３４５６７８９
+車馬象士將士象馬車
+．．．．．．．．．
+．砲．．．．．砲．
+卒．卒．卒．卒．卒
+．．．．．．．．．
+．．．．．．．．．
+兵．兵．兵．兵．兵
+．炮．．．．．炮．
+．．．．．．．．．
+俥傌相仕帥仕相傌俥
+九八七六五四三二一
 ```
 - （伪）合法着法生成、合法性判断
 ```python
@@ -203,6 +217,22 @@ False
 True
 >>> board.outcome()  # 棋局的结束状态(若非终局则返回None)
 Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
+```
+
+- 传统棋谱打印
+```python
+>>> board = cchess.Board()
+
+>>> board.push(cchess.Move.from_uci("h2h4"))
+>>> board.push(cchess.Move.from_uci('d9e8'))
+>>> board.push(cchess.Move.from_uci('h4g4'))
+>>> board.push(cchess.Move.from_uci('g6g5'))
+>>> board.push(cchess.Move.from_uci('g4g9'))
+
+>>> print(board.notations())
+炮二进2	士4进5
+炮二平三	卒7进1
+炮三进5	
 ```
 
 ## 待补充...
