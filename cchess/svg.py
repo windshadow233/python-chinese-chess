@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import cchess
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict, Union
 
 SQUARE_SIZE = 100
 MARGIN = 20
@@ -97,6 +97,10 @@ class SvgWrapper(str):
         return self
 
 
+def _attrs(attrs: Dict[str, Union[str, int, float, None]]) -> Dict[str, str]:
+    return {k: str(v) for k, v in attrs.items() if v is not None}
+
+
 def piece(piece: cchess.Piece, size: Optional[int] = None) -> str:
     """
     Renders the given :class:`chess.Piece` as an SVG image.
@@ -134,9 +138,9 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
                                 "x": "-600", "y": "-600",
                                 "stroke-width": "15", "stroke": "#cd853f",
                                 "fill": "#eb5"})
-    boarder = ET.SubElement(svg, "g", {"fill": "none", "stroke-width": "4", "stroke": "#000"})
-    ET.SubElement(boarder, "rect", {"width": "816", "height": "916", "x": "-408", "y": "-458"})
-    ET.SubElement(boarder, "rect", {"width": "800", "height": "900", "x": "-400", "y": "-450"})
+    boarder = ET.SubElement(svg, "g", _attrs({"fill": "none", "stroke-width": 4, "stroke": "#000"}))
+    ET.SubElement(boarder, "rect", _attrs({"width": 816, "height": 916, "x": -408, "y": -458}))
+    ET.SubElement(boarder, "rect", _attrs({"width": 800, "height": 900, "x": -400, "y": -450}))
     mark2R = ET.SubElement(mark4, "g", {"id": "mark2R"})
     mark2R.append(ET.fromstring("""<path id="mark" d="M30,10H10V30" fill="none" stroke-width="4" stroke="#000"/>"""))
     ET.SubElement(mark2R, "use", {"xlink:href": "#mark", "transform": "rotate(-90,0,0)"})
@@ -146,19 +150,19 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
     ET.SubElement(mino32, "use", {"xlink:href": "#mino16", "transform": "scale(-1,1)"})
     line4 = ET.SubElement(mino16, "g", {"id": "line4"})
     line4.append(ET.fromstring("""<path id="line" d="M0,0V400" stroke-width="4" stroke="#000"/>"""))
-    ET.SubElement(line4, "use", {"xlink:href": "#line", "x": "100"})
-    ET.SubElement(line4, "use", {"xlink:href": "#line", "x": "200"})
-    ET.SubElement(line4, "use", {"xlink:href": "#line", "x": "300"})
+    ET.SubElement(line4, "use", _attrs({"xlink:href": "#line", "x": 100}))
+    ET.SubElement(line4, "use", _attrs({"xlink:href": "#line", "x": 200}))
+    ET.SubElement(line4, "use", _attrs({"xlink:href": "#line", "x": 300}))
     ET.SubElement(mino16, "use", {"xlink:href": "#line4", "transform": "rotate(90,200,200)"})
-    ET.SubElement(mino16, "use", {"xlink:href": "#mark2R", "x": "0", "y": "100"})
-    ET.SubElement(mino16, "use", {"xlink:href": "#mark4", "x": "200", "y": "100"})
-    ET.SubElement(mino16, "use", {"xlink:href": "#mark4", "x": "300", "y": "200"})
-    ET.SubElement(mino16, "use", {"xlink:href": "#mark2L", "x": "400", "y": "100"})
+    ET.SubElement(mino16, "use", _attrs({"xlink:href": "#mark2R", "x": 0, "y": 100}))
+    ET.SubElement(mino16, "use", _attrs({"xlink:href": "#mark4", "x": 200, "y": 100}))
+    ET.SubElement(mino16, "use", _attrs({"xlink:href": "#mark4", "x": 300, "y": 200}))
+    ET.SubElement(mino16, "use", _attrs({"xlink:href": "#mark2L", "x": 400, "y": 100}))
     mino16.append(ET.fromstring("""<path id="diagonal" d="M0,300 100,200" stroke-width="4" stroke="#000"/>"""))
     ET.SubElement(mino16, "use", {"xlink:href": "#diagonal", "transform": "rotate(90,0,300)"})
     board_obj = ET.SubElement(defs, "g", {"id": "board"})
     halfboard = ET.SubElement(board_obj, "g", {"id": "halfboard"})
-    ET.SubElement(halfboard, "use", {"xlink:href": "#mino32", "y": "50"})
+    ET.SubElement(halfboard, "use", _attrs({"xlink:href": "#mino32", "y": 50}))
     ET.SubElement(board_obj, "use", {"xlink:href": "#halfboard", "transform": "rotate(180)"})
     ET.SubElement(svg, "use", {"xlink:href": "#board"})
 
@@ -199,12 +203,12 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
                 "transform": f"translate({x:d}, {y:d})",
             })
         if squares is not None and square in squares:
-            ET.SubElement(svg, "use", {
+            ET.SubElement(svg, "use", _attrs({
                 "href": "#xx",
                 "xlink:href": "#xx",
-                "x": f"{x + 5}",
-                "y": f"{y + 5}"
-            })
+                "x": x + 5,
+                "y": y + 5
+            }))
 
         # Lastmove
         if lastmove is not None:
@@ -235,12 +239,12 @@ def board(board: cchess.BaseBoard, orientation: cchess.Color = cchess.RED,
             x = (col_index if orientation else 8 - col_index) * SQUARE_SIZE - 400
             y = (9 - row_index if orientation else row_index) * SQUARE_SIZE - 450
 
-            ET.SubElement(svg, "circle", {
-                "cx": str(x),
-                "cy": str(y),
-                "r": "48",
+            ET.SubElement(svg, "circle", _attrs({
+                "cx": x,
+                "cy": y,
+                "r": 48,
                 "stroke": "red",
-                "stroke-width": "10",
+                "stroke-width": 10,
                 "fill": "none"
-            })
+            }))
     return SvgWrapper(ET.tostring(svg).decode("utf-8"))
