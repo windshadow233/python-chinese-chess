@@ -21,6 +21,7 @@ UNICODE_PIECE_SYMBOLS = {
     "P": "兵", "p": "卒",
     "C": "炮", "c": "砲"
 }
+UNICODE2PIECE = dict(zip(UNICODE_PIECE_SYMBOLS.values(), UNICODE_PIECE_SYMBOLS.keys()))
 
 
 TRADITIONAL_NOTATION_COORDINATES = [{
@@ -43,6 +44,28 @@ TRADITIONAL_NOTATION_COORDINATES = [{
     6: "三",
     7: "二",
     8: "一"
+}]
+
+TRADITIONAL_TO_MODERN = [{
+    "1": 0,
+    "2": 1,
+    "3": 2,
+    "4": 3,
+    "5": 4,
+    "6": 5,
+    "7": 6,
+    "8": 7,
+    "9": 8
+}, {
+    "九": 0,
+    "八": 1,
+    "七": 2,
+    "六": 3,
+    "五": 4,
+    "四": 5,
+    "三": 6,
+    "二": 7,
+    "一": 8
 }]
 
 
@@ -547,6 +570,10 @@ class Piece:
     @classmethod
     def from_symbol(cls, symbol: str):
         return cls(PIECE_SYMBOLS.index(symbol.lower()), symbol.isupper())
+
+    @classmethod
+    def from_unicode(cls, unicode: str):
+        return cls.from_symbol(UNICODE2PIECE[unicode])
 
 
 @dataclasses.dataclass(unsafe_hash=True)
@@ -1804,29 +1831,29 @@ class Board(BaseBoard):
         color = piece.color
         if piece_type == KING:
             column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
-            piece_symbol = symbol + column_notation
+            piece_notation = symbol + column_notation
             if from_row == to_row:
-                direction = '平'
-                move_to = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+                direction_notation = '平'
+                move_notation = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
             else:
-                direction = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
-                move_to = str(abs(to_row - from_row))
+                direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
+                move_notation = str(abs(to_row - from_row))
         elif piece_type in [ROOK, CANNON]:
             bb_pieces = self.rooks if piece_type == ROOK else self.cannons
             same = bb_pieces & self.occupied_co[color] & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
             if same == 0:
                 column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
-                piece_symbol = symbol + column_notation
+                piece_notation = symbol + column_notation
             else:
                 same_square = msb(same)
                 same_row = square_row(same_square)
-                piece_symbol = TRADITIONAL_VERTICAL_POS[color][from_row > same_row] + symbol
+                piece_notation = TRADITIONAL_VERTICAL_POS[color][from_row > same_row] + symbol
             if from_row == to_row:
-                direction = '平'
-                move_to = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+                direction_notation = '平'
+                move_notation = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
             else:
-                direction = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
-                move_to = str(abs(to_row - from_row))
+                direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
+                move_notation = str(abs(to_row - from_row))
         elif piece_type in [KNIGHT, BISHOP, ADVISOR]:
             if piece_type == KNIGHT:
                 bb_pieces = self.knights
@@ -1837,13 +1864,13 @@ class Board(BaseBoard):
             same = bb_pieces & self.occupied_co[color] & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
             if same == 0:
                 column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
-                piece_symbol = symbol + column_notation
+                piece_notation = symbol + column_notation
             else:
                 same_square = msb(same)
                 same_row = square_row(same_square)
-                piece_symbol = TRADITIONAL_VERTICAL_POS[color][from_row > same_row] + symbol
-            direction = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
-            move_to = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+                piece_notation = TRADITIONAL_VERTICAL_POS[color][from_row > same_row] + symbol
+            direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
+            move_notation = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
         else:
             pawns = self.pawns & self.occupied_co[color]
             same = pawns & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
@@ -1854,32 +1881,32 @@ class Board(BaseBoard):
             count = popcount(same)
             if count == 0:
                 column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
-                piece_symbol = symbol + column_notation
+                piece_notation = symbol + column_notation
             elif count == 1:
                 other_columns_gt_one = any([popcount(BB_COLUMNS[col] & pawns) >= 2
                                             for col in range(9) if col != from_column])
                 if not other_columns_gt_one:
-                    piece_symbol = ['前', '后'][front_count] + symbol
+                    piece_notation = ['前', '后'][front_count] + symbol
                 else:
-                    piece_symbol = ['前', '后'][front_count] + TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                    piece_notation = ['前', '后'][front_count] + TRADITIONAL_NOTATION_COORDINATES[color][from_column]
             elif count == 2:
                 other_columns_gt_one = any([popcount(BB_COLUMNS[col] & pawns) >= 2
                                             for col in range(9) if col != from_column])
                 if not other_columns_gt_one:
-                    piece_symbol = ['前', '中', '后'][front_count] + symbol
+                    piece_notation = ['前', '中', '后'][front_count] + symbol
                 else:
-                    piece_symbol = ['前', '中', '后'][front_count] + TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                    piece_notation = ['前', '中', '后'][front_count] + TRADITIONAL_NOTATION_COORDINATES[color][from_column]
             elif count == 3:
-                piece_symbol = ['前', '二', '三', '四'][front_count] + symbol
+                piece_notation = ['前', '二', '三', '四'][front_count] + symbol
             else:
-                piece_symbol = ['前', '二', '三', '四', '五'][front_count] + symbol
+                piece_notation = ['前', '二', '三', '四', '五'][front_count] + symbol
             if from_row == to_row:
-                direction = '平'
-                move_to = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+                direction_notation = '平'
+                move_notation = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
             else:
-                direction = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
-                move_to = str(abs(to_row - from_row))
-        return piece_symbol + direction + move_to
+                direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
+                move_notation = str(abs(to_row - from_row))
+        return piece_notation + direction_notation + move_notation
 
     def notations(self):
         move_stack = copy.copy(self.move_stack)
@@ -1892,7 +1919,7 @@ class Board(BaseBoard):
                 notations += "\t"
             else:
                 notations += "\n"
-        return notations
+        return notations[:-1]
 
 
 IntoSquareSet = Union[SupportsInt, Iterable[Square]]
