@@ -308,18 +308,15 @@ Move.from_uci('c1c5')
 Move.from_uci('c6c5')
 >>> board.push_notation('傌七进五')
 Move.from_uci('c2e3')
-
->>> svg = cchess.svg.board(board,
-                           size=600,
-                           coordinates=True,
-                           lastmove=board.peek(),
-                           checkers=board.checkers(),
-                           orientation=cchess.RED,
-                           axes_type=1
-                           )
->>> with open('images/正马三兵对右肋车 黑骑河车.svg', 'w') as f:
-        f.write(svg)
 ```
-<img width="400" height="400" src="images/正马三兵对右肋车%20黑骑河车.svg"/>
+
+- 棋谱GIF渲染,以上面代码中的棋局为例
+
+**使用此功能需要预先安装numpy,pillow,cairosvg,imageio,tqdm库**
+```python
+import cchess.svg
+cchess.svg.to_gif(board, "images/board.gif", duration=2)
+```
+
 
 ## 待补充...
