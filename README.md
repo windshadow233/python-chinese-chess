@@ -222,7 +222,7 @@ True
 Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 ```
 
-- 传统棋谱打印
+- 传统棋谱打印,暂不支持传统记谱法转坐标记谱法
 ```python
 >>> board = cchess.Board()
 
@@ -235,7 +235,7 @@ Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 >>> print(board.notations())
 炮二进2	士4进5
 炮二平三	卒7进1
-炮三进5	
+炮三进5
 ```
 
 ## 待补充...
