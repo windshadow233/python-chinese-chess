@@ -222,7 +222,7 @@ True
 Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 ```
 
-- 传统棋谱打印,暂不支持传统记谱法转坐标记谱法
+- 传统棋谱打印
 ```python
 >>> board = cchess.Board()
 
@@ -237,5 +237,81 @@ Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 炮二平三	卒7进1
 炮三进5
 ```
+
+- 使用传统四字记谱法进行走子,以开局棋谱“正马三兵对右肋车 黑骑河车”为例
+```python
+>>> board = cchess.Board()
+ 
+>>> board.push_notation('炮二平五')
+Move.from_uci('h2e2')
+>>> board.push_notation('砲8平5')
+Move.from_uci('h7e7')
+>>> board.push_notation('傌二进三')
+Move.from_uci('h0g2')
+>>> board.push_notation('馬8进7')
+Move.from_uci('h9g7')
+>>> board.push_notation('俥一平二')
+Move.from_uci('i0h0')
+>>> board.push_notation('車9进1')
+Move.from_uci('i9i8')
+>>> board.push_notation('傌八进七')
+Move.from_uci('b0c2')
+>>> board.push_notation('車9平4')
+Move.from_uci('i8d8')
+>>> board.push_notation('兵三进1')
+Move.from_uci('g3g4')
+>>> board.push_notation('車4进4')
+Move.from_uci('d8d4')
+>>> board.push_notation('俥二进4')
+Move.from_uci('h0h4')
+>>> board.push_notation('馬2进1')
+Move.from_uci('b9a7')
+>>> board.push_notation('炮五平四')
+Move.from_uci('e2f2')
+>>> board.push_notation('砲2平3')
+Move.from_uci('b7c7')
+>>> board.push_notation('相三进五')
+Move.from_uci('g0e2')
+>>> board.push_notation('車1平2')
+Move.from_uci('a9b9')
+>>> board.push_notation('俥九平八')
+Move.from_uci('a0b0')
+>>> board.push_notation('車2进4')
+Move.from_uci('b9b5')
+>>> board.push_notation('兵七进1')
+Move.from_uci('c3c4')
+>>> board.push_notation('車4进1')
+Move.from_uci('d4d3')
+>>> board.push_notation('傌三进四')
+Move.from_uci('g2f4')
+>>> board.push_notation('砲5进4')
+Move.from_uci('e7e3')
+>>> board.push_notation('仕四进五')
+Move.from_uci('f0e1')
+>>> board.push_notation('車4平3')
+Move.from_uci('d3c3')
+>>> board.push_notation('兵七进1')
+Move.from_uci('c4c5')
+>>> board.push_notation('車2平3')
+Move.from_uci('b5c5')
+>>> board.push_notation('炮八退1')
+Move.from_uci('b2b1')
+>>> board.push_notation('前車平2')
+Move.from_uci('c3b3')
+>>> board.push_notation('炮八平七')
+Move.from_uci('b1c1')
+>>> board.push_notation('車2进3')
+Move.from_uci('b3b0')
+>>> board.push_notation('炮七进4')
+Move.from_uci('c1c5')
+>>> board.push_notation('卒3进1')
+Move.from_uci('c6c5')
+>>> board.push_notation('傌七进五')
+Move.from_uci('c2e3')
+
+>>> with open('images/正马三兵对右肋车 黑骑河车.svg', 'w') as f:
+        f.write(svg)
+```
+<img width="400" height="400" src="images/正马三兵对右肋车%20黑骑河车.svg"/>
 
 ## 待补充...
