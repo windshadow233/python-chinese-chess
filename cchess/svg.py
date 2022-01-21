@@ -166,7 +166,7 @@ def board(board: cchess.BaseBoard, *,
           lastmove: Optional[cchess.Move] = None,
           checkers: Optional[cchess.IntoSquareSet] = None,
           squares: Optional[cchess.IntoSquareSet] = None,
-          size: Optional[int] = None) -> str:
+          size: Optional[int] = 450) -> str:
     assert axes_type in [0, 1], f"axes_type must value 0 or 1, got {axes_type}"
     # Board
     svg = _svg((-600, -600, 1200, 1200), (size, size))
