@@ -97,7 +97,6 @@ TRADITIONAL_COORDINATES_BLACK = """<g transform="scale(0.267)"><g transform="tra
 
 
 XX = """<g id="xx" transform="scale(2)"><path d="M35.865 9.135a1.89 1.89 0 0 1 0 2.673L25.173 22.5l10.692 10.692a1.89 1.89 0 0 1 0 2.673 1.89 1.89 0 0 1-2.673 0L22.5 25.173 11.808 35.865a1.89 1.89 0 0 1-2.673 0 1.89 1.89 0 0 1 0-2.673L19.827 22.5 9.135 11.808a1.89 1.89 0 0 1 0-2.673 1.89 1.89 0 0 1 2.673 0L22.5 19.827 33.192 9.135a1.89 1.89 0 0 1 2.673 0z" fill="#000" stroke="#fff" stroke-width="1.688"/></g>"""  # noqa: E501
-ARROW_MARKER = """<marker id="triangle" markerUnits="strokeWidth" markerWidth="5" markerHeight="4" refX="0" refY="2" orient="auto" fill="blue"><path d="M 0 0 L 5 2 L 0 4 z"/></marker>"""  # noqa: E501
 
 
 COORDS_DELTA_Y = {
