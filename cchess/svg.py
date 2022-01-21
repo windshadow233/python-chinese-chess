@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import cchess
+import copy
 
 from typing import Optional, Tuple, Dict, Union
 
@@ -308,3 +309,48 @@ def board(board: cchess.BaseBoard, *,
                 "fill": "none"
             }))
     return SvgWrapper(ET.tostring(svg).decode("utf-8"))
+
+
+def to_gif(board: cchess.Board, filename, *,
+           duration: int = 3,
+           orientation: cchess.Color = cchess.RED,
+           coordinates: bool = True,
+           axes_type: int = 0,
+           lastmove: Optional[bool] = True,
+           checkers: Optional[bool] = True,
+           size: Optional[int] = 450):
+    try:
+        import numpy as np
+        from PIL import Image
+        import io
+        import cairosvg
+        import imageio
+        import tqdm
+    except ImportError:
+        return
+    move_stack = copy.copy(board.move_stack)
+    if not move_stack:
+        return
+    board.reset()
+    gif_images = []
+    svg = cchess.svg.board(board, size=size,
+                           orientation=orientation,
+                           coordinates=coordinates,
+                           axes_type=axes_type,
+                           lastmove=None,
+                           checkers=board.checkers() if checkers else None)
+    png_bytes = cairosvg.svg2png(svg)
+    png_array = np.array(Image.open(io.BytesIO(png_bytes)))
+    gif_images.append(png_array)
+    for move in tqdm.tqdm(move_stack):
+        board.push(move)
+        svg = cchess.svg.board(board, size=size,
+                               orientation=orientation,
+                               coordinates=coordinates,
+                               axes_type=axes_type,
+                               lastmove=board.peek() if lastmove and board.move_stack else None,
+                               checkers=board.checkers() if checkers else None)
+        png_bytes = cairosvg.svg2png(svg)
+        png_array = np.array(Image.open(io.BytesIO(png_bytes)))
+        gif_images.append(png_array)
+    imageio.mimsave(filename, gif_images, duration=duration)
