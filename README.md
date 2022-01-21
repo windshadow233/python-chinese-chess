@@ -317,6 +317,7 @@ Move.from_uci('c2e3')
 import cchess.svg
 cchess.svg.to_gif(board, "images/board.gif", duration=2)
 ```
+<img width="400" height="400" src="images/board.gif"/>
 
 
 ## 待补充...
