@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
 import cchess
-import copy
 
 from typing import Optional, Tuple, Dict, Union
 
@@ -320,6 +319,7 @@ def to_gif(board: cchess.Board, filename, *,
            checkers: Optional[bool] = True,
            size: Optional[int] = 450):
     try:
+        import copy
         import numpy as np
         from PIL import Image
         import io
