@@ -309,6 +309,14 @@ Move.from_uci('c6c5')
 >>> board.push_notation('傌七进五')
 Move.from_uci('c2e3')
 
+>>> svg = cchess.svg.board(board,
+                           size=600,
+                           coordinates=True,
+                           lastmove=board.peek(),
+                           checkers=board.checkers(),
+                           orientation=cchess.RED,
+                           axes_type=1
+                           )
 >>> with open('images/正马三兵对右肋车 黑骑河车.svg', 'w') as f:
         f.write(svg)
 ```
