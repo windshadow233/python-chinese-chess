@@ -70,6 +70,27 @@ TRADITIONAL_TO_MODERN = [{
 }]
 
 
+TRADITIONAL_ADVISOR_BISHOP_MOVES = {
+    "仕六进五": "d0e1", "仕六退五": "d2e1", "仕四进五": "f0e1", "仕四退五": "f2e1",
+    "仕五退六": "e1d0", "仕五进六": "e1d2", "仕五退四": "e1f0", "仕五进四": "e1f2",
+    "士6进5": "f9e8", "士6退5": "f7e8", "士4进5": "d9e8", "士4退5": "d7e8",
+    "士5退6": "e8f9", "士5进6": "e8f7", "士5退4": "e8d9", "士5进4": "e8d7",
+
+    "相三进五": "g0e2", "相三进一": "g0i2", "相三退五": "g4e2", "相三退一": "g4i2",
+    "相七进五": "c0e2", "相七进九": "c0a2", "相七退五": "c4e2", "相七退九": "c4a2",
+    "相五退三": "e2g0", "相一退三": "i2g0", "相五进三": "e2g4", "相一进三": "i2g4",
+    "相五退七": "e2c0", "相九退七": "a2c0", "相五进七": "e2c4", "相九进七": "a2c4",
+
+    "象3进5": "c9e7", "象3进1": "c9a7", "象3退5": "c5e7", "象3退1": "c5a7",
+    "象7进5": "g9e7", "象7进9": "g9i7", "象7退5": "g5e7", "象7退9": "g5i7",
+    "象5退3": "e7c9", "象1退3": "a7c9", "象5进3": "e7c5", "象1进3": "a7c5",
+    "象5退7": "e7g9", "象9退7": "i7g9", "象5进7": "e7g5", "象9进7": "i7g5"
+}
+
+TRADITIONAL_ADVISOR_BISHOP_NOTATIONS = dict(zip(TRADITIONAL_ADVISOR_BISHOP_MOVES.values(),
+                                                TRADITIONAL_ADVISOR_BISHOP_MOVES.keys()))
+
+
 TRADITIONAL_VERTICAL_DIRECTION = [{True: "退", False: "进"}, {True: "进", False: "退"}]
 TRADITIONAL_VERTICAL_POS = [{True: "后", False: "前"}, {True: "前", False: "后"}]
 
@@ -1560,6 +1581,16 @@ class Board(BaseBoard):
         """
         return self.move_stack[-1]
 
+    def push_notation(self, notation: str):
+        try:
+            move = self.notation_to_move(notation)
+            if self.is_legal(move):
+                self.push(move)
+            else:
+                raise ValueError("Move is not legal!")
+        except (AssertionError, ValueError):
+            pass
+
     def find_move(self, from_square: Square, to_square: Square) -> Move:
         """
         Finds a matching legal move for an origin square and a target square.
@@ -1818,12 +1849,106 @@ class Board(BaseBoard):
         """
         return self.status() == STATUS_VALID
 
+    def notation_to_move(self, notation: str):
+        assert len(notation) == 4, "记号的长度不为4"
+        if notation in TRADITIONAL_ADVISOR_BISHOP_MOVES:
+            move = Move.from_uci(TRADITIONAL_ADVISOR_BISHOP_MOVES[notation])
+            piece = self.piece_type_at(move.from_square)
+            if piece in [BISHOP, ADVISOR]:
+                return move
+            raise ValueError("未找到仕(士)或相(象)")
+        piece_notation = notation[:2]
+        direction_move_notation = notation[2:]
+        if piece_notation[0] in UNICODE_PIECE_SYMBOLS.values():
+            piece = Piece.from_unicode(piece_notation[0])
+            piece_type = piece.piece_type
+            color = piece.color
+            from_column_notation = piece_notation[1]
+            assert from_column_notation in TRADITIONAL_NOTATION_COORDINATES[
+                color].values(), f"起始列记号错误: {from_column_notation!r}"
+            column_index = TRADITIONAL_TO_MODERN[color][from_column_notation]
+            from_square = get_unique_piece_square(self, piece_type, color, piece_notation[0], column_index)
+        elif piece_notation[0] in ['前', '后']:
+            pawn_col = None
+            if piece_notation[1] in ['俥', '傌', '炮', '兵',
+                                     '車', '馬', '砲', '卒']:
+                piece = Piece.from_unicode(piece_notation[1])
+                piece_type = piece.piece_type
+                color = piece.color
+            elif piece_notation[1] in ['一', '二', '三', '四', '五', '六', '七', '八', '九']:
+                piece_type = PAWN
+                color = RED
+                pawn_col = ['九', '八', '七', '六', '五', '四', '三', '二', '一'].index(piece_notation[1])
+            elif piece_notation[1] in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                piece_type = PAWN
+                color = BLACK
+                pawn_col = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].index(piece_notation[1])
+            else:
+                raise ValueError(f"棋子种类记号错误!{piece_notation[1]!r}")
+            if piece_type != PAWN:
+                rank = ['前', '后'].index(piece_notation[0])
+                from_square = get_double_piece_square(self, piece_type, color, piece_notation[1], rank)
+            else:
+                from_square = get_multiply_pawn_square(self, color, piece_notation[0], pawn_column=pawn_col)
+        elif piece_notation[0] in ['中', '二', '三', '四', '五']:
+            pawn_col = None
+            if piece_notation[1] in ['兵', '卒']:
+                color = piece_notation[1] == '兵'
+            elif piece_notation[1] in ['一', '二', '三', '四', '五', '六', '七', '八', '九']:
+                color = RED
+                pawn_col = ['九', '八', '七', '六', '五', '四', '三', '二', '一'].index(piece_notation[1])
+            elif piece_notation[1] in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                color = BLACK
+                pawn_col = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].index(piece_notation[1])
+            else:
+                raise ValueError(f"棋子种类记号错误: {piece_notation[1]!r}")
+            piece_type = PAWN
+            from_square = get_multiply_pawn_square(self, color, piece_notation[0], pawn_column=pawn_col)
+        else:
+            raise ValueError(f'记号首字符错误: {piece_notation[0]!r}')
+        direction = direction_move_notation[0]
+        if direction == '平':
+            assert piece_type in [ROOK, CANNON, PAWN, KING], "只有俥(車)、炮(砲)、兵(卒)、帥(將)可以使用移动方向“平”"
+            to_column_notation = direction_move_notation[1]
+            from_row = square_row(from_square)
+            assert to_column_notation in TRADITIONAL_NOTATION_COORDINATES[
+                color].values(), f"到达列记号错误: {to_column_notation!r}"
+            return Move(from_square, square(TRADITIONAL_TO_MODERN[color][to_column_notation], from_row))
+        elif direction in ['进', '退']:
+            move = direction_move_notation[1]
+            if piece_type in [ROOK, CANNON, PAWN, KING]:
+                assert move in "123456789", f"前进、后退步数错误: {move!r}"
+                if color ^ (direction == '退'):
+                    to_square = from_square + 9 * int(move)
+                else:
+                    to_square = from_square - 9 * int(move)
+                return Move(from_square, to_square)
+            assert piece_type == KNIGHT  # 只需要额外处理马的情况
+            assert move in TRADITIONAL_NOTATION_COORDINATES[color].values(), f"到达列记号错误: {move!r}"
+            to_column = TRADITIONAL_TO_MODERN[color][move]
+            to_squares = _knight_attacks(from_square, BB_EMPTY)
+            for to_square in scan_forward(to_squares & BB_COLUMNS[to_column]):
+                if color ^ (direction == '退'):
+                    if to_square > from_square:
+                        return Move(from_square, to_square)
+                else:
+                    if to_square < from_square:
+                        return Move(from_square, to_square)
+            else:
+                raise ValueError("傌(馬)的到达位置错误!")
+        else:
+            raise ValueError(f'方向记号错误: {direction!r}')
+
     def move_to_notation(self, move: Move):
         from_square, to_square = move.from_square, move.to_square
         piece = self.piece_at(from_square)
         if not piece:
             return ""
         piece_type = piece.piece_type
+        if piece_type in [BISHOP, ADVISOR]:
+            uci = move.uci()
+            assert uci in TRADITIONAL_ADVISOR_BISHOP_NOTATIONS, "仕(士)、相(象)着法错误"
+            return TRADITIONAL_ADVISOR_BISHOP_NOTATIONS[uci]
         from_column = square_column(from_square)
         from_row = square_row(from_square)
         to_column = square_column(to_square)
@@ -1921,6 +2046,97 @@ class Board(BaseBoard):
             else:
                 notations += "\n"
         return notations[:-1]
+
+
+def get_unique_piece_square(board: Board, piece_type, color, piece_unicode, column_index):
+    pieces = [None, board.pawns, board.rooks, board.knights,
+              board.bishops, board.advisors, board.kings, board.cannons][piece_type]
+    pieces = board.occupied_co[color] & pieces & BB_COLUMNS[column_index]
+    assert popcount(pieces) == 1, f"该列上对应棋子{piece_unicode!r}的数量有误"
+    return msb(pieces)
+
+
+def get_double_piece_square(board: Board, piece_type, color, piece_unicode, rank):
+    pieces = [None, None, board.rooks, board.knights,
+              board.bishops, board.advisors, board.kings, board.cannons][piece_type]
+    pieces = board.occupied_co[color] & pieces
+    for column in BB_COLUMNS:
+        column_pieces = pieces & column
+        if popcount(column_pieces) >= 2:
+            break
+    else:
+        raise ValueError(f"未找到存在多个{piece_unicode!r}的合适列")
+    pieces = list(SquareSet(pieces))
+    pieces.sort(reverse=color)
+    return pieces[rank]
+
+
+def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=None):
+    pawns = board.pawns & board.occupied_co[color]
+    pawn_nums = [popcount(col & pawns) for col in BB_COLUMNS]
+    multi_pawns_col_number = len(list(filter(lambda x: x >= 2, pawn_nums)))
+    if multi_pawns_col_number > 1 and pawn_column is None:
+        raise ValueError("记号存在歧义(未指明兵(卒)所在列)")
+    if multi_pawns_col_number == 1 and pawn_column is not None:
+        raise ValueError("记号不规范(无需指明列号)")
+    if rank_notation == '前':
+        if pawn_column is not None:
+            i = pawn_column
+        else:
+            for i, num in enumerate(pawn_nums):
+                if num >= 2:
+                    break
+        pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
+        if color:
+            return pawns[-1]
+        return pawns[0]
+    elif rank_notation == '后':  # 有一列存在两个或三个兵
+        if pawn_column is not None:
+            if pawn_nums[pawn_column] not in [2, 3]:
+                raise ValueError("该列上没有二或三个兵(卒)")
+            i = pawn_column
+        else:
+            for i, num in enumerate(pawn_nums):
+                if num in [2, 3]:
+                    break
+        pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
+        if color:
+            return pawns[0]
+        return pawns[-1]
+    elif rank_notation == '中':  # 有一列存在三个兵
+        if pawn_column is not None:
+            if pawn_nums[pawn_column] != 3:
+                raise ValueError("该列上没有三个兵(卒)")
+            i = pawn_column
+        else:
+            for i, num in enumerate(pawn_nums):
+                if num == 3:
+                    break
+            else:
+                raise ValueError("未找到同一列上的三个兵(卒)")
+        pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
+        return pawns[1]
+    elif rank_notation in ['二', '三', '四']:  # 有一列兵数量不小于4
+        for i, num in enumerate(pawn_nums):
+            if num >= 4:
+                break
+        else:
+            raise ValueError("未找到同一列上的四或五个兵(卒)")
+        pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
+        index = ['二', '三', '四'].index(rank_notation)
+        if color:
+            return pawns[-2 - index]
+        return pawns[1 + index]
+    elif rank_notation == '五':  # 有一列存在五个兵
+        for i, num in enumerate(pawn_nums):
+            if num == 5:
+                break
+        else:
+            raise ValueError("未找到同一列上的五个兵(卒)")
+        pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
+        if color:
+            return pawns[0]
+        return pawns[-1]
 
 
 IntoSquareSet = Union[SupportsInt, Iterable[Square]]
