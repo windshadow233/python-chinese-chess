@@ -312,7 +312,7 @@ Move.from_uci('c2e3')
 
 - 棋谱GIF渲染,以上面代码中的棋局为例
 
-**使用此功能需要预先安装numpy,pillow,cairosvg,imageio,tqdm库**
+**使用此功能需要预先安装numpy, pillow, cairosvg, imageio 与 tqdm库**
 ```python
 import cchess.svg
 cchess.svg.to_gif(board, "images/board.gif", duration=2)
