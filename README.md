@@ -316,8 +316,16 @@ Move.from_uci('c2e3')
 
 **使用此功能需要预先安装numpy, pillow, cairosvg, imageio 与 tqdm库**
 ```python
-import cchess.svg
-cchess.svg.to_gif(board, "images/board.gif", duration=2)
+>>> import cchess.svg
+>>> cchess.svg.to_gif(board, "images/board.gif",
+                      duration=2,  # 每一步的时间间隔
+                      orientation=cchess.RED,  # 棋盘方向
+                      coordinates=True,  # 是否显示坐标
+                      axes_type=1,  # 坐标轴类型
+                      lastmove=True,  # 是否显示上一步
+                      checkers=True,  # 是否显示将军棋子
+                      size=450  # 棋盘尺寸
+                      )
 ```
 <img width="400" height="400" src="images/board.gif"/>
 
