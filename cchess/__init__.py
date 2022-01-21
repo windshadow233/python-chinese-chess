@@ -1586,6 +1586,7 @@ class Board(BaseBoard):
             move = self.notation_to_move(notation)
             if self.is_legal(move):
                 self.push(move)
+                return move
             else:
                 raise ValueError("Move is not legal!")
         except (AssertionError, ValueError):
