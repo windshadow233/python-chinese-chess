@@ -2,6 +2,7 @@ from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple
 import copy
 import dataclasses
 import enum
+import time
 
 Color = bool
 COLORS = [BLACK, RED] = [False, True]
@@ -1920,6 +1921,19 @@ class Board(BaseBoard):
             else:
                 notations += "\n"
         return notations[:-1]
+
+    def dynamic_print_notations(self, duration=3):
+        move_stack = copy.copy(self.move_stack)
+        self.reset()
+        print(self.unicode(axes_type=1))
+        print('')
+        for move in move_stack:
+            notation = self.move_to_notation(move)
+            self.push(move)
+            time.sleep(duration)
+            print(notation)
+            print(self.unicode(axes_type=1))
+            print('')
 
 
 IntoSquareSet = Union[SupportsInt, Iterable[Square]]
