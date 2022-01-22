@@ -951,9 +951,6 @@ class BaseBoard:
     def is_attacked_by(self, color: Color, square: Square) -> bool:
         """
         Checks if the given side attacks the given square.
-
-        Pinned pieces still count as attackers. Pawns that can be captured
-        en passant are **not** considered attacked.
         """
         return bool(self.attackers_mask(color, square))
 
@@ -961,9 +958,7 @@ class BaseBoard:
         """
         Gets the set of attackers of the given color for the given square.
 
-        Pinned pieces still count as attackers.
-
-        Returns a :class:`set of squares <chess.SquareSet>`.
+        Returns a :class:`set of squares <cchess.SquareSet>`.
         """
         return SquareSet(self.attackers_mask(color, square))
 
@@ -1104,7 +1099,7 @@ class BaseBoard:
     def empty(cls):
         """
         Creates a new empty board. Also see
-        :func:`~chess.BaseBoard.clear_board()`.
+        :func:`~cchess.BaseBoard.clear_board()`.
         """
         return cls(None)
 
@@ -1149,7 +1144,7 @@ class _BoardState:
 class Board(BaseBoard):
     starting_fen = STARTING_FEN
     turn: Color
-    """The side to move (``chess.RED`` or ``chess.BLACK``)."""
+    """The side to move (``cchess.RED`` or ``cchess.BLACK``)."""
     fullmove_number: int
     """
     Counts move pairs. Starts at `1` and is incremented after every move
@@ -1159,10 +1154,10 @@ class Board(BaseBoard):
     """The number of half-moves since the last capture or pawn move."""
     move_stack: List[Move]
     """
-    The move stack. Use :func:`Board.push() <chess.Board.push()>`,
-    :func:`Board.pop() <chess.Board.pop()>`,
-    :func:`Board.peek() <chess.Board.peek()>` and
-    :func:`Board.clear_stack() <chess.Board.clear_stack()>` for
+    The move stack. Use :func:`Board.push() <cchess.Board.push()>`,
+    :func:`Board.pop() <cchess.Board.pop()>`,
+    :func:`Board.peek() <cchess.Board.peek()>` and
+    :func:`Board.clear_stack() <cchess.Board.clear_stack()>` for
     manipulation.
     """
 
