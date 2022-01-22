@@ -1885,7 +1885,7 @@ class Board(BaseBoard):
                 color = BLACK
                 pawn_col = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].index(piece_notation[1])
             else:
-                raise ValueError(f"棋子种类记号错误!{piece_notation[1]!r}")
+                raise ValueError(f"棋子种类记号错误: {piece_notation[1]!r}")
             if piece_type != PAWN:
                 rank = ['前', '后'].index(piece_notation[0])
                 from_square = get_double_piece_square(self, piece_type, color, piece_notation[1], rank)
