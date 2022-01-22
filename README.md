@@ -348,7 +348,7 @@ Move.from_uci('c2e3')
 >>> board.push(cchess.Move.from_uci('g6g5'))
 >>> board.push(cchess.Move.from_uci('g4g9'))
 
->>> print(board.notations())
+>>> print(board.notations(start_fen=cchess.STARTING_FEN))
 炮二进二	士4进5
 炮二平三	卒7进1
 炮三进五
@@ -360,6 +360,7 @@ Move.from_uci('c2e3')
 ```python
 >>> import cchess.svg
 >>> cchess.svg.to_gif(board, "images/board.gif",
+                      start_fen=cchess.STARTING_FEN,  # 棋盘初始状态
                       duration=2,  # 每一步的时间间隔
                       orientation=cchess.RED,  # 棋盘方向
                       coordinates=True,  # 是否显示坐标
