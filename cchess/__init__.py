@@ -1931,6 +1931,8 @@ class Board(BaseBoard):
             else:
                 direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
                 move_notation = str(abs(to_row - from_row))
+                if color:
+                    move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
         elif piece_type in [ROOK, CANNON]:
             bb_pieces = self.rooks if piece_type == ROOK else self.cannons
             same = bb_pieces & self.occupied_co[color] & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
@@ -1947,6 +1949,8 @@ class Board(BaseBoard):
             else:
                 direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
                 move_notation = str(abs(to_row - from_row))
+                if color:
+                    move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
         elif piece_type in [KNIGHT, BISHOP, ADVISOR]:
             if piece_type == KNIGHT:
                 bb_pieces = self.knights
@@ -1999,8 +2003,8 @@ class Board(BaseBoard):
             else:
                 direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
                 move_notation = str(abs(to_row - from_row))
-        if color:
-            move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
+                if color:
+                    move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
         return piece_notation + direction_notation + move_notation
 
     def notations(self):
