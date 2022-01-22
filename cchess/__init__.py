@@ -2059,6 +2059,8 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
             for i, num in enumerate(pawn_nums):
                 if num >= 2:
                     break
+            else:
+                raise ValueError("未找到存在多个兵(卒)的列")
         pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
         if color:
             return pawns[-1]
@@ -2072,6 +2074,8 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
             for i, num in enumerate(pawn_nums):
                 if num in [2, 3]:
                     break
+            else:
+                raise ValueError("未找到存在2或3个兵(卒)的列")
         pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
         if color:
             return pawns[0]
