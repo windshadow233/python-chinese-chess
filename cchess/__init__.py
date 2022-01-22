@@ -2034,16 +2034,17 @@ def get_unique_piece_square(board: Board, piece_type, color, piece_unicode, colu
 
 def get_double_piece_square(board: Board, piece_type, color, piece_unicode, rank):
     pieces = [None, None, board.rooks, board.knights,
-              board.bishops, board.advisors, board.kings, board.cannons][piece_type]
+              None, None, None, board.cannons][piece_type]
     pieces = board.occupied_co[color] & pieces
     for column in BB_COLUMNS:
         column_pieces = pieces & column
-        if popcount(column_pieces) >= 2:
+        if popcount(column_pieces) == 2:
             break
     else:
-        raise ValueError(f"未找到存在多个{piece_unicode!r}的合适列")
+        raise ValueError(f"未找到存在两个{piece_unicode!r}的合适列")
     pieces = list(SquareSet(pieces))
-    pieces.sort(reverse=color)
+    if color:
+        return pieces[1 - rank]
     return pieces[rank]
 
 
@@ -2051,6 +2052,8 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
     pawns = board.pawns & board.occupied_co[color]
     pawn_nums = [popcount(col & pawns) for col in BB_COLUMNS]
     multi_pawns_col_number = len(list(filter(lambda x: x >= 2, pawn_nums)))
+    if multi_pawns_col_number == 0:
+        raise ValueError("未找到存在多个兵(卒)的列")
     if multi_pawns_col_number > 1 and pawn_column is None:
         raise ValueError("记号存在歧义(未指明兵(卒)所在列)")
     if multi_pawns_col_number == 1 and pawn_column is not None:
@@ -2062,8 +2065,6 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
             for i, num in enumerate(pawn_nums):
                 if num >= 2:
                     break
-            else:
-                raise ValueError("未找到存在多个兵(卒)的列")
         pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
         if color:
             return pawns[-1]
@@ -2071,7 +2072,7 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
     elif rank_notation == '后':  # 有一列存在两个或三个兵
         if pawn_column is not None:
             if pawn_nums[pawn_column] not in [2, 3]:
-                raise ValueError("该列上没有二或三个兵(卒)")
+                raise ValueError("该列上的兵(卒)数量不为2或3")
             i = pawn_column
         else:
             for i, num in enumerate(pawn_nums):
@@ -2086,14 +2087,14 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
     elif rank_notation == '中':  # 有一列存在三个兵
         if pawn_column is not None:
             if pawn_nums[pawn_column] != 3:
-                raise ValueError("该列上没有三个兵(卒)")
+                raise ValueError("该列上的兵(卒)数量不为3")
             i = pawn_column
         else:
             for i, num in enumerate(pawn_nums):
                 if num == 3:
                     break
             else:
-                raise ValueError("未找到同一列上的三个兵(卒)")
+                raise ValueError("未找到兵(卒)数量为3的列")
         pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
         return pawns[1]
     elif rank_notation in ['二', '三', '四']:  # 有一列兵数量不小于4
@@ -2101,7 +2102,7 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
             if num >= 4:
                 break
         else:
-            raise ValueError("未找到同一列上的四或五个兵(卒)")
+            raise ValueError("未找到兵(卒)数量为4或5的列")
         pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
         index = ['二', '三', '四'].index(rank_notation)
         if color:
@@ -2112,7 +2113,7 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
             if num == 5:
                 break
         else:
-            raise ValueError("未找到同一列上的五个兵(卒)")
+            raise ValueError("未找到兵(卒)数量为5的列")
         pawns = list(SquareSet(pawns & BB_COLUMNS[i]))
         if color:
             return pawns[0]
