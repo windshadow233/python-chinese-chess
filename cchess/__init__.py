@@ -1872,9 +1872,12 @@ class Board(BaseBoard):
             assert piece_type in [ROOK, CANNON, PAWN, KING], "只有俥(車)、炮(砲)、兵(卒)、帥(將)可以使用移动方向“平”"
             to_column_notation = direction_move_notation[1]
             from_row = square_row(from_square)
+            from_column = square_column(from_square)
             assert to_column_notation in COORDINATES_MODERN_TO_TRADITIONAL[
                 color].values(), f"到达列记号错误: {to_column_notation!r}"
-            return Move(from_square, square(COORDINATES_TRADITIONAL_TO_MODERN[color][to_column_notation], from_row))
+            to_column = COORDINATES_TRADITIONAL_TO_MODERN[color][to_column_notation]
+            assert from_column != to_column, "使用“平”时,不能移动到同一列上。"
+            return Move(from_square, square(to_column, from_row))
         elif direction in ['进', '退']:
             move = direction_move_notation[1]
             if piece_type in [ROOK, CANNON, PAWN, KING]:
