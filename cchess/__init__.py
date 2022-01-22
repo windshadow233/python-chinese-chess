@@ -1900,7 +1900,7 @@ class Board(BaseBoard):
                     if to_square < from_square:
                         return Move(from_square, to_square)
             else:
-                raise ValueError("傌(馬)的到达位置错误!")
+                raise ValueError(f"{piece_notation[0]!r}的到达位置错误!")
         else:
             raise ValueError(f'方向记号错误: {direction!r}')
 
