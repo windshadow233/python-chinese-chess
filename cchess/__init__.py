@@ -1936,10 +1936,10 @@ class Board(BaseBoard):
             raise ValueError(f'方向记号错误: {direction!r}')
 
     def move_to_notation(self, move: Move):
-        if not self.is_pseudo_legal(move):
-            return ""
         from_square, to_square = move.from_square, move.to_square
         piece = self.piece_at(from_square)
+        if not piece:
+            return ""
         piece_type = piece.piece_type
         if piece_type in [BISHOP, ADVISOR]:
             uci = move.uci()
