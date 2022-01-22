@@ -22,7 +22,7 @@ UNICODE_PIECE_SYMBOLS = {
     "P": "兵", "p": "卒",
     "C": "炮", "c": "砲"
 }
-UNICODE_TO_PIECE = dict(zip(UNICODE_PIECE_SYMBOLS.values(), UNICODE_PIECE_SYMBOLS.keys()))
+UNICODE_TO_PIECE_SYMBOLS = dict(zip(UNICODE_PIECE_SYMBOLS.values(), UNICODE_PIECE_SYMBOLS.keys()))
 
 
 ARABIC_NUMBERS = '123456789'
@@ -560,7 +560,7 @@ class Piece:
 
     @classmethod
     def from_unicode(cls, unicode: str):
-        return cls.from_symbol(UNICODE_TO_PIECE[unicode])
+        return cls.from_symbol(UNICODE_TO_PIECE_SYMBOLS[unicode])
 
 
 @dataclasses.dataclass(unsafe_hash=True)
