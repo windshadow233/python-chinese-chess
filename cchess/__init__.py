@@ -25,49 +25,11 @@ UNICODE_PIECE_SYMBOLS = {
 UNICODE2PIECE = dict(zip(UNICODE_PIECE_SYMBOLS.values(), UNICODE_PIECE_SYMBOLS.keys()))
 
 
-TRADITIONAL_NOTATION_COORDINATES = [{
-    0: "1",
-    1: "2",
-    2: "3",
-    3: "4",
-    4: "5",
-    5: "6",
-    6: "7",
-    7: "8",
-    8: "9"
-}, {
-    0: "九",
-    1: "八",
-    2: "七",
-    3: "六",
-    4: "五",
-    5: "四",
-    6: "三",
-    7: "二",
-    8: "一"
-}]
+ARABIC_NUMBERS = '123456789'
+CHINESE_NUMBERS = '九八七六五四三二一'
 
-TRADITIONAL_TO_MODERN = [{
-    "1": 0,
-    "2": 1,
-    "3": 2,
-    "4": 3,
-    "5": 4,
-    "6": 5,
-    "7": 6,
-    "8": 7,
-    "9": 8
-}, {
-    "九": 0,
-    "八": 1,
-    "七": 2,
-    "六": 3,
-    "五": 4,
-    "四": 5,
-    "三": 6,
-    "二": 7,
-    "一": 8
-}]
+TRADITIONAL_NOTATION_COORDINATES = [dict(zip(range(9), ARABIC_NUMBERS)), dict(zip(range(9), CHINESE_NUMBERS))]
+TRADITIONAL_TO_MODERN = [dict(zip(ARABIC_NUMBERS, range(9))), dict(zip(CHINESE_NUMBERS, range(9)))]
 
 
 TRADITIONAL_ADVISOR_BISHOP_MOVES = {
@@ -89,9 +51,6 @@ TRADITIONAL_ADVISOR_BISHOP_MOVES = {
 
 TRADITIONAL_ADVISOR_BISHOP_NOTATIONS = dict(zip(TRADITIONAL_ADVISOR_BISHOP_MOVES.values(),
                                                 TRADITIONAL_ADVISOR_BISHOP_MOVES.keys()))
-
-ARABIC_NUMBERS = '123456789'
-CHINESE_NUMBERS = '九八七六五四三二一'
 
 
 TRADITIONAL_VERTICAL_DIRECTION = [{True: "退", False: "进"}, {True: "进", False: "退"}]
