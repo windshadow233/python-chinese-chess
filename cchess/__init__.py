@@ -176,22 +176,22 @@ class Termination(enum.Enum):
     """Enum with reasons for a game to be over."""
 
     CHECKMATE = enum.auto()
-    """See :func:`chess.Board.is_checkmate()`."""
+    """See :func:`cchess.Board.is_checkmate()`."""
     STALEMATE = enum.auto()
-    """See :func:`chess.Board.is_stalemate()`."""
+    """See :func:`cchess.Board.is_stalemate()`."""
     INSUFFICIENT_MATERIAL = enum.auto()
-    """See :func:`chess.Board.is_insufficient_material()`."""
+    """See :func:`cchess.Board.is_insufficient_material()`."""
     THREEFOLD_REPETITION = enum.auto()
-    """See :func:`chess.Board.is_threefold_repetition()`."""
+    """See :func:`cchess.Board.is_threefold_repetition()`."""
     SIXTY_MOVES = enum.auto()
-    """See :func:`chess.Board.is_sixty_moves()`."""
+    """See :func:`cchess.Board.is_sixty_moves()`."""
 
 
 @dataclasses.dataclass
 class Outcome:
     """
     Information about the outcome of an ended game, usually obtained from
-    :func:`chess.Board.outcome()`.
+    :func:`cchess.Board.outcome()`.
     """
 
     termination: Termination
