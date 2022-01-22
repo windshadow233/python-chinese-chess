@@ -90,6 +90,9 @@ TRADITIONAL_ADVISOR_BISHOP_MOVES = {
 TRADITIONAL_ADVISOR_BISHOP_NOTATIONS = dict(zip(TRADITIONAL_ADVISOR_BISHOP_MOVES.values(),
                                                 TRADITIONAL_ADVISOR_BISHOP_MOVES.keys()))
 
+ARABIC_NUMBERS = '123456789'
+CHINESE_NUMBERS = '九八七六五四三二一'
+
 
 TRADITIONAL_VERTICAL_DIRECTION = [{True: "退", False: "进"}, {True: "进", False: "退"}]
 TRADITIONAL_VERTICAL_POS = [{True: "后", False: "前"}, {True: "前", False: "后"}]
@@ -717,7 +720,7 @@ class BaseBoard:
             previous_was_digit = False
 
             for c in row:
-                if c in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+                if c in ARABIC_NUMBERS:
                     if previous_was_digit:
                         raise ValueError(f"two subsequent digits in position part of fen: {fen!r}")
                     field_sum += int(c)
@@ -737,7 +740,7 @@ class BaseBoard:
         # Put pieces on the board.
         square_index = 0
         for c in fen:
-            if c in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+            if c in ARABIC_NUMBERS:
                 square_index += int(c)
             elif c.lower() in PIECE_SYMBOLS:
                 piece = Piece.from_symbol(c)
@@ -1884,14 +1887,14 @@ class Board(BaseBoard):
                 piece = Piece.from_unicode(piece_notation[1])
                 piece_type = piece.piece_type
                 color = piece.color
-            elif piece_notation[1] in ['一', '二', '三', '四', '五', '六', '七', '八', '九']:
+            elif piece_notation[1] in CHINESE_NUMBERS:
                 piece_type = PAWN
                 color = RED
-                pawn_col = ['九', '八', '七', '六', '五', '四', '三', '二', '一'].index(piece_notation[1])
-            elif piece_notation[1] in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                pawn_col = CHINESE_NUMBERS.index(piece_notation[1])
+            elif piece_notation[1] in ARABIC_NUMBERS:
                 piece_type = PAWN
                 color = BLACK
-                pawn_col = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].index(piece_notation[1])
+                pawn_col = ARABIC_NUMBERS.index(piece_notation[1])
             else:
                 raise ValueError(f"棋子种类记号错误: {piece_notation[1]!r}")
             if piece_type != PAWN:
@@ -1903,12 +1906,12 @@ class Board(BaseBoard):
             pawn_col = None
             if piece_notation[1] in ['兵', '卒']:
                 color = piece_notation[1] == '兵'
-            elif piece_notation[1] in ['一', '二', '三', '四', '五', '六', '七', '八', '九']:
+            elif piece_notation[1] in CHINESE_NUMBERS:
                 color = RED
-                pawn_col = ['九', '八', '七', '六', '五', '四', '三', '二', '一'].index(piece_notation[1])
-            elif piece_notation[1] in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                pawn_col = CHINESE_NUMBERS.index(piece_notation[1])
+            elif piece_notation[1] in ARABIC_NUMBERS:
                 color = BLACK
-                pawn_col = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].index(piece_notation[1])
+                pawn_col = ARABIC_NUMBERS.index(piece_notation[1])
             else:
                 raise ValueError(f"棋子种类记号错误: {piece_notation[1]!r}")
             piece_type = PAWN
@@ -1927,10 +1930,10 @@ class Board(BaseBoard):
             move = direction_move_notation[1]
             if piece_type in [ROOK, CANNON, PAWN, KING]:
                 if color:
-                    assert move in '一二三四五六七八九', f"前进、后退步数错误: {move!r}"
+                    assert move in CHINESE_NUMBERS, f"前进、后退步数错误: {move!r}"
                     move = VERTICAL_MOVE_TO_ARABIC[move]
                 else:
-                    assert move in "123456789", f"前进、后退步数错误: {move!r}"
+                    assert move in ARABIC_NUMBERS, f"前进、后退步数错误: {move!r}"
                 if color ^ (direction == '退'):
                     to_square = from_square + 9 * int(move)
                 else:
