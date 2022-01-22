@@ -243,10 +243,10 @@ Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 
 传统记谱法说明：
 
-以棋子对应的Unicode汉字作为类别，红黑方分别以中文数字一～九、阿拉伯数字1～9表示纵坐标，例如“炮二”、“馬8”。
+以棋子对应的Unicode汉字作为类别，红黑方分别以中文数字“一”到“九”、阿拉伯数字“1～9”表示纵坐标，例如“炮二”、“馬8”。
 
 第三字为“进”、“退”或“平”，其中，只有“俥（車）”、“炮（砲）”、“兵（卒）”、“帥（將）”可以使用“平”，表示横向的移动，此时第四字表示移动到的列坐标，例如“車2平4”、“炮二平五”。
-如第三字为“进”、“退”，则第四字视子力类别而定，若为“俥（車）”、“炮（砲）”、“兵（卒）”、“帥（將）”，则第四字应为一个阿拉伯数字，
+如第三字为“进”、“退”，则第四字视子力类别而定，若为“俥（車）”、“炮（砲）”、“兵（卒）”、“帥（將）”，则第四字应为一个数字（红方为汉字数字“一”到“九”，黑方为阿拉伯数字“1”到“9”），
 表示其在同一纵线上行走的步数，例如“帥五进1”、“炮2进1”；若为“傌（馬）”、“相（象）”、“仕（士）”，则第四字为到达的纵线坐标，例如“馬8进7”、“相三进五”。
 
 两个相同的“俥（車）”、“傌（馬）”、“炮（砲）”位于同一列的情况，以“前”、“后”区分，如“前車”、“后砲”。
@@ -267,7 +267,7 @@ Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 '車9进2'
 >>> board = cchess.Board("4k4/9/9/9/C8/9/C8/9/9/3K5")
 >>> board.move_to_notation(cchess.Move.from_uci("a3a4"))
-'后炮进1'
+'后炮进一'
 >>> board.move_to_notation(cchess.Move.from_uci("a5e5"))
 '前炮平五'
 >>> board = cchess.Board("4k4/6P2/1P7/1P4P2/1P7/n8/n8/9/9/3K5")
@@ -303,11 +303,11 @@ Move.from_uci('i9i8')
 Move.from_uci('b0c2')
 >>> board.push_notation('車9平4')
 Move.from_uci('i8d8')
->>> board.push_notation('兵三进1')
+>>> board.push_notation('兵三进一')
 Move.from_uci('g3g4')
 >>> board.push_notation('車4进4')
 Move.from_uci('d8d4')
->>> board.push_notation('俥二进4')
+>>> board.push_notation('俥二进四')
 Move.from_uci('h0h4')
 >>> board.push_notation('馬2进1')
 Move.from_uci('b9a7')
@@ -323,7 +323,7 @@ Move.from_uci('a9b9')
 Move.from_uci('a0b0')
 >>> board.push_notation('車2进4')
 Move.from_uci('b9b5')
->>> board.push_notation('兵七进1')
+>>> board.push_notation('兵七进一')
 Move.from_uci('c3c4')
 >>> board.push_notation('車4进1')
 Move.from_uci('d4d3')
@@ -335,11 +335,11 @@ Move.from_uci('e7e3')
 Move.from_uci('f0e1')
 >>> board.push_notation('車4平3')
 Move.from_uci('d3c3')
->>> board.push_notation('兵七进1')
+>>> board.push_notation('兵七进一')
 Move.from_uci('c4c5')
 >>> board.push_notation('車2平3')
 Move.from_uci('b5c5')
->>> board.push_notation('炮八退1')
+>>> board.push_notation('炮八退一')
 Move.from_uci('b2b1')
 >>> board.push_notation('前車平2')
 Move.from_uci('c3b3')
@@ -347,7 +347,7 @@ Move.from_uci('c3b3')
 Move.from_uci('b1c1')
 >>> board.push_notation('車2进3')
 Move.from_uci('b3b0')
->>> board.push_notation('炮七进4')
+>>> board.push_notation('炮七进四')
 Move.from_uci('c1c5')
 >>> board.push_notation('卒3进1')
 Move.from_uci('c6c5')
