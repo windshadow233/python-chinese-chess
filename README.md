@@ -223,22 +223,6 @@ True
 >>> board.outcome()  # 棋局的结束状态(若非终局则返回None)
 Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 ```
-
-- 传统棋谱打印
-```python
->>> board = cchess.Board()
-
->>> board.push(cchess.Move.from_uci("h2h4"))
->>> board.push(cchess.Move.from_uci('d9e8'))
->>> board.push(cchess.Move.from_uci('h4g4'))
->>> board.push(cchess.Move.from_uci('g6g5'))
->>> board.push(cchess.Move.from_uci('g4g9'))
-
->>> print(board.notations())
-炮二进2	士4进5
-炮二平三	卒7进1
-炮三进5
-```
 - 传统四字记谱法与现代坐标记谱法的互相转换
 
 传统记谱法说明：
@@ -353,6 +337,21 @@ Move.from_uci('c1c5')
 Move.from_uci('c6c5')
 >>> board.push_notation('傌七进五')
 Move.from_uci('c2e3')
+```
+- 传统记谱法棋谱打印
+```python
+>>> board = cchess.Board()
+
+>>> board.push(cchess.Move.from_uci("h2h4"))
+>>> board.push(cchess.Move.from_uci('d9e8'))
+>>> board.push(cchess.Move.from_uci('h4g4'))
+>>> board.push(cchess.Move.from_uci('g6g5'))
+>>> board.push(cchess.Move.from_uci('g4g9'))
+
+>>> print(board.notations())
+炮二进二	士4进5
+炮二平三	卒7进1
+炮三进五
 ```
 
 - 棋谱GIF渲染,以上面代码中的棋局为例
