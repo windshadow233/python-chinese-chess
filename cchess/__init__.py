@@ -22,14 +22,14 @@ UNICODE_PIECE_SYMBOLS = {
     "P": "兵", "p": "卒",
     "C": "炮", "c": "砲"
 }
-UNICODE2PIECE = dict(zip(UNICODE_PIECE_SYMBOLS.values(), UNICODE_PIECE_SYMBOLS.keys()))
+UNICODE_TO_PIECE = dict(zip(UNICODE_PIECE_SYMBOLS.values(), UNICODE_PIECE_SYMBOLS.keys()))
 
 
 ARABIC_NUMBERS = '123456789'
 CHINESE_NUMBERS = '九八七六五四三二一'
 
-TRADITIONAL_NOTATION_COORDINATES = [dict(zip(range(9), ARABIC_NUMBERS)), dict(zip(range(9), CHINESE_NUMBERS))]
-TRADITIONAL_TO_MODERN = [dict(zip(ARABIC_NUMBERS, range(9))), dict(zip(CHINESE_NUMBERS, range(9)))]
+COORDINATES_MODERN_TO_TRADITIONAL = [dict(zip(range(9), ARABIC_NUMBERS)), dict(zip(range(9), CHINESE_NUMBERS))]
+COORDINATES_TRADITIONAL_TO_MODERN = [dict(zip(ARABIC_NUMBERS, range(9))), dict(zip(CHINESE_NUMBERS, range(9)))]
 
 
 TRADITIONAL_ADVISOR_BISHOP_MOVES = {
@@ -56,18 +56,8 @@ TRADITIONAL_ADVISOR_BISHOP_NOTATIONS = dict(zip(TRADITIONAL_ADVISOR_BISHOP_MOVES
 TRADITIONAL_VERTICAL_DIRECTION = [{True: "退", False: "进"}, {True: "进", False: "退"}]
 TRADITIONAL_VERTICAL_POS = [{True: "后", False: "前"}, {True: "前", False: "后"}]
 
-VERTICAL_MOVE_TO_ARABIC = {
-    "一": '1',
-    "二": "2",
-    "三": "3",
-    "四": "4",
-    "五": "5",
-    "六": "6",
-    "七": "7",
-    "八": "8",
-    "九": "9"
-}
-ARABIC_TO_VERTICAL_MOVE = dict(zip(VERTICAL_MOVE_TO_ARABIC.values(), VERTICAL_MOVE_TO_ARABIC.keys()))
+VERTICAL_MOVE_CHINESE_TO_ARABIC = dict(zip(reversed(CHINESE_NUMBERS), ARABIC_NUMBERS))
+VERTICAL_MOVE_ARABIC_TO_CHINESE = dict(zip(VERTICAL_MOVE_CHINESE_TO_ARABIC.values(), VERTICAL_MOVE_CHINESE_TO_ARABIC.keys()))
 
 
 def piece_symbol(piece_type: PieceType) -> str:
@@ -570,7 +560,7 @@ class Piece:
 
     @classmethod
     def from_unicode(cls, unicode: str):
-        return cls.from_symbol(UNICODE2PIECE[unicode])
+        return cls.from_symbol(UNICODE_TO_PIECE[unicode])
 
 
 @dataclasses.dataclass(unsafe_hash=True)
@@ -1835,9 +1825,9 @@ class Board(BaseBoard):
             piece_type = piece.piece_type
             color = piece.color
             from_column_notation = piece_notation[1]
-            assert from_column_notation in TRADITIONAL_NOTATION_COORDINATES[
+            assert from_column_notation in COORDINATES_MODERN_TO_TRADITIONAL[
                 color].values(), f"起始列记号错误: {from_column_notation!r}"
-            column_index = TRADITIONAL_TO_MODERN[color][from_column_notation]
+            column_index = COORDINATES_TRADITIONAL_TO_MODERN[color][from_column_notation]
             from_square = get_unique_piece_square(self, piece_type, color, piece_notation[0], column_index)
         elif piece_notation[0] in ['前', '后']:
             pawn_col = None
@@ -1882,15 +1872,15 @@ class Board(BaseBoard):
             assert piece_type in [ROOK, CANNON, PAWN, KING], "只有俥(車)、炮(砲)、兵(卒)、帥(將)可以使用移动方向“平”"
             to_column_notation = direction_move_notation[1]
             from_row = square_row(from_square)
-            assert to_column_notation in TRADITIONAL_NOTATION_COORDINATES[
+            assert to_column_notation in COORDINATES_MODERN_TO_TRADITIONAL[
                 color].values(), f"到达列记号错误: {to_column_notation!r}"
-            return Move(from_square, square(TRADITIONAL_TO_MODERN[color][to_column_notation], from_row))
+            return Move(from_square, square(COORDINATES_TRADITIONAL_TO_MODERN[color][to_column_notation], from_row))
         elif direction in ['进', '退']:
             move = direction_move_notation[1]
             if piece_type in [ROOK, CANNON, PAWN, KING]:
                 if color:
                     assert move in CHINESE_NUMBERS, f"前进、后退步数错误: {move!r}"
-                    move = VERTICAL_MOVE_TO_ARABIC[move]
+                    move = VERTICAL_MOVE_CHINESE_TO_ARABIC[move]
                 else:
                     assert move in ARABIC_NUMBERS, f"前进、后退步数错误: {move!r}"
                 if color ^ (direction == '退'):
@@ -1899,8 +1889,8 @@ class Board(BaseBoard):
                     to_square = from_square - 9 * int(move)
                 return Move(from_square, to_square)
             assert piece_type == KNIGHT  # 只需要额外处理马的情况
-            assert move in TRADITIONAL_NOTATION_COORDINATES[color].values(), f"到达列记号错误: {move!r}"
-            to_column = TRADITIONAL_TO_MODERN[color][move]
+            assert move in COORDINATES_MODERN_TO_TRADITIONAL[color].values(), f"到达列记号错误: {move!r}"
+            to_column = COORDINATES_TRADITIONAL_TO_MODERN[color][move]
             to_squares = _knight_attacks(from_square, BB_EMPTY)
             for to_square in scan_forward(to_squares & BB_COLUMNS[to_column]):
                 if color ^ (direction == '退'):
@@ -1933,11 +1923,11 @@ class Board(BaseBoard):
         symbol = piece.unicode_symbol()
         color = piece.color
         if piece_type == KING:
-            column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+            column_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][from_column]
             piece_notation = symbol + column_notation
             if from_row == to_row:
                 direction_notation = '平'
-                move_notation = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+                move_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][to_column]
             else:
                 direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
                 move_notation = str(abs(to_row - from_row))
@@ -1945,7 +1935,7 @@ class Board(BaseBoard):
             bb_pieces = self.rooks if piece_type == ROOK else self.cannons
             same = bb_pieces & self.occupied_co[color] & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
             if same == 0:
-                column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                column_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][from_column]
                 piece_notation = symbol + column_notation
             else:
                 same_square = msb(same)
@@ -1953,7 +1943,7 @@ class Board(BaseBoard):
                 piece_notation = TRADITIONAL_VERTICAL_POS[color][from_row > same_row] + symbol
             if from_row == to_row:
                 direction_notation = '平'
-                move_notation = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+                move_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][to_column]
             else:
                 direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
                 move_notation = str(abs(to_row - from_row))
@@ -1966,14 +1956,14 @@ class Board(BaseBoard):
                 bb_pieces = self.advisors
             same = bb_pieces & self.occupied_co[color] & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
             if same == 0:
-                column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                column_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][from_column]
                 piece_notation = symbol + column_notation
             else:
                 same_square = msb(same)
                 same_row = square_row(same_square)
                 piece_notation = TRADITIONAL_VERTICAL_POS[color][from_row > same_row] + symbol
             direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
-            move_notation = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+            move_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][to_column]
         else:
             pawns = self.pawns & self.occupied_co[color]
             same = pawns & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
@@ -1983,7 +1973,7 @@ class Board(BaseBoard):
                     front_count += 1
             count = popcount(same)
             if count == 0:
-                column_notation = TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                column_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][from_column]
                 piece_notation = symbol + column_notation
             elif count == 1:
                 other_columns_gt_one = any([popcount(BB_COLUMNS[col] & pawns) >= 2
@@ -1991,26 +1981,26 @@ class Board(BaseBoard):
                 if not other_columns_gt_one:
                     piece_notation = ['前', '后'][front_count] + symbol
                 else:
-                    piece_notation = ['前', '后'][front_count] + TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                    piece_notation = ['前', '后'][front_count] + COORDINATES_MODERN_TO_TRADITIONAL[color][from_column]
             elif count == 2:
                 other_columns_gt_one = any([popcount(BB_COLUMNS[col] & pawns) >= 2
                                             for col in range(9) if col != from_column])
                 if not other_columns_gt_one:
                     piece_notation = ['前', '中', '后'][front_count] + symbol
                 else:
-                    piece_notation = ['前', '中', '后'][front_count] + TRADITIONAL_NOTATION_COORDINATES[color][from_column]
+                    piece_notation = ['前', '中', '后'][front_count] + COORDINATES_MODERN_TO_TRADITIONAL[color][from_column]
             elif count == 3:
                 piece_notation = ['前', '二', '三', '四'][front_count] + symbol
             else:
                 piece_notation = ['前', '二', '三', '四', '五'][front_count] + symbol
             if from_row == to_row:
                 direction_notation = '平'
-                move_notation = TRADITIONAL_NOTATION_COORDINATES[color][to_column]
+                move_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][to_column]
             else:
                 direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
                 move_notation = str(abs(to_row - from_row))
         if color:
-            move_notation = ARABIC_TO_VERTICAL_MOVE[move_notation]
+            move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
         return piece_notation + direction_notation + move_notation
 
     def notations(self):
