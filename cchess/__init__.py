@@ -94,6 +94,19 @@ TRADITIONAL_ADVISOR_BISHOP_NOTATIONS = dict(zip(TRADITIONAL_ADVISOR_BISHOP_MOVES
 TRADITIONAL_VERTICAL_DIRECTION = [{True: "退", False: "进"}, {True: "进", False: "退"}]
 TRADITIONAL_VERTICAL_POS = [{True: "后", False: "前"}, {True: "前", False: "后"}]
 
+VERTICAL_MOVE_TO_ARABIC = {
+    "一": '1',
+    "二": "2",
+    "三": "3",
+    "四": "4",
+    "五": "5",
+    "六": "6",
+    "七": "7",
+    "八": "8",
+    "九": "9"
+}
+ARABIC_TO_VERTICAL_MOVE = dict(zip(VERTICAL_MOVE_TO_ARABIC.values(), VERTICAL_MOVE_TO_ARABIC.keys()))
+
 
 def piece_symbol(piece_type: PieceType) -> str:
     return PIECE_SYMBOLS[piece_type]
@@ -1913,7 +1926,11 @@ class Board(BaseBoard):
         elif direction in ['进', '退']:
             move = direction_move_notation[1]
             if piece_type in [ROOK, CANNON, PAWN, KING]:
-                assert move in "123456789", f"前进、后退步数错误: {move!r}"
+                if color:
+                    assert move in '一二三四五六七八九', f"前进、后退步数错误: {move!r}"
+                    move = VERTICAL_MOVE_TO_ARABIC[move]
+                else:
+                    assert move in "123456789", f"前进、后退步数错误: {move!r}"
                 if color ^ (direction == '退'):
                     to_square = from_square + 9 * int(move)
                 else:
@@ -1939,6 +1956,8 @@ class Board(BaseBoard):
         from_square, to_square = move.from_square, move.to_square
         piece = self.piece_at(from_square)
         if not piece:
+            return ""
+        if from_square == to_square:
             return ""
         piece_type = piece.piece_type
         if piece_type in [BISHOP, ADVISOR]:
@@ -2028,6 +2047,8 @@ class Board(BaseBoard):
             else:
                 direction_notation = TRADITIONAL_VERTICAL_DIRECTION[color][to_row > from_row]
                 move_notation = str(abs(to_row - from_row))
+        if color:
+            move_notation = ARABIC_TO_VERTICAL_MOVE[move_notation]
         return piece_notation + direction_notation + move_notation
 
     def notations(self):
