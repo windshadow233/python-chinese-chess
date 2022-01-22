@@ -32,7 +32,7 @@ COORDINATES_MODERN_TO_TRADITIONAL = [dict(zip(range(9), ARABIC_NUMBERS)), dict(z
 COORDINATES_TRADITIONAL_TO_MODERN = [dict(zip(ARABIC_NUMBERS, range(9))), dict(zip(CHINESE_NUMBERS, range(9)))]
 
 
-TRADITIONAL_ADVISOR_BISHOP_MOVES = {
+ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN = {
     "仕六进五": "d0e1", "仕六退五": "d2e1", "仕四进五": "f0e1", "仕四退五": "f2e1",
     "仕五退六": "e1d0", "仕五进六": "e1d2", "仕五退四": "e1f0", "仕五进四": "e1f2",
     "士6进5": "f9e8", "士6退5": "f7e8", "士4进5": "d9e8", "士4退5": "d7e8",
@@ -49,8 +49,8 @@ TRADITIONAL_ADVISOR_BISHOP_MOVES = {
     "象5退7": "e7g9", "象9退7": "i7g9", "象5进7": "e7g5", "象9进7": "i7g5"
 }
 
-TRADITIONAL_ADVISOR_BISHOP_NOTATIONS = dict(zip(TRADITIONAL_ADVISOR_BISHOP_MOVES.values(),
-                                                TRADITIONAL_ADVISOR_BISHOP_MOVES.keys()))
+ADVISOR_BISHOP_MOVES_MODERN_TO_TRADITIONAL = dict(zip(ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN.values(),
+                                                      ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN.keys()))
 
 
 TRADITIONAL_VERTICAL_DIRECTION = [{True: "退", False: "进"}, {True: "进", False: "退"}]
@@ -1812,8 +1812,8 @@ class Board(BaseBoard):
 
     def notation_to_move(self, notation: str):
         assert len(notation) == 4, "记号的长度不为4"
-        if notation in TRADITIONAL_ADVISOR_BISHOP_MOVES:
-            move = Move.from_uci(TRADITIONAL_ADVISOR_BISHOP_MOVES[notation])
+        if notation in ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN:
+            move = Move.from_uci(ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN[notation])
             piece = self.piece_type_at(move.from_square)
             if piece in [BISHOP, ADVISOR]:
                 return move
@@ -1914,8 +1914,8 @@ class Board(BaseBoard):
         piece_type = piece.piece_type
         if piece_type in [BISHOP, ADVISOR]:
             uci = move.uci()
-            assert uci in TRADITIONAL_ADVISOR_BISHOP_NOTATIONS, "仕(士)、相(象)着法错误"
-            return TRADITIONAL_ADVISOR_BISHOP_NOTATIONS[uci]
+            assert uci in ADVISOR_BISHOP_MOVES_MODERN_TO_TRADITIONAL, "仕(士)、相(象)着法错误"
+            return ADVISOR_BISHOP_MOVES_MODERN_TO_TRADITIONAL[uci]
         from_column = square_column(from_square)
         from_row = square_row(from_square)
         to_column = square_column(to_square)
