@@ -586,8 +586,8 @@ class Piece:
         return self.symbol()
 
     def _repr_svg_(self) -> str:
-        import chess.svg
-        return chess.svg.piece(self, size=45)
+        import cchess.svg
+        return cchess.svg.piece(self, size=45)
 
     @classmethod
     def from_symbol(cls, symbol: str):
@@ -742,7 +742,7 @@ class BaseBoard:
 
     def piece_map(self, *, mask: BitBoard = BB_ALL):
         """
-        Gets a dictionary of :class:`pieces <chess.Piece>` by square index.
+        Gets a dictionary of :class:`pieces <cchess.Piece>` by square index.
         """
         result = {}
         for square in scan_reversed(self.occupied & mask):
@@ -756,7 +756,7 @@ class BaseBoard:
 
     def set_piece_map(self, pieces: Dict[Square, Piece]) -> None:
         """
-        Sets up the board from a dictionary of :class:`pieces <chess.Piece>`
+        Sets up the board from a dictionary of :class:`pieces <cchess.Piece>`
         by square index.
         """
         self._set_piece_map(pieces)
@@ -847,7 +847,7 @@ class BaseBoard:
         return bb & self.occupied_co[color]
 
     def piece_at(self, square: Square):
-        """Gets the :class:`piece <chess.Piece>` at the given square."""
+        """Gets the :class:`piece <cchess.Piece>` at the given square."""
         piece_type = self.piece_type_at(square)
         if piece_type:
             mask = BB_SQUARES[square]
@@ -924,7 +924,7 @@ class BaseBoard:
         There will be no attacks if the square is empty. Pinned pieces are
         still attacking other squares.
 
-        Returns a :class:`set of squares <chess.SquareSet>`.
+        Returns a :class:`set of squares <cchess.SquareSet>`.
         """
         return SquareSet(self.attacks_mask(square))
 
@@ -1190,10 +1190,10 @@ class Board(BaseBoard):
 
         A FEN string (e.g.,
         ``rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1``) consists
-        of the board part :func:`~chess.Board.board_fen()`, the
-        :data:`~chess.Board.turn`,
-        the :data:`~chess.Board.halfmove_clock`
-        and the :data:`~chess.Board.fullmove_number`.
+        of the board part :func:`~cchess.Board.board_fen()`, the
+        :data:`~cchess.Board.turn`,
+        the :data:`~cchess.Board.halfmove_clock`
+        and the :data:`~cchess.Board.fullmove_number`.
         """
         return " ".join([
             self.epd(),
@@ -1216,7 +1216,7 @@ class Board(BaseBoard):
         Parses a FEN and sets the position from it.
 
         :raises: :exc:`ValueError` if syntactically invalid. Use
-            :func:`~chess.Board.is_valid()` to detect invalid positions.
+            :func:`~cchess.Board.is_valid()` to detect invalid positions.
         """
         parts = fen.split()
 
@@ -1312,7 +1312,7 @@ class Board(BaseBoard):
 
         Resets move stack and move counters. The side to move is red.
 
-        In order to be in a valid :func:`~chess.Board.status()`, at least kings
+        In order to be in a valid :func:`~cchess.Board.status()`, at least kings
         need to be put on the board.
         """
         self.turn = RED
@@ -1341,7 +1341,7 @@ class Board(BaseBoard):
     def reset_board(self) -> None:
         """
         Resets only pieces to the starting position. Use
-        :func:`~chess.Board.reset()` to fully restore the starting position
+        :func:`~cchess.Board.reset()` to fully restore the starting position
         (including turn, castling rights, etc.).
         """
         super().reset_board()
@@ -1378,7 +1378,7 @@ class Board(BaseBoard):
 
     @classmethod
     def empty(cls):
-        """Creates a new empty board. Also see :func:`~chess.Board.clear()`."""
+        """Creates a new empty board. Also see :func:`~cchess.Board.clear()`."""
         return cls(None)
 
     def ply(self) -> int:
@@ -1403,7 +1403,7 @@ class Board(BaseBoard):
         """
         Gets the pieces currently giving check.
 
-        Returns a :class:`set of squares <chess.SquareSet>`.
+        Returns a :class:`set of squares <cchess.SquareSet>`.
         """
         return SquareSet(self.checkers_mask())
 
@@ -1702,15 +1702,15 @@ class Board(BaseBoard):
     def outcome(self) -> Optional[Outcome]:
         """
         Checks if the game is over due to
-        :func:`checkmate <chess.Board.is_checkmate()>`,
-        :func:`insufficient_material <chess.Board.is_insufficient_material()>`,
-        :func:`stalemate <chess.Board.is_stalemate()>`,
-        the :func:`sixty-move rule <chess.Board.is_sixty_moves()>`,
-        :func:`threefold repetition <chess.Board.is_threefold_repetition()>`,
-        Returns the :class:`chess.Outcome` if the game has ended, otherwise
+        :func:`checkmate <cchess.Board.is_checkmate()>`,
+        :func:`insufficient_material <cchess.Board.is_insufficient_material()>`,
+        :func:`stalemate <cchess.Board.is_stalemate()>`,
+        the :func:`sixty-move rule <cchess.Board.is_sixty_moves()>`,
+        :func:`threefold repetition <cchess.Board.is_threefold_repetition()>`,
+        Returns the :class:`cchess.Outcome` if the game has ended, otherwise
         ``None``.
 
-        Alternatively, use :func:`~chess.Board.is_game_over()` if you are not
+        Alternatively, use :func:`~cchess.Board.is_game_over()` if you are not
         interested in who won the game and why.
         """
 
@@ -1741,7 +1741,7 @@ class Board(BaseBoard):
         """
         Gets a bitmask of possible problems with the position.
 
-        :data:`~chess.STATUS_VALID` if all basic validity requirements are met.
+        :data:`~cchess.STATUS_VALID` if all basic validity requirements are met.
         This does not imply that the position is actually reachable with a
         series of legal moves from the starting position.
         """
@@ -1841,7 +1841,7 @@ class Board(BaseBoard):
         """
         Checks some basic validity requirements.
 
-        See :func:`~chess.Board.status()` for details.
+        See :func:`~cchess.Board.status()` for details.
         """
         return self.status() == STATUS_VALID
 
