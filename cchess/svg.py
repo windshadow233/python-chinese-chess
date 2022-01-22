@@ -348,7 +348,7 @@ def to_gif(board: cchess.Board, filename, *,
                                orientation=orientation,
                                coordinates=coordinates,
                                axes_type=axes_type,
-                               lastmove=board.peek() if lastmove and board.move_stack else None,
+                               lastmove=board.peek() if lastmove else None,
                                checkers=board.checkers() if checkers else None)
         png_bytes = cairosvg.svg2png(svg)
         png_array = np.array(Image.open(io.BytesIO(png_bytes)))
