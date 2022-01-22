@@ -1954,7 +1954,7 @@ class Board(BaseBoard):
                 move_notation = str(abs(to_row - from_row))
                 if color:
                     move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
-        elif piece_type in [KNIGHT, BISHOP, ADVISOR]:
+        elif piece_type == KNIGHT:
             if piece_type == KNIGHT:
                 bb_pieces = self.knights
             elif piece_type == BISHOP:
@@ -1974,10 +1974,10 @@ class Board(BaseBoard):
         else:
             pawns = self.pawns & self.occupied_co[color]
             same = pawns & BB_COLUMNS[from_column] & ~BB_SQUARES[from_square]
-            front_count = 0
-            for square in scan_forward(same):
-                if (color and square > from_square) or (not color and square < from_square):
-                    front_count += 1
+            if color:
+                front_count = len(list(filter(lambda s: s > from_square, scan_forward(same))))
+            else:
+                front_count = len(list(filter(lambda s: s < from_square, scan_forward(same))))
             count = popcount(same)
             if count == 0:
                 column_notation = COORDINATES_MODERN_TO_TRADITIONAL[color][from_column]
@@ -2008,7 +2008,7 @@ class Board(BaseBoard):
                 move_notation = str(abs(to_row - from_row))
                 if color:
                     move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
-        return piece_notation + direction_notation + move_notation
+        return "".join([piece_notation, direction_notation, move_notation])
 
     def notations(self, start_fen=STARTING_FEN):
         move_stack = copy.copy(self.move_stack)
