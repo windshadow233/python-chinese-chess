@@ -63,7 +63,7 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 
 - 标记指定点位
 ```python
->>> board = cchess.Board("9/9/9/9/9/4N4/9/9/9/9")
+>>> board = cchess.Board("9/9/9/9/9/4NR3/9/9/9/9")
 >>> cchess.svg.board(board, squares=board.attacks(cchess.E4))
 ```
 
