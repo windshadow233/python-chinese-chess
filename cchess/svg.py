@@ -184,8 +184,7 @@ def board(board: cchess.BaseBoard, *,
             if board.pieces_mask(piece_type, piece_color):
                 defs.append(ET.fromstring(PIECES[cchess.Piece(piece_type, piece_color).symbol()]))
     if lastmove:
-        defs.append(ET.fromstring("""<path id="red-corner" d="M5 20 V 5 H 20" stroke-width="5" stroke="red" fill="none"/>"""))  # noqa: E501
-        defs.append(ET.fromstring("""<path id="green-corner" d="M5 20 V 5 H 20" stroke-width="5" stroke="green" fill="none"/>"""))  # noqa: E501
+        defs.append(ET.fromstring("""<path id="corner" d="M5 20 V 5 H 20" stroke-width="5" fill="none"/>"""))  # noqa: E501
     if squares:
         defs.append(ET.fromstring(XX))
     ET.SubElement(svg, "rect", {"id": "board", "width": "1200", "height": "1200",
@@ -278,10 +277,10 @@ def board(board: cchess.BaseBoard, *,
         y = (9 - row_index if orientation else row_index) * SQUARE_SIZE - 500
         red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
         top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-red-corners"})
-        ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner"})
-        ET.SubElement(top_red_corners, "use", {"xlink:href": "#red-corner",
+        ET.SubElement(top_red_corners, "use", {"xlink:href": "#corner", "stroke": "red"})
+        ET.SubElement(top_red_corners, "use", {"xlink:href": "#corner", "stroke": "red",
                                                "transform": "translate(100,0) scale(-1,1)"})
-        ET.SubElement(red_corners, "use", {"xlink:href": "#top-red-corners",
+        ET.SubElement(red_corners, "use", {"xlink:href": "#top-red-corners", "stroke": "red",
                                            "transform": "translate(0, 100) scale(1,-1)"})
         col_index = cchess.square_column(lastmove.to_square)
         row_index = cchess.square_row(lastmove.to_square)
@@ -289,10 +288,10 @@ def board(board: cchess.BaseBoard, *,
         y = (9 - row_index if orientation else row_index) * SQUARE_SIZE - 500
         red_corners = ET.SubElement(svg, "g", {"transform": f"translate({x},{y})"})
         top_red_corners = ET.SubElement(red_corners, "g", {"id": "top-green-corners"})
-        ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner"})
-        ET.SubElement(top_red_corners, "use", {"xlink:href": "#green-corner",
+        ET.SubElement(top_red_corners, "use", {"xlink:href": "#corner", "stroke": "green"})
+        ET.SubElement(top_red_corners, "use", {"xlink:href": "#corner", "stroke": "green",
                                                "transform": "translate(100,0) scale(-1,1)"})
-        ET.SubElement(red_corners, "use", {"xlink:href": "#top-green-corners",
+        ET.SubElement(red_corners, "use", {"xlink:href": "#top-green-corners", "stroke": "green",
                                            "transform": "translate(0, 100) scale(1,-1)"})
     # Check
     if checkers is not None:
