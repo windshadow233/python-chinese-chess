@@ -46,7 +46,7 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 
 ## 功能
 
-- 简单的 svg (两种坐标系)棋盘渲染，可以显示上一步（以一对红色直角框标记始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
+### svg(两种坐标系)棋盘渲染
 ```python
 >>> svg = cchess.svg.board(board,  # 渲染的棋盘
                            size=600,  # 棋盘尺寸
@@ -65,9 +65,17 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 <img width="400" height="400" src="images/board_axes_type_1.svg"/>
 </div>
 
+- 标记指定点位
+```python
+>>> board = cchess.Board("9/9/9/9/9/4N4/9/9/9/9")
+>>> cchess.svg.board(board, squares=board.attacks(cchess.E4))
+```
+
+<img width="400" height="400" src="images/knight_attacks.svg"/>
+
 - Jupyter Notebook可直接显示棋盘棋子的svg,棋盘可设置坐标类型、自定义CSS
 ![](images/jupyter.png)
-- 行棋、悔棋
+### 行棋、悔棋
 
 ```python
 >>> board = cchess.Board()
@@ -75,7 +83,7 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 >>> board.pop()  # 撤销上一步棋
 Move.from_uci("h2h4")
 ```
-
+### 字符串棋盘打印
 - ASCII 棋盘
 ```python
 >>> print(board)
@@ -121,7 +129,7 @@ R N B A K A B N R
 俥傌相仕帥仕相傌俥
 九八七六五四三二一
 ```
-- （伪）合法着法生成、合法性判断
+### （伪）合法着法生成、合法性判断
 ```python
 >>> board = cchess.Board()
 >>> legal_moves = board.legal_moves
@@ -143,7 +151,7 @@ True
 False
 ```
 
-- 攻击（特殊情况：将军）检测
+### 攻击（特殊情况：将军）检测
 ```python
 >>> board= cchess.Board('4k4/2N6/9/9/9/9/9/9/9/3K5 b')
 >>> board.is_attacked_by(cchess.RED, cchess.E9)
@@ -152,7 +160,7 @@ True
 True
 ```
 
-- 攻击者检测
+### 攻击者检测
 ```python
 >>> board = cchess.Board('4k3R/2N2n3/5N3/9/9/9/9/9/9/3K5 b')
 >>> attackers = board.attackers(cchess.RED, cchess.E9)
@@ -171,6 +179,7 @@ SquareSet(0x20004000000000000000000)
 . . . . . . . . .
 ```
 
+### 终局判断
 - 将杀、困毙、子力不足检测
 ```python
 >>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
@@ -188,7 +197,18 @@ True
 True
 ```
 
-- 局面合法性检验，包含棋子数量、棋子位置、将帅照面等情况
+- 棋局状态判断
+```python
+>>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
+>>> board.is_game_over()  # 简单判断是否结束
+True
+>>> board.outcome()  # 棋局的结束状态(若非终局则返回None)
+Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
+```
+
+### 局面合法性检验
+
+包含棋子数量、棋子位置、将帅照面等情况
 ```python
 >>> board = cchess.Board('3k5/R8/9/9/9/9/9/9/9/4K4')
 >>> board.status()
@@ -201,7 +221,7 @@ True
 <Status.WHITE_FACE: 268435456>
 ```
 
-- 重复局面检测
+### 重复局面检测
 ```python
 >>> board.is_threefold_repetition()  # 一般比赛规定出现三次重复即不变作和
 False
@@ -210,7 +230,7 @@ False
 False
 ```
 
-- 自然限着检测
+### 自然限着检测
 ```python
 >>> board.is_sixty_moves()  # 一般比赛规定60回合为自然限着数
 False
@@ -219,17 +239,9 @@ False
 False
 ```
 
-- 终局判断
-```python
->>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
->>> board.is_game_over()  # 简单判断是否结束
-True
->>> board.outcome()  # 棋局的结束状态(若非终局则返回None)
-Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
-```
-- 传统四字记谱法与现代坐标记谱法的互相转换
+### 四字记谱法
 
-传统记谱法说明：
+#### 四字记谱法说明：
 
 以棋子对应的Unicode字符（中文汉字）指明棋子类别，红黑方分别以中文数字“一～九”、阿拉伯数字“1～9”作为纵坐标，例如“炮二”表示二路红炮、“馬8”表示8路黑马。
 
@@ -246,6 +258,7 @@ Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 另外，如同时存在两条纵线上有2或3个“兵（卒）”，则需要加上纵坐标，如“前兵三进一”表示“三”路线的前红兵向前走一步，“中卒2平3”表示“2”路线的中黑卒平到“3”路线。
 为维持四字记谱法，上面这种情况下，一般将“兵（卒）”省略，即记为“前三进一”、“中2平3”。
 
+- 传统四字记谱法与现代坐标记谱法的互相转换
 ```python
 >>> board = cchess.Board()
 >>> board.move_to_notation(cchess.Move.from_uci("h2e2"))
