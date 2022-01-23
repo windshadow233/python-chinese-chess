@@ -48,16 +48,17 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 
 - 简单的 svg (两种坐标系)棋盘渲染，可以显示上一步（以一对红绿直角框标记始末位置）以及将军棋子（以棋子外的红圈示意）的位置。
 ```python
-import cchess.svg
-board = cchess.Board()
-svg = cchess.svg.board(board,  # 渲染的棋盘
-                       size=600,  # 棋盘尺寸
-                       coordinates=True,  # 是否显示坐标系
-                       axes_type=0,  # 坐标轴类型
-                       lastmove=board.peek(),  # 上一步
-                       checkers=board.checkers(),  # 将军棋子
-                       orientation=cchess.RED  # 棋盘方向
-                       )
+>>> svg = cchess.svg.board(board,  # 渲染的棋盘
+                           size=600,  # 棋盘尺寸
+                           coordinates=True,  # 是否显示坐标系
+                           axes_type=1,  # 坐标轴类型
+                           lastmove=board.peek(),  # 上一步
+                           checkers=board.checkers(),  # 将军棋子
+                           orientation=cchess.RED,  # 棋盘方向
+                           style="#board{fill:#1b91bc}"  # style-sheet
+                           )
+>>> with open('images/board_axes_type_1.svg', 'w') as f:
+>>>    f.write(svg)
 ```
 <div align="center">
 <img width="400" height="400" src="images/board_axes_type_0.svg"/>
