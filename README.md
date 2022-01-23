@@ -58,7 +58,7 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
                            style="#board{fill:#1b91bc}"  # style-sheet
                            )
 >>> with open('images/board_axes_type_1.svg', 'w') as f:
->>>    f.write(svg)
+       f.write(svg)
 ```
 <div align="center">
 <img width="400" height="400" src="images/board_axes_type_0.svg"/>
