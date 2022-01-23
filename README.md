@@ -1,7 +1,7 @@
 # Python-Chinese-Chess
 这是一个使用纯Python编写的中国象棋库，改写自[Python-Chess](https://github.com/niklasf/python-chess)项目的核心部分。
 
-![MIT](https://img.shields.io/github/license/windshadow233/python-chinese-chess?style=plastic)
+![GPL-3.0](https://img.shields.io/github/license/windshadow233/python-chinese-chess?style=plastic)
 ![Python 3.7](https://img.shields.io/badge/Python-3.7-blue?style=plastic)
 
 ## 特点与说明
