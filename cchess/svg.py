@@ -160,16 +160,20 @@ def piece(piece: cchess.Piece, size: Optional[int] = None) -> str:
 
 
 def board(board: cchess.BaseBoard, *,
+          size: Optional[int] = 450,
           orientation: cchess.Color = cchess.RED,
           coordinates: bool = True,
           axes_type: int = 0,
           lastmove: Optional[cchess.Move] = None,
           checkers: Optional[cchess.IntoSquareSet] = None,
           squares: Optional[cchess.IntoSquareSet] = None,
-          size: Optional[int] = 450) -> str:
+          style: Optional[str] = None) -> str:
     assert axes_type in [0, 1], f"axes_type must value 0 or 1, got {axes_type}"
     # Board
     svg = _svg((-600, -600, 1200, 1200), (size, size))
+
+    if style:
+        ET.SubElement(svg, "style").text = style
 
     # def
     defs = ET.SubElement(svg, "defs")
@@ -184,7 +188,7 @@ def board(board: cchess.BaseBoard, *,
         defs.append(ET.fromstring("""<path id="green-corner" d="M5 20 V 5 H 20" stroke-width="5" stroke="green" fill="none"/>"""))  # noqa: E501
     if squares:
         defs.append(ET.fromstring(XX))
-    ET.SubElement(svg, "rect", {"width": "1200", "height": "1200",
+    ET.SubElement(svg, "rect", {"id": "board", "width": "1200", "height": "1200",
                                 "x": "-600", "y": "-600",
                                 "stroke-width": "15", "stroke": "#cd853f",
                                 "fill": "#eb5"})
@@ -312,13 +316,14 @@ def board(board: cchess.BaseBoard, *,
 
 def to_gif(board: cchess.Board, filename, *,
            start_fen: str = cchess.STARTING_FEN,
+           size: Optional[int] = 450,
            duration: int = 3,
            orientation: cchess.Color = cchess.RED,
            coordinates: bool = True,
            axes_type: int = 0,
            lastmove: Optional[bool] = True,
            checkers: Optional[bool] = True,
-           size: Optional[int] = 450):
+           style: Optional[str] = None):
     try:
         import copy
         import numpy as np
@@ -339,7 +344,8 @@ def to_gif(board: cchess.Board, filename, *,
                            coordinates=coordinates,
                            axes_type=axes_type,
                            lastmove=None,
-                           checkers=board.checkers() if checkers else None)
+                           checkers=board.checkers() if checkers else None,
+                           style=style)
     png_bytes = cairosvg.svg2png(svg)
     png_array = np.array(Image.open(io.BytesIO(png_bytes)))
     gif_images.append(png_array)
@@ -350,7 +356,8 @@ def to_gif(board: cchess.Board, filename, *,
                                coordinates=coordinates,
                                axes_type=axes_type,
                                lastmove=board.peek() if lastmove else None,
-                               checkers=board.checkers() if checkers else None)
+                               checkers=board.checkers() if checkers else None,
+                               style=style)
         png_bytes = cairosvg.svg2png(svg)
         png_array = np.array(Image.open(io.BytesIO(png_bytes)))
         gif_images.append(png_array)
