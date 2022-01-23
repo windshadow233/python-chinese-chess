@@ -150,7 +150,7 @@ def _attrs(attrs: Dict[str, Union[str, int, float, None]]) -> Dict[str, str]:
 
 def piece(piece: cchess.Piece, size: Optional[int] = None) -> str:
     """
-    Renders the given :class:`chess.Piece` as an SVG image.
+    Renders the given :class:`cchess.Piece` as an SVG image.
     """
     svg = _svg((0, 0, SQUARE_SIZE, SQUARE_SIZE), (size, size))
     svg.append(ET.fromstring(PIECES[piece.symbol()]))
