@@ -64,6 +64,9 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 <img width="400" height="400" src="images/board_axes_type_0.svg"/>
 <img width="400" height="400" src="images/board_axes_type_1.svg"/>
 </div>
+
+- Jupyter Notebook可直接显示棋盘棋子的svg,棋盘可自定义CSS
+![](images/jupyter.png)
 - 行棋、悔棋
 
 ```python
