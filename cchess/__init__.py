@@ -612,6 +612,7 @@ class BaseBoard:
             self._reset_board()
         else:
             self._set_board_fen(board_fen)
+        self._svg_css = None
 
     def _clear_board(self):
         self.pawns = BB_EMPTY
@@ -645,9 +646,12 @@ class BaseBoard:
     def reset_board(self):
         self._reset_board()
 
+    def set_style(self, style: str):
+        self._svg_css = style
+
     def _repr_svg_(self):
         import cchess.svg
-        return cchess.svg.board(board=self, size=600)
+        return cchess.svg.board(board=self, size=600, style=self._svg_css)
 
     def _set_board_fen(self, fen: str):
         # Compatibility with set_fen().
@@ -1143,7 +1147,8 @@ class Board(BaseBoard):
         return cchess.svg.board(board=self,
                                 size=450,
                                 lastmove=self.peek() if self.move_stack else None,
-                                checkers=self.checkers() if self.is_check() else None)
+                                checkers=self.checkers() if self.is_check() else None,
+                                style=self._svg_css)
 
     def fen(self) -> str:
         """
