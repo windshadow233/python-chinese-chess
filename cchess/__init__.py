@@ -23,13 +23,11 @@ UNICODE_PIECE_SYMBOLS = {
 }
 UNICODE_TO_PIECE_SYMBOLS = dict(zip(UNICODE_PIECE_SYMBOLS.values(), UNICODE_PIECE_SYMBOLS.keys()))
 
-
 ARABIC_NUMBERS = '123456789'
 CHINESE_NUMBERS = '九八七六五四三二一'
 
 COORDINATES_MODERN_TO_TRADITIONAL = [dict(zip(range(9), ARABIC_NUMBERS)), dict(zip(range(9), CHINESE_NUMBERS))]
 COORDINATES_TRADITIONAL_TO_MODERN = [dict(zip(ARABIC_NUMBERS, range(9))), dict(zip(CHINESE_NUMBERS, range(9)))]
-
 
 ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN = {
     "仕六进五": "d0e1", "仕六退五": "d2e1", "仕四进五": "f0e1", "仕四退五": "f2e1",
@@ -51,12 +49,12 @@ ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN = {
 ADVISOR_BISHOP_MOVES_MODERN_TO_TRADITIONAL = dict(zip(ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN.values(),
                                                       ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN.keys()))
 
-
 TRADITIONAL_VERTICAL_DIRECTION = [{True: "退", False: "进"}, {True: "进", False: "退"}]
 TRADITIONAL_VERTICAL_POS = [{True: "后", False: "前"}, {True: "前", False: "后"}]
 
 VERTICAL_MOVE_CHINESE_TO_ARABIC = dict(zip(reversed(CHINESE_NUMBERS), ARABIC_NUMBERS))
-VERTICAL_MOVE_ARABIC_TO_CHINESE = dict(zip(VERTICAL_MOVE_CHINESE_TO_ARABIC.values(), VERTICAL_MOVE_CHINESE_TO_ARABIC.keys()))
+VERTICAL_MOVE_ARABIC_TO_CHINESE = dict(
+    zip(VERTICAL_MOVE_CHINESE_TO_ARABIC.values(), VERTICAL_MOVE_CHINESE_TO_ARABIC.keys()))
 
 
 def piece_symbol(piece_type: PieceType) -> str:
@@ -1142,11 +1140,10 @@ class Board(BaseBoard):
 
     def _repr_svg_(self) -> str:
         import cchess.svg
-        return cchess.svg.board(
-            board=self,
-            size=450,
-            lastmove=self.peek() if self.move_stack else None,
-            checkers=self.checkers() if self.is_check() else None)
+        return cchess.svg.board(board=self,
+                                size=450,
+                                lastmove=self.peek() if self.move_stack else None,
+                                checkers=self.checkers() if self.is_check() else None)
 
     def fen(self) -> str:
         """
@@ -1414,7 +1411,8 @@ class Board(BaseBoard):
                 for to_square in scan_reversed(slides):
                     yield Move(from_square, to_square)  # cannons slide
 
-    def generate_pseudo_legal_captures(self, from_mask: BitBoard = BB_ALL, to_mask: BitBoard = BB_ALL) -> Iterator[Move]:
+    def generate_pseudo_legal_captures(self, from_mask: BitBoard = BB_ALL, to_mask: BitBoard = BB_ALL) -> Iterator[
+        Move]:
         return self.generate_pseudo_legal_moves(from_mask, to_mask & self.occupied_co[not self.turn])
 
     def generate_legal_moves(self, from_mask: BitBoard = BB_ALL, to_mask: BitBoard = BB_ALL) -> Iterator[Move]:
@@ -1994,7 +1992,8 @@ class Board(BaseBoard):
                 if not other_columns_gt_one:
                     piece_notation = ['前', '中', '后'][front_count] + symbol
                 else:
-                    piece_notation = ['前', '中', '后'][front_count] + COORDINATES_MODERN_TO_TRADITIONAL[color][from_column]
+                    piece_notation = ['前', '中', '后'][front_count] + COORDINATES_MODERN_TO_TRADITIONAL[color][
+                        from_column]
             elif count == 3:
                 piece_notation = ['前', '二', '三', '四'][front_count] + symbol
             else:
