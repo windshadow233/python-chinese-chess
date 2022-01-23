@@ -1558,7 +1558,13 @@ class Board(BaseBoard):
             else:
                 raise ValueError("Move is not legal!")
         except (AssertionError, ValueError):
-            pass
+            return
+
+    def push_uci(self, uci: str):
+        move = Move.from_uci(uci)
+        if not self.is_legal(move):
+            raise ValueError(f"illegal uci: {uci!r} in {self.fen()}")
+        self.push(move)
 
     def find_move(self, from_square: Square, to_square: Square) -> Move:
         """
