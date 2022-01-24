@@ -12,7 +12,7 @@
 - 采用经典的棋盘与棋子的 svg 代码渲染UI。
 - 支持渲染棋局的GIF（需安装一些第三方库）。
 - 和棋判断默认采用60步自然限着、3次重复局面或双方子力均不足以将死对方。
-- 由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，且十分复杂，因此代码中没有对其进行实现，但提供了判定循环局面以及将军的接口。
+- 由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，且十分复杂，因此代码中几乎没有对其进行实现，若实现了会加以说明，但提供了判定循环局面以及将军的接口。
 - 对于“子力不足以将死对方”这一强制和棋条件，本项目草率地采用“双方均无能过河的棋子”作为判定方法，因中国象棋残局的变化非常复杂，以鄙人的能力尚不足以对其加以细致的讨论。
 ## 基本操作
 ```python
@@ -219,6 +219,30 @@ Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 True
 >>> board.status()
 <Status.WHITE_FACE: 268435456>
+```
+
+### 单方持续将军检测
+单方连续将军三次及以上时，返回True。判定方法比较naive。
+
+**注意**，此操作只检测单方连续将军的次数，故连杀或吃子将军等合法情况也同样会被检测。若需判定一方“长将”，需要结合Board.is_threefold_repetition()方法。
+```python
+>>> board = cchess.Board("5r3/9/5k3/9/5N3/9/5c3/9/5K3/9")
+>>> board.push_notation("傌四进六")  # 将军
+>>> board.push_notation("將6平5")
+>>> board.push_notation("傌六退四")  # 将军
+>>> board.push_notation("將5平6")
+>>> board.push_notation("傌四进六")  # 连续将军三次
+>>> board.is_long_check()
+True
+
+>>> board = cchess.Board("5c3/9/5k3/9/5N3/9/5c3/9/5K3/9")
+>>> board.push_notation("傌四进六")  # 将军
+>>> board.push_notation("將6平5")   # 解将还将
+>>> board.push_notation("傌六退四")  # 将军
+>>> board.push_notation("將5平6")
+>>> board.push_notation("傌四进六")
+>>> board.is_long_check()  # 此时判定为False
+False
 ```
 
 ### 重复局面检测
