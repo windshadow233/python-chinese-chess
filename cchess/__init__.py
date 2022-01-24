@@ -2026,12 +2026,11 @@ class Board(BaseBoard):
         return "".join([piece_notation, direction_notation, move_notation])
 
     def notations(self, start_fen=STARTING_FEN):
-        move_stack = copy.copy(self.move_stack)
-        self.set_fen(start_fen)
+        board = Board(start_fen)
         notations = ""
-        for move in move_stack:
+        for move in self.move_stack:
             notations += self.move_to_notation(move)
-            self.push(move)
+            board.push(move)
             if not self.turn:
                 notations += "\t"
             else:
