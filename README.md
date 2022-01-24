@@ -262,12 +262,12 @@ True
 False
 ```
 
-### 重复局面检测
+### 循环局面检测
 ```python
 >>> board.is_sixfold_repetition()  # 一般比赛规定出现五次循环局面后,不变着作和
 False
 >>> n = 7
->>> board.is_repetition(n)  # 也可以根据情况任意指定不变作和需要达到的重复次数
+>>> board.is_repetition(n)  # 也可以根据情况任意指定不变作和需要达到的循环次数
 False
 ```
 
