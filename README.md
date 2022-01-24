@@ -225,24 +225,40 @@ True
 ### 单方持续将军检测
 单方连续将军三次及以上时，返回True。判定方法比较naive。
 
-**注意**，此操作只检测单方连续将军的次数，故连杀或吃子将军等合法情况也同样会被检测。若需判定一方“长将”，需要结合Board.is_repetition()方法。
+**注意**，此函数触发条件为四次循环局面的基础上，可以检测单方连续将军的次数是否达到3次。
 ```python
 >>> board = cchess.Board("5r3/9/5k3/9/5N3/9/5c3/9/5K3/9")
->>> board.push_uci("f5d6")  # 将军
+>>> board.push_uci("f5d6")
 >>> board.push_uci("f7e7")
->>> board.push_uci("d6f5")  # 将军
+>>> board.push_uci("d6f5")
 >>> board.push_uci("e7f7")
->>> board.push_uci("f5d6")  # 连续将军三次
+>>> board.push_uci("f5d6")
+>>> board.push_uci("f7e7")
+>>> board.push_uci("d6f5")
+>>> board.push_uci("e7f7")
+>>> board.push_uci("f5d6")
+>>> board.push_uci("f7e7")
+>>> board.push_uci("d6f5")
+>>> board.push_uci("e7f7")
+>>> board.push_uci("f5d6")
 >>> board.is_perpetual_check()
 True
 
 >>> board = cchess.Board("5c3/9/5k3/9/5N3/9/5c3/9/5K3/9")
->>> board.push_uci("f5d6")  # 将军
->>> board.push_uci("f7e7")  # 解将还将
->>> board.push_uci("d6f5")  # 将军
+>>> board.push_uci("f5d6")
+>>> board.push_uci("f7e7")  # 黑方平將存在解将还将
+>>> board.push_uci("d6f5")
 >>> board.push_uci("e7f7")
->>> board.push_uci("f5d6")  # 连续将军三次
->>> board.is_perpetual_check()  # 此时判定为False
+>>> board.push_uci("f5d6")
+>>> board.push_uci("f7e7")
+>>> board.push_uci("d6f5")
+>>> board.push_uci("e7f7")
+>>> board.push_uci("f5d6")
+>>> board.push_uci("f7e7")
+>>> board.push_uci("d6f5")
+>>> board.push_uci("e7f7")
+>>> board.push_uci("f5d6")
+>>> board.is_perpetual_check()  # 故红方不构成长将
 False
 ```
 
