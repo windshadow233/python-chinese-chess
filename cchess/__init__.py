@@ -1699,7 +1699,7 @@ class Board(BaseBoard):
         if self.is_insufficient_material():
             return Outcome(Termination.INSUFFICIENT_MATERIAL, None)
         if not any(self.generate_legal_moves()):
-            return Outcome(Termination.STALEMATE, None)
+            return Outcome(Termination.STALEMATE, not self.turn)
 
         # Automatic draws.
         if self.is_sixty_moves():
