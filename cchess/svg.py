@@ -321,17 +321,20 @@ def board(board: cchess.BaseBoard, *,
     # Check
     if checkers is not None:
         for square in checkers:
+            piece = board.piece_at(square)
+            if not piece:
+                continue
+            color = piece.color
             col_index = cchess.square_column(square)
             row_index = cchess.square_row(square)
 
             x = (col_index if orientation else 8 - col_index) * SQUARE_SIZE - 400
             y = (9 - row_index if orientation else row_index) * SQUARE_SIZE - 450
-
             ET.SubElement(svg, "circle", _attrs({
                 "cx": x,
                 "cy": y,
                 "r": 48,
-                "stroke": "red",
+                "stroke": cchess.COLOR_NAMES[color],
                 "stroke-width": 10,
                 "fill": "none"
             }))
