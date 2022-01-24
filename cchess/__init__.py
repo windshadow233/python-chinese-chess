@@ -147,8 +147,8 @@ class Termination(enum.Enum):
     """See :func:`cchess.Board.is_sixfold_repetition()`."""
     SIXTY_MOVES = enum.auto()
     """See :func:`cchess.Board.is_sixty_moves()`."""
-    LONG_CHECK = enum.auto()
-    """See :func:`cchess.Board.is_long_check()`."""
+    PERPETUAL_CHECK = enum.auto()
+    """See :func:`cchess.Board.is_perpetual_check()`."""
 
 
 @dataclasses.dataclass
@@ -1670,7 +1670,7 @@ class Board(BaseBoard):
 
         return False
 
-    def is_long_check(self) -> bool:
+    def is_perpetual_check(self) -> bool:
         """Check if the opposite turn has given check unilaterally for at least 3 times.
         Need to be used after Board.is_threefold_repetition()"""
         if not self.is_check():
@@ -1726,7 +1726,7 @@ class Board(BaseBoard):
         :func:`checkmate <cchess.Board.is_checkmate()>`,
         :func:`insufficient_material <cchess.Board.is_insufficient_material()>`,
         :func:`stalemate <cchess.Board.is_stalemate()>`,
-        :func:`longcheck <cchess.Board.is_long_check()>`,
+        :func:`perpetual_check <cchess.Board.is_perpetual_check()>`,
         the :func:`sixty-move rule <cchess.Board.is_sixty_moves()>`,
         :func:`sixfold repetition <cchess.Board.is_sixfold_repetition()>`,
         Returns the :class:`cchess.Outcome` if the game has ended, otherwise
@@ -1743,8 +1743,8 @@ class Board(BaseBoard):
             return Outcome(Termination.INSUFFICIENT_MATERIAL, None)
         if not any(self.generate_legal_moves()):
             return Outcome(Termination.STALEMATE, not self.turn)
-        if self.is_fourfold_repetition() and self.is_long_check():  # 单方长将
-            return Outcome(Termination.LONG_CHECK, self.turn)
+        if self.is_fourfold_repetition() and self.is_perpetual_check():  # 单方长将
+            return Outcome(Termination.PERPETUAL_CHECK, self.turn)
 
         # Automatic draws.
         if self.is_sixty_moves():
