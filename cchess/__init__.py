@@ -2104,7 +2104,9 @@ class Board(BaseBoard):
                 notations = notation.groups()
                 for nota in notations:
                     if nota:
-                        self.push_notation(nota.translate(notation_filter[self.turn]))
+                        move = self.push_notation(nota.translate(notation_filter[self.turn]))
+                        if not move:
+                            print(f"Please check {nota!r}")
         if to_gif:
             import cchess.svg
             cchess.svg.to_gif(self, filename=gif_file, start_fen=fen, axes_type=1, duration=duration)
