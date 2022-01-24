@@ -143,10 +143,12 @@ class Termination(enum.Enum):
     """See :func:`cchess.Board.is_stalemate()`."""
     INSUFFICIENT_MATERIAL = enum.auto()
     """See :func:`cchess.Board.is_insufficient_material()`."""
-    THREEFOLD_REPETITION = enum.auto()
-    """See :func:`cchess.Board.is_threefold_repetition()`."""
+    FOURFOLD_REPETITION = enum.auto()
+    """See :func:`cchess.Board.is_fourfold_repetition()`."""
     SIXTY_MOVES = enum.auto()
     """See :func:`cchess.Board.is_sixty_moves()`."""
+    LONG_CHECK = enum.auto()
+    """See :func:`cchess.Board.is_long_check()`."""
 
 
 @dataclasses.dataclass
@@ -1669,7 +1671,8 @@ class Board(BaseBoard):
         return False
 
     def is_long_check(self) -> bool:
-        """Check if the opposite turn has given check unilaterally for at least 3 times."""
+        """Check if the opposite turn has given check unilaterally for at least 3 times.
+        Need to be used after Board.is_threefold_repetition()"""
         if not self.is_check():
             return False
         switchyard = []
@@ -1704,6 +1707,9 @@ class Board(BaseBoard):
     def is_fivefold_repetition(self) -> bool:
         return self.is_repetition(5)
 
+    def is_fourfold_repetition(self) -> bool:
+        return self.is_repetition(4)
+
     def is_threefold_repetition(self) -> bool:
         return self.is_repetition(3)
 
@@ -1718,7 +1724,7 @@ class Board(BaseBoard):
         :func:`insufficient_material <cchess.Board.is_insufficient_material()>`,
         :func:`stalemate <cchess.Board.is_stalemate()>`,
         the :func:`sixty-move rule <cchess.Board.is_sixty_moves()>`,
-        :func:`threefold repetition <cchess.Board.is_threefold_repetition()>`,
+        :func:`fourfold repetition <cchess.Board.is_fourfold_repetition()>`,
         Returns the :class:`cchess.Outcome` if the game has ended, otherwise
         ``None``.
 
@@ -1733,12 +1739,14 @@ class Board(BaseBoard):
             return Outcome(Termination.INSUFFICIENT_MATERIAL, None)
         if not any(self.generate_legal_moves()):
             return Outcome(Termination.STALEMATE, not self.turn)
+        if self.is_threefold_repetition() and self.is_long_check():  # 单方长将
+            return Outcome(Termination.LONG_CHECK, self.turn)
 
         # Automatic draws.
         if self.is_sixty_moves():
             return Outcome(Termination.SIXTY_MOVES, None)
-        if self.is_threefold_repetition():
-            return Outcome(Termination.THREEFOLD_REPETITION, None)
+        if self.is_fourfold_repetition():
+            return Outcome(Termination.FOURFOLD_REPETITION, None)
 
         return None
 
