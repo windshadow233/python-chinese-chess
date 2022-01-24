@@ -358,12 +358,11 @@ def to_gif(board: cchess.Board, filename, *,
         import tqdm
     except ImportError:
         return
-    move_stack = copy.copy(board.move_stack)
-    if not move_stack:
+    if not board.move_stack:
         return
-    board.set_fen(start_fen)
+    new_board = cchess.Board(start_fen)
     gif_images = []
-    svg = cchess.svg.board(board, size=size,
+    svg = cchess.svg.board(new_board, size=size,
                            orientation=orientation,
                            coordinates=coordinates,
                            axes_type=axes_type,
@@ -373,14 +372,14 @@ def to_gif(board: cchess.Board, filename, *,
     png_bytes = cairosvg.svg2png(svg)
     png_array = np.array(Image.open(io.BytesIO(png_bytes)))
     gif_images.append(png_array)
-    for move in tqdm.tqdm(move_stack):
-        board.push(move)
-        svg = cchess.svg.board(board, size=size,
+    for move in tqdm.tqdm(board.move_stack):
+        new_board.push(move)
+        svg = cchess.svg.board(new_board, size=size,
                                orientation=orientation,
                                coordinates=coordinates,
                                axes_type=axes_type,
-                               lastmove=board.peek() if lastmove else None,
-                               checkers=board.checkers() if checkers else None,
+                               lastmove=new_board.peek() if lastmove else None,
+                               checkers=new_board.checkers() if checkers else None,
                                style=style)
         png_bytes = cairosvg.svg2png(svg)
         png_array = np.array(Image.open(io.BytesIO(png_bytes)))
