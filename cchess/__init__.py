@@ -1723,6 +1723,7 @@ class Board(BaseBoard):
         :func:`checkmate <cchess.Board.is_checkmate()>`,
         :func:`insufficient_material <cchess.Board.is_insufficient_material()>`,
         :func:`stalemate <cchess.Board.is_stalemate()>`,
+        :func:`longcheck <cchess.Board.is_long_check()>`,
         the :func:`sixty-move rule <cchess.Board.is_sixty_moves()>`,
         :func:`fourfold repetition <cchess.Board.is_fourfold_repetition()>`,
         Returns the :class:`cchess.Outcome` if the game has ended, otherwise
