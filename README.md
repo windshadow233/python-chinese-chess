@@ -429,5 +429,16 @@ Move.from_uci('c2e3')
 ```
 <img width="400" height="400" src="images/board.gif"/>
 
+- pgn文件解析
+一个合法的PGN文件应该与示例(pgn/cg300.pgn)类似,除了一些棋局信息元数据,还必须包含“[FEN]”字段(棋局初始状态)。
+在“[FEN]”字段之后进行着法的记录,每一行至多记录两条以“四字记谱法”表示的着法(可以有一定的字符容错,例如红车可以写成“车”而不必写成“俥”)。
+每一行着法必须以阿拉伯数字+小数点作为起始,表示回合数,紧接着的两条着法记录之间以空格作为分隔符。
+
+其中，转换成GIF的功能需要预先安装前文提到的库。
+
+```python
+>>> board.from_pgn("pgn/cg300.pgn", to_gif=True, gif_file="images/cg300.gif")
+```
+<img width="400" height="400" src="images/cg300.gif"/>
 
 ## 待补充...
