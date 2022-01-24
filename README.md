@@ -437,7 +437,7 @@ Move.from_uci('c2e3')
 其中，转换成GIF的功能需要预先安装前文提到的库。
 
 ```python
->>> board.from_pgn("pgn/cg300.pgn", to_gif=True, gif_file="images/cg300.gif")
+>>> board.from_pgn("pgn/cg300.pgn", to_gif=True, gif_file="images/cg300.gif", duration=2)
 ```
 <img width="400" height="400" src="images/cg300.gif"/>
 
