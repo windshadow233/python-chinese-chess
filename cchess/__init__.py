@@ -2099,7 +2099,7 @@ class Board(BaseBoard):
             raise ValueError("No FEN string found!")
         for notation in data[i + 1:]:
             notation = notation.strip()
-            notation = re.fullmatch("\\d+\\.([\\u4e00-\\u9fa5]{4}) ?([\\u4e00-\\u9fa51-9]{4})?", notation)
+            notation = re.fullmatch("\\d+\\. ?([\\u4e00-\\u9fa5]{4}) ?([\\u4e00-\\u9fa51-9]{4})?", notation)
             if notation:
                 notations = notation.groups()
                 for nota in notations:
