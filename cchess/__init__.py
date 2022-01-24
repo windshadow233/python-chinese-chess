@@ -1668,6 +1668,39 @@ class Board(BaseBoard):
 
         return False
 
+    def is_long_check(self) -> bool:
+        """Check if the opposite turn has given check unilaterally for at least 3 times."""
+        if not self.is_check():
+            return False
+        switchyard = []
+        current_checker = not self.turn
+        checks_num = 1
+        try:
+            while True:
+
+                if not self.move_stack:
+                    break
+
+                move = self.pop()
+                switchyard.append(move)
+
+                if not self.is_check():
+                    if self.turn != current_checker:
+                        break
+                else:
+                    if self.turn != current_checker:
+                        checks_num += 1
+                    else:
+                        checks_num = 0
+                if checks_num >= 3:
+                    return True
+
+        finally:
+            while switchyard:
+                self.push(switchyard.pop())
+
+        return False
+
     def is_fivefold_repetition(self) -> bool:
         return self.is_repetition(5)
 
