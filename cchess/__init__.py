@@ -1671,9 +1671,10 @@ class Board(BaseBoard):
         return False
 
     def is_perpetual_check(self) -> bool:
-        """Check if the opposite turn has given check unilaterally for at least 3 times.
-        Need to be used after Board.is_threefold_repetition()"""
+        """Check if the opposite turn has given check unilaterally."""
         if not self.is_check():
+            return False
+        if not self.is_fourfold_repetition():
             return False
         switchyard = []
         current_checker = not self.turn
@@ -1743,7 +1744,7 @@ class Board(BaseBoard):
             return Outcome(Termination.INSUFFICIENT_MATERIAL, None)
         if not any(self.generate_legal_moves()):
             return Outcome(Termination.STALEMATE, not self.turn)
-        if self.is_fourfold_repetition() and self.is_perpetual_check():  # 单方长将
+        if self.is_perpetual_check():  # 单方长将
             return Outcome(Termination.PERPETUAL_CHECK, self.turn)
 
         # Automatic draws.
