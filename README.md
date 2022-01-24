@@ -264,7 +264,7 @@ False
 
 ### 重复局面检测
 ```python
->>> board.is_fourfold_repetition()  # 一般比赛规定出现四次重复即不变作和
+>>> board.is_sixfold_repetition()  # 一般比赛规定出现五次循环局面后,不变着作和
 False
 >>> n = 7
 >>> board.is_repetition(n)  # 也可以根据情况任意指定不变作和需要达到的重复次数
