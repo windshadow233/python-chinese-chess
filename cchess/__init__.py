@@ -143,8 +143,8 @@ class Termination(enum.Enum):
     """See :func:`cchess.Board.is_stalemate()`."""
     INSUFFICIENT_MATERIAL = enum.auto()
     """See :func:`cchess.Board.is_insufficient_material()`."""
-    FOURFOLD_REPETITION = enum.auto()
-    """See :func:`cchess.Board.is_fourfold_repetition()`."""
+    SIXFOLD_REPETITION = enum.auto()
+    """See :func:`cchess.Board.is_sixfold_repetition()`."""
     SIXTY_MOVES = enum.auto()
     """See :func:`cchess.Board.is_sixty_moves()`."""
     LONG_CHECK = enum.auto()
@@ -1704,6 +1704,9 @@ class Board(BaseBoard):
 
         return False
 
+    def is_sixfold_repetition(self) -> bool:
+        return self.is_repetition(6)
+
     def is_fivefold_repetition(self) -> bool:
         return self.is_repetition(5)
 
@@ -1725,7 +1728,7 @@ class Board(BaseBoard):
         :func:`stalemate <cchess.Board.is_stalemate()>`,
         :func:`longcheck <cchess.Board.is_long_check()>`,
         the :func:`sixty-move rule <cchess.Board.is_sixty_moves()>`,
-        :func:`fourfold repetition <cchess.Board.is_fourfold_repetition()>`,
+        :func:`sixfold repetition <cchess.Board.is_sixfold_repetition()>`,
         Returns the :class:`cchess.Outcome` if the game has ended, otherwise
         ``None``.
 
@@ -1740,14 +1743,14 @@ class Board(BaseBoard):
             return Outcome(Termination.INSUFFICIENT_MATERIAL, None)
         if not any(self.generate_legal_moves()):
             return Outcome(Termination.STALEMATE, not self.turn)
-        if self.is_threefold_repetition() and self.is_long_check():  # 单方长将
+        if self.is_fourfold_repetition() and self.is_long_check():  # 单方长将
             return Outcome(Termination.LONG_CHECK, self.turn)
 
         # Automatic draws.
         if self.is_sixty_moves():
             return Outcome(Termination.SIXTY_MOVES, None)
-        if self.is_fourfold_repetition():
-            return Outcome(Termination.FOURFOLD_REPETITION, None)
+        if self.is_sixfold_repetition():
+            return Outcome(Termination.SIXFOLD_REPETITION, None)
 
         return None
 
