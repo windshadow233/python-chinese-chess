@@ -1671,7 +1671,7 @@ class Board(BaseBoard):
         return False
 
     def is_perpetual_check(self) -> bool:
-        """Check if the opposite turn has given check unilaterally."""
+        """Check if the opposite turn is giving perpetual check."""
         if not self.is_check():
             return False
         if not self.is_fourfold_repetition():
