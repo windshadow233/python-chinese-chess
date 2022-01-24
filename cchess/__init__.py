@@ -1748,10 +1748,10 @@ class Board(BaseBoard):
             return Outcome(Termination.PERPETUAL_CHECK, self.turn)
 
         # Automatic draws.
-        if self.is_sixty_moves():
-            return Outcome(Termination.SIXTY_MOVES, None)
         if self.is_sixfold_repetition():
             return Outcome(Termination.SIXFOLD_REPETITION, None)
+        if self.is_sixty_moves():
+            return Outcome(Termination.SIXTY_MOVES, None)
 
         return None
 
