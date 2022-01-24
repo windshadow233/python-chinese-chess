@@ -1,0 +1,25 @@
+﻿[Game "Chinese Chess"]
+[Event "300关.三国演义.议取西蜀"]
+[Round "0"]
+[PlyCount "13"]
+[Date ""]
+[Site ""]
+[Red ""]
+[RedTeam ""]
+[Black ""]
+[BlackTeam ""]
+[Result "1-0"]
+[Opening ""]
+[Variation ""]
+[ECCO ""]
+[Generator "xiangqi-book-edit"]
+[Index "cg300"]
+[FEN "4c4/3Ra4/2PckaP2/9/1r3rN2/4C4/9/9/2p1p4/3K5 w - - 0 1"]
+1.兵七平六 士5进4
+2.车六退一 将5退1
+3.车六进一 将5进1
+4.兵三平四 车6退2
+5.马三进五 车2平5
+6.马五进七 车5进1
+7.车六平五 
+1-0 {红胜}
