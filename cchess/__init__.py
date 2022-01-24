@@ -2,6 +2,7 @@ from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple
 import copy
 import dataclasses
 import enum
+import re
 
 Color = bool
 COLORS = [BLACK, RED] = [False, True]
@@ -2082,6 +2083,31 @@ class Board(BaseBoard):
             else:
                 notations += "\n"
         return notations[:-1]
+
+    def from_pgn(self, pgn_file: str, *, to_gif=False, gif_file="default.gif"):
+        with open(pgn_file, 'r') as f:
+            data = f.readlines()
+        notation_filter = [str.maketrans("车马炮将", "車馬砲將"),
+                           str.maketrans("车马帅", "俥傌帥")]
+        for i, info in enumerate(data):
+            fen = re.match("\\[FEN \"(.+)\"\\]", info)
+            if fen:
+                fen = fen.groups()[0]
+                self.set_fen(fen)
+                break
+        else:
+            raise ValueError("No FEN string found!")
+        for notation in data[i + 1:]:
+            notation = notation.strip()
+            notation = re.fullmatch("\\d+\\.([\\u4e00-\\u9fa5]{4}) ?([\\u4e00-\\u9fa51-9]{4})?", notation)
+            if notation:
+                notations = notation.groups()
+                for nota in notations:
+                    if nota:
+                        self.push_notation(nota.translate(notation_filter[self.turn]))
+        if to_gif:
+            import cchess.svg
+            cchess.svg.to_gif(self, filename=gif_file, start_fen=fen, axes_type=1)
 
 
 def get_unique_piece_square(board: Board, piece_type, color, piece_unicode, column_index):
