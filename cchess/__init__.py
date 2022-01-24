@@ -2084,7 +2084,7 @@ class Board(BaseBoard):
                 notations += "\n"
         return notations[:-1]
 
-    def from_pgn(self, pgn_file: str, *, to_gif=False, gif_file="default.gif"):
+    def from_pgn(self, pgn_file: str, *, to_gif=False, gif_file="default.gif", duration=2):
         with open(pgn_file, 'r') as f:
             data = f.readlines()
         notation_filter = [str.maketrans("车马炮将", "車馬砲將"),
@@ -2107,7 +2107,7 @@ class Board(BaseBoard):
                         self.push_notation(nota.translate(notation_filter[self.turn]))
         if to_gif:
             import cchess.svg
-            cchess.svg.to_gif(self, filename=gif_file, start_fen=fen, axes_type=1)
+            cchess.svg.to_gif(self, filename=gif_file, start_fen=fen, axes_type=1, duration=duration)
 
 
 def get_unique_piece_square(board: Board, piece_type, color, piece_unicode, column_index):
