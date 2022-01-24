@@ -233,7 +233,7 @@ True
 >>> board.push_uci("d6f5")  # 将军
 >>> board.push_uci("e7f7")
 >>> board.push_uci("f5d6")  # 连续将军三次
->>> board.is_long_check()
+>>> board.is_perpetual_check()
 True
 
 >>> board = cchess.Board("5c3/9/5k3/9/5N3/9/5c3/9/5K3/9")
@@ -242,7 +242,7 @@ True
 >>> board.push_uci("d6f5")  # 将军
 >>> board.push_uci("e7f7")
 >>> board.push_uci("f5d6")  # 连续将军三次
->>> board.is_long_check()  # 此时判定为False
+>>> board.is_perpetual_check()  # 此时判定为False
 False
 ```
 
