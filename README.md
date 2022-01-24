@@ -227,20 +227,20 @@ True
 **注意**，此操作只检测单方连续将军的次数，故连杀或吃子将军等合法情况也同样会被检测。若需判定一方“长将”，需要结合Board.is_repetition()方法。
 ```python
 >>> board = cchess.Board("5r3/9/5k3/9/5N3/9/5c3/9/5K3/9")
->>> board.push_notation("傌四进六")  # 将军
->>> board.push_notation("將6平5")
->>> board.push_notation("傌六退四")  # 将军
->>> board.push_notation("將5平6")
->>> board.push_notation("傌四进六")  # 连续将军三次
+>>> board.push_uci("f5d6")  # 将军
+>>> board.push_uci("f7e7")
+>>> board.push_uci("d6f5")  # 将军
+>>> board.push_uci("e7f7")
+>>> board.push_uci("f5d6")  # 连续将军三次
 >>> board.is_long_check()
 True
 
 >>> board = cchess.Board("5c3/9/5k3/9/5N3/9/5c3/9/5K3/9")
->>> board.push_notation("傌四进六")  # 将军
->>> board.push_notation("將6平5")   # 解将还将
->>> board.push_notation("傌六退四")  # 将军
->>> board.push_notation("將5平6")
->>> board.push_notation("傌四进六")
+>>> board.push_uci("f5d6")  # 将军
+>>> board.push_uci("f7e7")  # 解将还将
+>>> board.push_uci("d6f5")  # 将军
+>>> board.push_uci("e7f7")
+>>> board.push_uci("f5d6")  # 连续将军三次
 >>> board.is_long_check()  # 此时判定为False
 False
 ```
