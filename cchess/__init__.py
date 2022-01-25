@@ -1697,7 +1697,7 @@ class Board(BaseBoard):
                         checks_num += 1
                     else:
                         checks_num = 0
-                if checks_num >= 3:
+                if checks_num >= 7:
                     return True
 
         finally:
