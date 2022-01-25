@@ -57,7 +57,7 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
                            style="#board{fill:#1b91bc}"  # style-sheet
                            )
 ```
-<div align="center">
+<div>
 <img width="400" height="400" src="images/board_axes_type_0.svg"/>
 <img width="400" height="400" src="images/board_axes_type_1.svg"/>
 </div>
@@ -77,7 +77,7 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 >>> cchess.svg.board(board, squares=board.attacks(cchess.F4))
 ```
 
-<div align="center">
+<div>
 <img width="400" height="400" src="images/knight_attacks.svg"/>
 <img width="400" height="400" src="images/rook_attacks.svg"/>
 </div>
