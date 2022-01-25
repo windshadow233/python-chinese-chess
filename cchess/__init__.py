@@ -2093,9 +2093,9 @@ class Board(BaseBoard):
         board = Board(start_fen)
         notations = ""
         for move in self.move_stack:
-            notations += self.move_to_notation(move)
+            notations += board.move_to_notation(move)
             board.push(move)
-            if not self.turn:
+            if not board.turn:
                 notations += "\t"
             else:
                 notations += "\n"
