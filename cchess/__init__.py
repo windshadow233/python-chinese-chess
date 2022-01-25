@@ -614,6 +614,7 @@ class Move:
 class BaseBoard:
     def __init__(self, board_fen: Optional[str] = STARTING_BOARD_FEN):
         self.occupied_co = [BB_EMPTY, BB_EMPTY]
+        self._starting_board_fen = ""
         if board_fen is None:
             self._clear_board()
         elif board_fen == STARTING_BOARD_FEN:
@@ -635,6 +636,7 @@ class BaseBoard:
         self.occupied_co[RED] = BB_EMPTY
         self.occupied_co[BLACK] = BB_EMPTY
         self.occupied = BB_EMPTY
+        self._starting_board_fen = ""
 
     def clear_board(self):
         self._clear_board()
@@ -651,6 +653,7 @@ class BaseBoard:
         self.occupied_co[RED] = BB_START_OCCUPIED_RED
         self.occupied_co[BLACK] = BB_START_OCCUPIED_BLACK
         self.occupied = BB_START_OCCUPIED
+        self._starting_board_fen = STARTING_BOARD_FEN
 
     def reset_board(self):
         self._reset_board()
@@ -709,6 +712,7 @@ class BaseBoard:
                 piece = Piece.from_symbol(c)
                 self._set_piece_at(SQUARES_180[square_index], piece.piece_type, piece.color)
                 square_index += 1
+        self._starting_board_fen = fen
 
     def set_board_fen(self, fen: str):
         """
