@@ -344,7 +344,7 @@ def _knight_attacks(square: Square, occupied: BitBoard):
             attack_deltas = KNIGHT_ATTACK_DELTAS[2 * i: 2 * i + 2]
             for delta in attack_deltas:
                 sq = square + delta
-                if not (0 <= sq <= 90) or square_distance(sq, square) > 2:
+                if not (0 <= sq < 90) or square_distance(sq, square) > 2:
                     continue
                 attacks |= BB_SQUARES[sq]
 
@@ -366,7 +366,7 @@ def _knights_can_attack(square: Square, occupied: BitBoard):
             attack_deltas = KNIGHT_ATTACKER_DELTAS[2 * i: 2 * i + 2]
             for delta in attack_deltas:
                 sq = square + delta
-                if not (0 <= sq <= 90) or square_distance(sq, square) > 2:
+                if not (0 <= sq < 90) or square_distance(sq, square) > 2:
                     continue
                 attackers |= BB_SQUARES[sq]
 
@@ -1144,6 +1144,7 @@ class Board(BaseBoard):
         super(Board, self).__init__(None)
         self.move_stack = []
         self._stack = []
+        self._starting_fen = ""
 
         if fen is None:
             self.clear()
@@ -1151,7 +1152,6 @@ class Board(BaseBoard):
             self.reset()
         else:
             self.set_fen(fen)
-        self._starting_fen = self.fen()
 
     def __repr__(self):
         return f"{type(self).__name__}({self.fen()!r})"
@@ -1272,6 +1272,7 @@ class Board(BaseBoard):
         self.halfmove_clock = halfmove_clock
         self.fullmove_number = fullmove_number
         self.clear_stack()
+        self._starting_fen = self.fen()
 
     @property
     def legal_moves(self):
@@ -1301,6 +1302,7 @@ class Board(BaseBoard):
         self.fullmove_number = 1
 
         self.clear_board()
+        self._starting_fen = ""
 
     def clear_board(self):
         super().clear_board()
@@ -1318,6 +1320,7 @@ class Board(BaseBoard):
         self.fullmove_number = 1
 
         self.reset_board()
+        self._starting_fen = type(self).starting_fen
 
     def reset_board(self) -> None:
         """
