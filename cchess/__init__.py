@@ -1672,39 +1672,53 @@ class Board(BaseBoard):
         return False
 
     def is_perpetual_check(self) -> bool:
-        """Check if the opposite turn is giving perpetual check."""
         if not self.is_check():
             return False
-        if not self.is_fourfold_repetition():
+        # Fast check, based on occupancy only.
+        count = 4
+        maybe_repetitions = 1
+        for state in reversed(self._stack):
+            if state.occupied == self.occupied:
+                maybe_repetitions += 1
+                if maybe_repetitions >= count:
+                    break
+        if maybe_repetitions < count:
             return False
-        switchyard = []
         current_checker = not self.turn
         checks_num = 1
+        # Check full replay.
+        transposition_key = self._transposition_key()
+        switchyard = []
+
         try:
             while True:
+                if count <= 1:
+                    if checks_num >= 7:
+                        return True
+                    return False
 
-                if not self.move_stack:
-                    break
+                if len(self.move_stack) < count - 1:
+                    return False
 
                 move = self.pop()
                 switchyard.append(move)
 
+                if self.is_irreversible(move):
+                    return False
+
+                if self._transposition_key() == transposition_key:
+                    count -= 1
                 if not self.is_check():
                     if self.turn != current_checker:
-                        break
+                        return False
                 else:
                     if self.turn != current_checker:
                         checks_num += 1
                     else:
                         checks_num = 0
-                if checks_num >= 7:
-                    return True
-
         finally:
             while switchyard:
                 self.push(switchyard.pop())
-
-        return False
 
     def is_sixfold_repetition(self) -> bool:
         return self.is_repetition(6)
