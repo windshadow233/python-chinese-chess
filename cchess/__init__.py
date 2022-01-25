@@ -1130,7 +1130,7 @@ class Board(BaseBoard):
     of the black side.
     """
     halfmove_clock: int
-    """The number of half-moves since the last capture or pawn move."""
+    """The number of half-moves since the last capture."""
     move_stack: List[Move]
     """
     The move stack. Use :func:`Board.push() <cchess.Board.push()>`,
