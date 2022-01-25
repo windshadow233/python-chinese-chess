@@ -63,6 +63,14 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 </div>
 
 - 标记指定点位
+
+```python
+>>> board = cchess.Board("9/9/9/9/9/9/9/9/9/9")
+>>> cchess.svg.board(board, squares=cchess.SquareSet([cchess.E4, cchess.F8]))
+```
+
+<img width="400" height="400" src="images/squares.svg"/>
+
 ```python
 >>> board = cchess.Board("9/9/9/9/9/4NR3/9/9/9/9")
 >>> cchess.svg.board(board, squares=board.attacks(cchess.E4))
@@ -73,13 +81,6 @@ git clone https://github.com/windshadow233/python-chinese-chess.git
 <img width="400" height="400" src="images/knight_attacks.svg"/>
 <img width="400" height="400" src="images/rook_attacks.svg"/>
 </div>
-
-```python
->>> board = cchess.Board("9/9/9/9/9/9/9/9/9/9")
->>> cchess.svg.board(board, squares=cchess.SquareSet([cchess.E4, cchess.F8]))
-```
-
-<img width="400" height="400" src="images/squares.svg"/>
 
 - Jupyter Notebook可直接显示棋盘棋子的svg,棋盘可设置坐标类型、自定义CSS
 ![](images/jupyter.png)
