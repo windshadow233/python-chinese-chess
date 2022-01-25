@@ -2,12 +2,14 @@ from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple
 import copy
 import dataclasses
 import enum
+import datetime
 import warnings
 import re
 
 Color = bool
 COLORS = [BLACK, RED] = [False, True]
 COLOR_NAMES = ["black", "red"]
+COLOR_NAMES_CN = ['黑', '红']
 
 PieceType = int
 PIECE_TYPES = [PAWN, ROOK, KNIGHT, BISHOP, ADVISOR, KING, CANNON] = range(1, 8)
@@ -1149,6 +1151,7 @@ class Board(BaseBoard):
             self.reset()
         else:
             self.set_fen(fen)
+        self._starting_fen = self.fen()
 
     def __repr__(self):
         return f"{type(self).__name__}({self.fen()!r})"
@@ -2089,17 +2092,33 @@ class Board(BaseBoard):
                     move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
         return "".join([piece_notation, direction_notation, move_notation])
 
-    def notations(self, start_fen=STARTING_FEN):
-        board = Board(start_fen)
+    def to_pgn(self):
+        board = Board(self._starting_fen)
+        pgn = ["""[Game "Chinese Chess"]""", f"""[PlyCount {self.ply()!r}]""",
+               f"""[Date {datetime.datetime.today().strftime("%Y-%m-%d")!r}]"""]
+        outcome = self.outcome()
+        result = outcome.result() if outcome else ""
+        pgn.extend([f"""[Result {result!r}]""", f"""[FEN {board.fen()!r}]"""])
         notations = ""
+        i = 1
+        turn = board.turn
         for move in self.move_stack:
+            if board.turn == turn:
+                notations += f"{i}."
             notations += board.move_to_notation(move)
             board.push(move)
-            if not board.turn:
-                notations += "\t"
+            if board.turn != turn:
+                notations += " "
             else:
                 notations += "\n"
-        return notations[:-1]
+                i += 1
+        pgn.append(notations[:-1])
+        if result:
+            if outcome.winner is not None:
+                pgn.append(result + " {%s胜}" % COLOR_NAMES_CN[outcome.winner])
+            else:
+                pgn.append(result + " {和棋}")
+        return "\n".join(pgn)
 
     def from_pgn(self, pgn_file: str, *, to_gif=False, gif_file="default.gif", duration=2):
         with open(pgn_file, 'r') as f:
