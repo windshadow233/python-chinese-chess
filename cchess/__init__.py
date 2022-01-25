@@ -762,7 +762,7 @@ class BaseBoard:
         Returns a string representation of the board with Unicode pieces.
         Useful for pretty-printing to a terminal.
 
-        :param invert_color: Invert c.olor of the Unicode pieces.
+        :param invert_color: Invert color of the Unicode pieces.
         :param axes: Show a coordinate axes margin.
         :param axes_type: Coordinate axes type, 0 for modern and 1 for traditional.
         """
