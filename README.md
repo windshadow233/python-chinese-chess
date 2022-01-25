@@ -412,10 +412,16 @@ Move.from_uci('c2e3')
 >>> board.push(cchess.Move.from_uci('g6g5'))
 >>> board.push(cchess.Move.from_uci('g4g9'))
 
->>> print(board.notations(start_fen=cchess.STARTING_FEN))
-炮二进二	士4进5
-炮二平三	卒7进1
-炮三进五
+>>> print(board.to_pgn())
+[Game "Chinese Chess"]
+[PlyCount 5]
+[Date '2022-01-25']
+[Result '1-0']
+[FEN 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1']
+1.炮二进二 士4进5
+2.炮二平三 卒7进1
+3.炮三进五
+1-0 {红胜}
 ```
 
 - 棋谱GIF生成,以上面代码中的棋局为例
@@ -424,7 +430,6 @@ Move.from_uci('c2e3')
 ```python
 >>> import cchess.svg
 >>> cchess.svg.to_gif(board, "images/board.gif",
-                      start_fen=cchess.STARTING_FEN,  # 棋盘初始状态
                       duration=2,  # 每一步的时间间隔
                       orientation=cchess.RED,  # 棋盘方向
                       coordinates=True,  # 是否显示坐标
