@@ -1561,7 +1561,7 @@ class Board(BaseBoard):
             else:
                 raise ValueError("Move is not legal!")
         except (AssertionError, ValueError):
-            return
+            raise ValueError("Notation is not legal!")
 
     def push_uci(self, uci: str):
         move = Move.from_uci(uci)
