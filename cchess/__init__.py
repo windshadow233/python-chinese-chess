@@ -2106,12 +2106,12 @@ class Board(BaseBoard):
             if board.turn == turn:
                 notations += f"{i}."
             notations += board.move_to_notation(move)
-            board.push(move)
-            if board.turn != turn:
+            if board.turn == turn:
                 notations += " "
             else:
                 notations += "\n"
                 i += 1
+            board.push(move)
         pgn.append(notations[:-1])
         if result:
             if outcome.winner is not None:
