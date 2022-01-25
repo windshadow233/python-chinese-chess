@@ -2,6 +2,7 @@ from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple
 import copy
 import dataclasses
 import enum
+import warnings
 import re
 
 Color = bool
@@ -566,6 +567,8 @@ class Piece:
 @dataclasses.dataclass(unsafe_hash=True)
 class Move:
     def __init__(self, from_square: Square, to_square: Square):
+        assert from_square in SQUARES, f"from_square out of range: {from_square!r}"
+        assert to_square in SQUARES, f"to_square out of range: {to_square!r}"
         self.from_square = from_square
         self.to_square = to_square
 
@@ -2110,7 +2113,9 @@ class Board(BaseBoard):
                 self.set_fen(fen)
                 break
         else:
-            raise ValueError("No FEN string found!")
+            warnings.warn("No FEN string found! Use default starting fen.")
+            self.reset()
+            i = - 1
         for notation in data[i + 1:]:
             notation = notation.strip()
             notation = re.fullmatch("\\d+\\. ?([\\u4e00-\\u9fa5]{4}) ?([\\u4e00-\\u9fa51-9]{4})?", notation)
