@@ -2098,7 +2098,7 @@ class Board(BaseBoard):
                f"""[Date {datetime.datetime.today().strftime("%Y-%m-%d")!r}]"""]
         outcome = self.outcome()
         result = outcome.result() if outcome else ""
-        pgn.extend([f"""[Result {result!r}]""", f"""[FEN {board.fen()!r}]"""])
+        pgn.extend([f"""[Result {result!r}]""", f"""[FEN {self._starting_fen!r}]"""])
         notations = ""
         i = 1
         turn = board.turn
