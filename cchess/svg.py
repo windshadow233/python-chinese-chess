@@ -310,7 +310,6 @@ def board(board: cchess.BaseBoard, *,
 
 
 def to_gif(board: cchess.Board, filename, *,
-           start_fen: str = cchess.STARTING_FEN,
            size: Optional[int] = 450,
            duration: int = 3,
            orientation: cchess.Color = cchess.RED,
@@ -331,7 +330,7 @@ def to_gif(board: cchess.Board, filename, *,
         return
     if not board.move_stack:
         return
-    new_board = cchess.Board(start_fen)
+    new_board = cchess.Board(getattr(board, "_starting_fen"))
     gif_images = []
     svg = cchess.svg.board(new_board, size=size,
                            orientation=orientation,
