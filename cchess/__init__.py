@@ -2158,7 +2158,7 @@ class Board(BaseBoard):
                             print(f"Please check {nota!r}")
         if to_gif:
             import cchess.svg
-            cchess.svg.to_gif(self, filename=gif_file, start_fen=fen, axes_type=1, duration=duration)
+            cchess.svg.to_gif(self, filename=gif_file, axes_type=1, duration=duration)
 
 
 def get_unique_piece_square(board: Board, piece_type, color, piece_unicode, column_index):
