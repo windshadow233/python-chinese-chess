@@ -2099,13 +2099,17 @@ class Board(BaseBoard):
                     move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
         return "".join([piece_notation, direction_notation, move_notation])
 
-    def to_pgn(self):
+    def to_pgn(self, *, red="", black="", generator="Python-Chinese-Chess"):
         board = Board(self._starting_fen)
-        pgn = ["""[Game "Chinese Chess"]""", f"""[PlyCount {self.ply()!r}]""",
-               f"""[Date {datetime.datetime.today().strftime("%Y-%m-%d")!r}]"""]
+        pgn = ["""[Game "Chinese Chess"]""", f"""[Round: "{self.fullmove_number}"]""",
+               f"""[PlyCount "{self.ply()}"]""",
+               f"""[Date "{datetime.datetime.today().strftime("%Y-%m-%d")}"]""",
+               f"""[Red "{red}"]""",
+               f"""[Black "{black}"]""",
+               f"""[Generator: "{generator}"]"""]
         outcome = self.outcome()
         result = outcome.result() if outcome else ""
-        pgn.extend([f"""[Result {result!r}]""", f"""[FEN {self._starting_fen!r}]"""])
+        pgn.extend([f"""[Result "{result}"]""", f"""[FEN "{self._starting_fen}"]"""])
         notations = ""
         i = 1
         turn = board.turn
