@@ -323,11 +323,11 @@ False
 '前三平二'
 >>> board.move_to_notation(cchess.Move.from_uci("b5c5"))
 '后八平七'
->>> board.notation_to_move("中八平九")
+>>> board.parse_notation("中八平九")
 Move.from_uci('b6a6')
->>> board.notation_to_move("前馬进3")
+>>> board.parse_notation("前馬进3")
 Move.from_uci('a3c2')
->>> board.notation_to_move("后馬退2")
+>>> board.parse_notation("后馬退2")
 Move.from_uci('a4b6')
 ```
 
