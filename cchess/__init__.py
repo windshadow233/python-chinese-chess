@@ -1898,7 +1898,18 @@ class Board(BaseBoard):
         """
         return self.status() == STATUS_VALID
 
-    def parse_notation(self, notation: str):
+    def parse_uci(self, uci: str) -> Move:
+        move = Move.from_uci(uci)
+
+        if not move:
+            return move
+
+        if not self.is_legal(move):
+            raise ValueError(f"illegal uci: {uci!r} in {self.fen()}")
+
+        return move
+
+    def parse_notation(self, notation: str) -> Move:
         assert len(notation) == 4, "记号的长度不为4"
         if notation in ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN:
             move = Move.from_uci(ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN[notation])
