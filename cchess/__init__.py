@@ -103,7 +103,7 @@ class Status(enum.IntFlag):
     TOO_MANY_RED_CANNONS = 1 << 25
     TOO_MANY_BLACK_CANNONS = 1 << 26
     OPPOSITE_CHECK = 1 << 27
-    WHITE_FACE = 1 << 28
+    KING_LING_OF_SIGHT = 1 << 28
 
 
 STATUS_VALID = Status.VALID
@@ -135,7 +135,7 @@ STATUS_BLACK_ADVISORS_PLACE_WRONG = Status.BLACK_ADVISORS_PLACE_WRONG
 STATUS_TOO_MANY_RED_CANNONS = Status.TOO_MANY_RED_CANNONS
 STATUS_TOO_MANY_BLACK_CANNONS = Status.TOO_MANY_BLACK_CANNONS
 STATUS_OPPOSITE_CHECK = Status.OPPOSITE_CHECK
-STATUS_WHITE_FACE = Status.WHITE_FACE
+STATUS_KING_LING_OF_SIGHT = Status.KING_LING_OF_SIGHT
 
 
 class Termination(enum.Enum):
@@ -1399,7 +1399,7 @@ class Board(BaseBoard):
         """Tests if the current side to move is in check."""
         return bool(self.checkers_mask())
 
-    def is_white_face(self) -> bool:
+    def is_king_line_of_sight(self) -> bool:
         red_king, black_king = self.king(RED), self.king(BLACK)
         if red_king is None or black_king is None:
             return False
@@ -1422,7 +1422,7 @@ class Board(BaseBoard):
     def _is_safe(self, move: Move) -> bool:
         try:
             self.push(move)
-            return not (bool(self.attackers_mask(self.turn, self.king(not self.turn))) | self.is_white_face())
+            return not (bool(self.attackers_mask(self.turn, self.king(not self.turn))) | self.is_king_line_of_sight())
         finally:
             self.pop()
 
@@ -1885,8 +1885,8 @@ class Board(BaseBoard):
         if self.was_into_check():
             errors |= STATUS_OPPOSITE_CHECK
 
-        if self.is_white_face():
-            errors |= STATUS_WHITE_FACE
+        if self.is_king_line_of_sight():
+            errors |= STATUS_KING_LING_OF_SIGHT
 
         return errors
 
