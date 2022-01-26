@@ -414,10 +414,14 @@ Move.from_uci('c2e3')
 
 >>> print(board.to_pgn())
 [Game "Chinese Chess"]
-[PlyCount 5]
-[Date '2022-01-25']
-[Result '1-0']
-[FEN 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1']
+[Round: "3"]
+[PlyCount "5"]
+[Date "2022-01-26"]
+[Red ""]
+[Black ""]
+[Generator: "Python-Chinese-Chess"]
+[Result "1-0"]
+[FEN "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1"]
 1.炮二进二 士4进5
 2.炮二平三 卒7进1
 3.炮三进五
