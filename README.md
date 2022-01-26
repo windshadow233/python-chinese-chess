@@ -206,7 +206,7 @@ True
 True
 ```
 
-- 棋局状态判断
+- 终局状态判断
 ```python
 >>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 >>> board.is_game_over()  # 简单判断是否结束
