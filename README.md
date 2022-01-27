@@ -404,7 +404,7 @@ Move.from_uci('c6c5')
 >>> board.push_notation('傌七进五')
 Move.from_uci('c2e3')
 ```
-- 传统记谱法棋谱打印
+- 传统记谱法PGN格式棋谱生成
 ```python
 >>> board = cchess.Board()
 
