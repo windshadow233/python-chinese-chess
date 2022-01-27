@@ -2174,7 +2174,7 @@ class Board(BaseBoard):
 
 def get_unique_piece_square(board: Board, piece_type, color, piece_unicode, column_index):
     pieces = [None, board.pawns, board.rooks, board.knights,
-              board.bishops, board.advisors, board.kings, board.cannons][piece_type]
+              None, None, board.kings, board.cannons][piece_type]
     pieces = board.occupied_co[color] & pieces & BB_COLUMNS[column_index]
     assert popcount(pieces) == 1, f"该列上对应棋子{piece_unicode!r}的数量有误"
     return msb(pieces)
