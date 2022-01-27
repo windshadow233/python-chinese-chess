@@ -1,4 +1,6 @@
 import xml.etree.ElementTree as ET
+import os
+import json
 import cchess
 
 from typing import Optional, Tuple, Dict, Union
@@ -354,3 +356,45 @@ def to_gif(board: cchess.Board, filename, *,
         png_array = np.array(Image.open(io.BytesIO(png_bytes)))
         gif_images.append(png_array)
     imageio.mimsave(filename, gif_images, duration=duration)
+
+
+def _get_state(board: cchess.Board):
+    pieces_dict = {
+        "pawn": board.pawns,
+        "rook": board.rooks,
+        "knight": board.knights,
+        "bishop": board.bishops,
+        "advisor": board.advisors,
+        "king": board.kings,
+        "cannon": board.cannons
+    }
+    all_pieces = {"red": {}, "black": {}}
+    for key, value in pieces_dict.items():
+        for color in cchess.COLORS:
+            pieces = list(cchess.scan_forward(value & board.occupied_co[color]))
+            all_pieces[cchess.COLOR_NAMES[color]][key] = pieces
+    lastmove = board.peek() if board.move_stack else None
+    checkers = list(board.checkers())
+    state = {
+        "pieces": all_pieces,
+        "lastmove": [lastmove.from_square, lastmove.to_square] if lastmove else None,
+        "checkers": checkers
+    }
+    return state
+
+
+def to_html(board: cchess.Board, filename):
+    states = []
+    notations = []
+    new_board = cchess.Board(getattr(board, "_starting_fen"))
+    states.append(_get_state(new_board))
+    for move in board.move_stack:
+        notation = new_board.move_to_notation(move)
+        notations.append(notation)
+        new_board.push(move)
+        states.append(_get_state(new_board))
+    with open(os.path.join(os.path.dirname(__file__), "resources", "board.html"), "r") as f:
+        html = f.read()
+    html += f"<script>STATES = {json.dumps(states)}; MOVES = {json.dumps(notations)};</script>"
+    with open(filename, "w") as f:
+        f.write(html)
