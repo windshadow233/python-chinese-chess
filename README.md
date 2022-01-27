@@ -16,6 +16,7 @@
 - 长将(产生3次以上循环局面(允许出现3次)且单方连续将军)判负
 - 对于“子力不足以将死对方”这一强制和棋条件，本项目草率地采用“双方均无能过河的棋子”作为判定方法，因中国象棋残局的变化非常复杂，以鄙人的能力尚不足以对其加以细致的讨论。
 - 生成、解析PGN文件。
+- 生成可交互棋谱(HTML)。
 
 ## 基本操作
 ```python
@@ -460,4 +461,12 @@ Move.from_uci('c2e3')
 ```
 <img width="400" height="400" src="images/cg300.gif"/>
 
+- 可交互HTML棋谱生成
+
+```python
+>>> import cchess.svg
+>>> board = cchess.Board()
+>>> board.from_pgn("pgn/cg300.pgn")
+>>> cchess.svg.to_html(board=board, filename="cg300.html")
+```
 ## 待补充...
