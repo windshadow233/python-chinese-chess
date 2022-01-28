@@ -9,7 +9,7 @@ import re
 Color = bool
 COLORS = [BLACK, RED] = [False, True]
 COLOR_NAMES = ["black", "red"]
-COLOR_NAMES_CN = ['黑', '红']
+COLOR_NAMES_CN = ["黑", "红"]
 
 PieceType = int
 PIECE_TYPES = [PAWN, ROOK, KNIGHT, BISHOP, ADVISOR, KING, CANNON] = range(1, 8)
