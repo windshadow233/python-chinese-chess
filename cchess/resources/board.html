@@ -18,13 +18,15 @@
         text-align: center;
     }
     #moves{
-        position: absolute;
+        position: fixed;
         right: 0;
-        border-radius: 20px;
+        border-radius: 10px;
         padding: 20px;
+        margin: 0;
+        top: 0;
+        bottom: 0;
         background-color: rgba(255,255,255,0.8);
         width: 250px;
-        height: 700px;
         overflow-y: scroll;
         box-shadow: 0 0 15px #666;
     }
@@ -55,7 +57,7 @@
       background-image:-webkit-linear-gradient(45deg, rgba(50,205,50) 25%, transparent 25%, transparent 50%, rgba(50,205,50) 50%, rgba(    50,205,50) 75%, transparent 75%, transparent);
     }
     #buttons{
-        position: absolute;
+        position: fixed;
         bottom: 20px;
         left: 50%;
         transform: translate(-50%);
