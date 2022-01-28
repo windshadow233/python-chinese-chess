@@ -2165,11 +2165,7 @@ class Board(BaseBoard):
                                "(?:[前中后二三四五][兵卒1-9一二三四五六七八九]))"
                                "[进退平][1-9一二三四五六七八九]", data)
         for notation in notations:
-            notation = notation.strip()
             move = self.push_notation(notation.translate(notation_filter[self.turn]))
-            if not move:
-                print(f"Please check move: {notation!r} in {self.fen()!r}")
-
         if to_gif:
             import cchess.svg
             cchess.svg.to_gif(self, filename=gif_file, axes_type=1, duration=duration)
