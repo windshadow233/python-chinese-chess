@@ -2143,8 +2143,12 @@ class Board(BaseBoard):
         return "\n".join(pgn)
 
     def from_pgn(self, pgn_file: str, *, to_gif=False, gif_file="default.gif", duration=2):
-        with open(pgn_file, 'r') as f:
-            data = f.readlines()
+        try:
+            with open(pgn_file, 'r') as f:
+                data = f.readlines()
+        except UnicodeDecodeError:
+            with open(pgn_file, 'r', encoding='gbk') as f:
+                data = f.readlines()
         notation_filter = [str.maketrans("车马炮将", "車馬砲將"),
                            str.maketrans("车马帅士", "俥傌帥仕")]
         for i, info in enumerate(data):
@@ -2164,8 +2168,10 @@ class Board(BaseBoard):
                                "(?:[前后][车俥車马馬傌炮砲])|"
                                "(?:[前中后二三四五][兵卒1-9一二三四五六七八九]))"
                                "[进退平][1-9一二三四五六七八九]", data)
+        if not notations:
+            raise ValueError("Find no legal notations!")
         for notation in notations:
-            move = self.push_notation(notation.translate(notation_filter[self.turn]))
+            self.push_notation(notation.translate(notation_filter[self.turn]))
         if to_gif:
             import cchess.svg
             cchess.svg.to_gif(self, filename=gif_file, axes_type=1, duration=duration)
