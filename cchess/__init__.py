@@ -2157,16 +2157,15 @@ class Board(BaseBoard):
             warnings.warn("No FEN string found! Use default starting fen.")
             self.reset()
             i = - 1
-        for notation in data[i + 1:]:
-            notation = notation.strip()
-            notation = re.fullmatch("\\d+\\. ?([\\u4e00-\\u9fa5]{4}) ?([\\u4e00-\\u9fa51-9]{4})?", notation)
-            if notation:
-                notations = notation.groups()
-                for nota in notations:
-                    if nota:
-                        move = self.push_notation(nota.translate(notation_filter[self.turn]))
-                        if not move:
-                            print(f"Please check {nota!r}")
+        notations = re.findall("(?:(?:[兵卒车俥車马馬傌炮砲仕士象相帅帥将將][1-9一二三四五六七八九])|"
+                               "(?:[前后][车俥車马馬傌炮砲])|"
+                               "(?:[前中后二三四五][兵卒1-9一二三四五六七八九]))"
+                               "[进退平][1-9一二三四五六七八九]", "\n".join(data[i + 1:]))
+        for notation in notations:
+            move = self.push_notation(notation.translate(notation_filter[self.turn]))
+            if not move:
+                print(f"Please check move: {notation!r} in {self.fen()!r}")
+
         if to_gif:
             import cchess.svg
             cchess.svg.to_gif(self, filename=gif_file, axes_type=1, duration=duration)
