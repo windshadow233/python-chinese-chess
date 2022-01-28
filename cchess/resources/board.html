@@ -114,8 +114,8 @@
     }
     function move_to(id){
       let moves = document.getElementById("moves");
-      for (item of moves.children){
-        for (link of item.children){
+      for (let item of moves.children){
+        for (let link of item.children){
           if (link.id !== id) link.classList.remove("selected");
           else link.classList.add("selected");
         }
