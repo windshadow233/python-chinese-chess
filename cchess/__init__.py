@@ -1572,14 +1572,14 @@ class Board(BaseBoard):
                 self.push(move)
                 return move
             else:
-                raise ValueError(f"illegal notation: {notation!r} in {self.fen()}")
+                raise ValueError(f"illegal notation: {notation!r} in {self.fen()!r}")
         except (AssertionError, ValueError):
-            raise ValueError(f"illegal notation: {notation!r} in {self.fen()}")
+            raise ValueError(f"illegal notation: {notation!r} in {self.fen()!r}")
 
     def push_uci(self, uci: str):
         move = Move.from_uci(uci)
         if not self.is_legal(move):
-            raise ValueError(f"illegal uci: {uci!r} in {self.fen()}")
+            raise ValueError(f"illegal uci: {uci!r} in {self.fen()!r}")
         self.push(move)
 
     def find_move(self, from_square: Square, to_square: Square) -> Move:
@@ -1905,7 +1905,7 @@ class Board(BaseBoard):
             return move
 
         if not self.is_legal(move):
-            raise ValueError(f"illegal uci: {uci!r} in {self.fen()}")
+            raise ValueError(f"illegal uci: {uci!r} in {self.fen()!r}")
 
         return move
 
@@ -2146,7 +2146,7 @@ class Board(BaseBoard):
         with open(pgn_file, 'r') as f:
             data = f.readlines()
         notation_filter = [str.maketrans("车马炮将", "車馬砲將"),
-                           str.maketrans("车马帅", "俥傌帥")]
+                           str.maketrans("车马帅士", "俥傌帥仕")]
         for i, info in enumerate(data):
             fen = re.match("\\[FEN \"(.+)\"\\]", info)
             if fen:
@@ -2157,11 +2157,15 @@ class Board(BaseBoard):
             warnings.warn("No FEN string found! Use default starting fen.")
             self.reset()
             i = - 1
+        data = "\n".join(data[i + 1:])
+        data = data.translate(str.maketrans("１２３４５６７８９", "123456789"))
+        data = re.sub("{(?:.|\n)*?}", "", data)
         notations = re.findall("(?:(?:[兵卒车俥車马馬傌炮砲仕士象相帅帥将將][1-9一二三四五六七八九])|"
                                "(?:[前后][车俥車马馬傌炮砲])|"
                                "(?:[前中后二三四五][兵卒1-9一二三四五六七八九]))"
-                               "[进退平][1-9一二三四五六七八九]", "\n".join(data[i + 1:]))
+                               "[进退平][1-9一二三四五六七八九]", data)
         for notation in notations:
+            notation = notation.strip()
             move = self.push_notation(notation.translate(notation_filter[self.turn]))
             if not move:
                 print(f"Please check move: {notation!r} in {self.fen()!r}")
