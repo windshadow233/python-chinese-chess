@@ -374,11 +374,9 @@ def _get_state(board: cchess.Board):
             pieces = list(cchess.scan_forward(value & board.occupied_co[color]))
             all_pieces[cchess.COLOR_NAMES[color]][key] = pieces
     lastmove = board.peek() if board.move_stack else None
-    checkers = list(board.checkers())
     state = {
         "pieces": all_pieces,
-        "lastmove": [lastmove.from_square, lastmove.to_square] if lastmove else None,
-        "checkers": checkers
+        "lastmove": [lastmove.from_square, lastmove.to_square] if lastmove else None
     }
     return state
 
