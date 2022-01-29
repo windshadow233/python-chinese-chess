@@ -381,7 +381,8 @@ def _get_state(board: cchess.Board):
     return state
 
 
-def to_html(board: cchess.Board, filename, title='Chinese Chess Board'):
+def to_html(board: cchess.Board, filename, title=None):
+    title = title or "Chinese Chess Board"
     states = []
     notations = []
     new_board = cchess.Board(getattr(board, "_starting_fen"))
