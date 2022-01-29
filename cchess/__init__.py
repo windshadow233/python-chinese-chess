@@ -2142,7 +2142,9 @@ class Board(BaseBoard):
                 pgn.append(result + " {和棋}")
         return "\n".join(pgn)
 
-    def from_pgn(self, pgn_file: str, *, to_gif=False, gif_file="default.gif", duration=2):
+    def from_pgn(self, pgn_file: str, *,
+                 to_gif=False, gif_file=None, duration=2,
+                 to_html=False, html_file=None):
         try:
             with open(pgn_file, 'r') as f:
                 data = f.readlines()
@@ -2151,6 +2153,12 @@ class Board(BaseBoard):
                 data = f.readlines()
         notation_filter = [str.maketrans("车马炮将", "車馬砲將"),
                            str.maketrans("车马帅士", "俥傌帥仕")]
+        if to_html:
+            for i, info in enumerate(data):
+                title = re.match("\\[Event \"(.+)\"\\]", info)
+                if title:
+                    title = title.groups()[0]
+                    break
         for i, info in enumerate(data):
             fen = re.match("\\[FEN \"(.+)\"\\]", info)
             if fen:
@@ -2172,9 +2180,15 @@ class Board(BaseBoard):
             raise ValueError("Find no legal notations!")
         for notation in notations:
             self.push_notation(notation.translate(notation_filter[self.turn]))
+        filename = pgn_file[:pgn_file.rfind('.')]
         if to_gif:
             import cchess.svg
+            gif_file = gif_file or f'{filename}.gif'
             cchess.svg.to_gif(self, filename=gif_file, axes_type=1, duration=duration)
+        if to_html:
+            import cchess.svg
+            html_file = html_file or f'{filename}.html'
+            cchess.svg.to_html(self, filename=html_file, title=title)
 
 
 def get_unique_piece_square(board: Board, piece_type, color, piece_unicode, column_index):
