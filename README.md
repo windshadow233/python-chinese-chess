@@ -483,8 +483,11 @@ Move.from_uci('c2e3')
 >>> import cchess.svg
 >>> board = cchess.Board()
 >>> board.from_pgn("pgn/cg245.pgn")
->>> cchess.svg.to_html(board=board, filename="cg245.html", title="Chinese Chess Board")
+>>> cchess.svg.to_html(board=board, filename="html/cg245.html", title="Chinese Chess Board")
 
 >>> board.from_pgn("pgn/cg245.pgn", to_html=True, html_file="html/cg245.html")  # 或直接由PGN文件生成HTML棋谱。
 ```
+
+效果详见[245关.三国演义.三战吕布](https://windshadow233.github.io/python-chinese-chess/html/cg245.html)
+
 ## 待补充...
