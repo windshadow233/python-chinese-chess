@@ -2147,31 +2147,26 @@ class Board(BaseBoard):
                  to_html=False, html_file=None):
         try:
             with open(pgn_file, 'r') as f:
-                data = f.readlines()
+                data = f.read()
         except UnicodeDecodeError:
             with open(pgn_file, 'r', encoding='gbk') as f:
-                data = f.readlines()
+                data = f.read()
         notation_filter = [str.maketrans("车马炮将", "車馬砲將"),
                            str.maketrans("车马帅士", "俥傌帥仕")]
         if to_html:
-            for i, info in enumerate(data):
-                title = re.match("\\[Event \"(.+)\"\\]", info)
-                if title:
-                    title = title.groups()[0]
-                    break
-            else:
-                title = None
-        for i, info in enumerate(data):
-            fen = re.match("\\[FEN \"(.+)\"\\]", info)
-            if fen:
-                fen = fen.groups()[0]
-                self.set_fen(fen)
-                break
+            title = re.search("\\[Event \"(.+)\"\\]", data)
+            if title:
+                title = title.groups()[0]
+        fen = re.search("\\[FEN \"(.+)\"\\]", data)
+        if fen:
+            end = fen.end()
+            fen = fen.groups()[0]
+            self.set_fen(fen)
         else:
             warnings.warn("No FEN string found! Use default starting fen.")
             self.reset()
-            i = - 1
-        data = "\n".join(data[i + 1:])
+            end = - 1
+        data = data[end + 1:]
         data = data.translate(str.maketrans("１２３４５６７８９", "123456789"))
         data = re.sub("{(?:.|\n)*?}", "", data)
         notations = re.findall("(?:(?:[兵卒车俥車马馬傌炮砲仕士象相帅帥将將][1-9一二三四五六七八九])|"
