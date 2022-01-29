@@ -456,6 +456,8 @@ Move.from_uci('c2e3')
 
 可输出GIF，此功能需要预先安装前文提到的库。
 
+**注** 由于各象棋软件产生的PGN文件规范不同，在“多枚相同棋子在同一条纵线上”时的着法表示可能与本程序不一致，此时需要手动对文件进行修改。
+
 ```python
 >>> board.from_pgn("pgn/cg300.pgn", to_gif=True, gif_file="images/cg300.gif", duration=2)
 ```
