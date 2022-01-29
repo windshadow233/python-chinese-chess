@@ -454,7 +454,7 @@ Move.from_uci('c2e3')
 在“[FEN]”字段之后进行着法的记录，每一行至多记录两条以“四字记谱法”表示的着法(可以有一定的字符容错，例如红车可以写成“车”而不必写成“俥”)。
 每一行着法必须以阿拉伯数字+小数点作为起始，表示回合数，紧接着的两条着法记录之间以空格作为分隔符。在文件中可以添加注释，注释必须写在一对花括号“{}”内。
 
-其中，转换成GIF的功能需要预先安装前文提到的库。
+可输出GIF，此功能需要预先安装前文提到的库。
 
 ```python
 >>> board.from_pgn("pgn/cg300.pgn", to_gif=True, gif_file="images/cg300.gif", duration=2)
@@ -467,6 +467,8 @@ Move.from_uci('c2e3')
 >>> import cchess.svg
 >>> board = cchess.Board()
 >>> board.from_pgn("pgn/cg300.pgn")
->>> cchess.svg.to_html(board=board, filename="cg300.html")
+>>> cchess.svg.to_html(board=board, filename="cg300.html", title="Chinese Chess Board")
+
+>>> board.from_pgn("pgn/cg300.pgn", to_html=True)  # 或直接由生成HTML棋谱。
 ```
 ## 待补充...
