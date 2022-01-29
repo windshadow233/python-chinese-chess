@@ -461,7 +461,7 @@ Move.from_uci('c2e3')
 ```python
 >>> board.from_pgn("pgn/cg245.pgn", to_gif=True, gif_file="images/cg245.gif", duration=2)
 ```
-<img width="400" height="400" src="images/cg300.gif"/>
+<img width="400" height="400" src="images/cg245.gif"/>
 
 - 可交互HTML棋谱生成
 
