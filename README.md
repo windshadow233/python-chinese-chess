@@ -485,6 +485,6 @@ Move.from_uci('c2e3')
 >>> board.from_pgn("pgn/cg245.pgn")
 >>> cchess.svg.to_html(board=board, filename="cg245.html", title="Chinese Chess Board")
 
->>> board.from_pgn("pgn/cg245.pgn", to_html=True)  # 或直接由PGN文件生成HTML棋谱。
+>>> board.from_pgn("pgn/cg245.pgn", to_html=True, html_file="html/cg245.html")  # 或直接由PGN文件生成HTML棋谱。
 ```
 ## 待补充...
