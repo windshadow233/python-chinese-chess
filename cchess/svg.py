@@ -381,7 +381,7 @@ def _get_state(board: cchess.Board):
     return state
 
 
-def to_html(board: cchess.Board, filename):
+def to_html(board: cchess.Board, filename, title='Chinese Chess Board'):
     states = []
     notations = []
     new_board = cchess.Board(getattr(board, "_starting_fen"))
@@ -393,6 +393,7 @@ def to_html(board: cchess.Board, filename):
         states.append(_get_state(new_board))
     with open(os.path.join(os.path.dirname(__file__), "resources", "board.html"), "r") as f:
         html = f.read()
-    html += f"<script>STATES = {json.dumps(states)}; MOVES = {json.dumps(notations)};</script>"
+    html += (f"<script>document.title = {json.dumps(title)};"
+             f"STATES = {json.dumps(states)}; MOVES = {json.dumps(notations)};</script>")
     with open(filename, "w") as f:
         f.write(html)
