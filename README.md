@@ -450,7 +450,7 @@ Move.from_uci('c2e3')
 
 - pgn文件解析
 
-一个合法的PGN文件应该与示例(pgn/cg300.pgn)类似，除了一些棋局信息元数据，还必须包含“[FEN]”字段(棋局初始状态)。
+一个合法的PGN文件应该与示例(pgn/cg245.pgn)类似，除了一些棋局信息元数据，还必须包含“[FEN]”字段(棋局初始状态)。
 在“[FEN]”字段之后进行着法的记录，每一行至多记录两条以“四字记谱法”表示的着法(可以有一定的字符容错，例如红车可以写成“车”而不必写成“俥”)。
 每一行着法必须以阿拉伯数字+小数点作为起始，表示回合数，紧接着的两条着法记录之间以空格作为分隔符。在文件中可以添加注释，注释必须写在一对花括号“{}”内。
 
@@ -459,7 +459,7 @@ Move.from_uci('c2e3')
 **注** 由于各象棋软件产生的PGN文件规范不同，在“多枚相同棋子在同一条纵线上”时的着法表示可能与本程序不一致，此时需要手动对文件进行修改。
 
 ```python
->>> board.from_pgn("pgn/cg300.pgn", to_gif=True, gif_file="images/cg300.gif", duration=2)
+>>> board.from_pgn("pgn/cg245.pgn", to_gif=True, gif_file="images/cg245.gif", duration=2)
 ```
 <img width="400" height="400" src="images/cg300.gif"/>
 
