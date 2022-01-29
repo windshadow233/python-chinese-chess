@@ -97,6 +97,7 @@ Move.from_uci("h2h4")
 ```
 ### 字符串棋盘打印
 - ASCII 棋盘
+
 ```python
 >>> print(board)
 r n b a k a b n r
@@ -112,6 +113,7 @@ R N B A K A B N R
 ```
 
 - Unicode 棋盘(两种坐标系)
+
 ```python
 >>> print(board.unicode(axes=True, axes_type=0))
   ａｂｃｄｅｆｇｈｉ
@@ -142,6 +144,7 @@ R N B A K A B N R
 九八七六五四三二一
 ```
 ### （伪）合法着法生成、合法性判断
+
 ```python
 >>> board = cchess.Board()
 >>> legal_moves = board.legal_moves
@@ -164,6 +167,7 @@ False
 ```
 
 ### 攻击（特殊情况：将军）检测
+
 ```python
 >>> board= cchess.Board('4k4/2N6/9/9/9/9/9/9/9/3K5 b')
 >>> board.is_attacked_by(cchess.RED, cchess.E9)
@@ -173,6 +177,7 @@ True
 ```
 
 ### 攻击者检测
+
 ```python
 >>> board = cchess.Board('4k3R/2N2n3/5N3/9/9/9/9/9/9/3K5 b')
 >>> attackers = board.attackers(cchess.RED, cchess.E9)
@@ -193,6 +198,7 @@ SquareSet(0x20004000000000000000000)
 
 ### 终局判断
 - 将杀、困毙、子力不足检测
+
 ```python
 >>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 >>> board.is_checkmate()
@@ -210,6 +216,7 @@ True
 ```
 
 - 终局状态判断
+
 ```python
 >>> board = cchess.Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 >>> board.is_game_over()  # 简单判断是否结束
@@ -221,6 +228,7 @@ Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 ### 局面合法性检验
 
 包含棋子数量、棋子位置、将帅照面等情况
+
 ```python
 >>> board = cchess.Board('3k5/R8/9/9/9/9/9/9/9/4K4')
 >>> board.status()
@@ -273,6 +281,7 @@ False
 ```
 
 ### 循环局面检测
+
 ```python
 >>> board.is_sixfold_repetition()  # 一般比赛规定出现五次循环局面后,不变着作和
 False
@@ -282,6 +291,7 @@ False
 ```
 
 ### 自然限着检测
+
 ```python
 >>> board.is_sixty_moves()  # 一般比赛规定60回合为自然限着数
 False
@@ -310,6 +320,7 @@ False
 为维持四字记谱法，上面这种情况下，一般将“兵（卒）”省略，即记为“前三进一”、“中2平3”。
 
 - 传统四字记谱法与现代坐标记谱法的互相转换
+
 ```python
 >>> board = cchess.Board()
 >>> board.move_to_notation(cchess.Move.from_uci("h2e2"))
@@ -335,6 +346,7 @@ Move.from_uci('a4b6')
 ```
 
 - 使用传统四字记谱法进行走子,以开局棋谱“正马三兵对右肋车 黑骑河车”为例
+
 ```python
 >>> board = cchess.Board()
  
@@ -406,6 +418,7 @@ Move.from_uci('c6c5')
 Move.from_uci('c2e3')
 ```
 - 传统记谱法PGN格式棋谱生成
+
 ```python
 >>> board = cchess.Board()
 
@@ -434,6 +447,7 @@ Move.from_uci('c2e3')
 - 棋谱GIF生成,以上面代码中的棋局为例
 
 **使用此功能需要预先安装numpy, pillow, cairosvg, imageio 与 tqdm库**
+
 ```python
 >>> import cchess.svg
 >>> cchess.svg.to_gif(board, "images/board.gif",
