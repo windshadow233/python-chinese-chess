@@ -2159,6 +2159,8 @@ class Board(BaseBoard):
                 if title:
                     title = title.groups()[0]
                     break
+            else:
+                title = None
         for i, info in enumerate(data):
             fen = re.match("\\[FEN \"(.+)\"\\]", info)
             if fen:
