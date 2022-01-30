@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import os
+import copy
 import json
 import cchess
 
@@ -332,7 +333,7 @@ def to_gif(board: cchess.Board, filename, *,
         return
     if not board.move_stack:
         return
-    stack = getattr(board, "_stack")
+    stack = copy.copy(getattr(board, "_stack"))
     stack.append(getattr(board, "_board_state")())
     new_board = cchess.Board()
     stack[0].restore(new_board)
@@ -384,7 +385,7 @@ def to_html(board: cchess.Board, filename, title=None):
     title = title or "Chinese Chess Board"
     states = []
     notations = []
-    stack = getattr(board, "_stack")
+    stack = copy.copy(getattr(board, "_stack"))
     stack.append(getattr(board, "_board_state")())
     new_board = cchess.Board()
     stack[0].restore(new_board)
