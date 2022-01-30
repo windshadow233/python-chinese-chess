@@ -2125,10 +2125,10 @@ class Board(BaseBoard):
         turn = board.turn
         stack = copy.copy(self._stack)
         stack.append(self._board_state())
-        for i, move in enumerate(self.move_stack):
-            stack[i].restore(board)
+        for i, (move, state) in enumerate(zip(self.move_stack, stack)):
+            state.restore(board)
             if board.turn == turn:
-                notations += f"{i}."
+                notations += f"{i // 2 + 1}."
             notations += board.move_to_notation(move)
             if board.turn == turn:
                 notations += " "
