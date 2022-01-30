@@ -346,7 +346,7 @@ def to_gif(board: cchess.Board, filename, *,
     png_bytes = cairosvg.svg2png(svg)
     png_array = np.array(Image.open(io.BytesIO(png_bytes)))
     gif_images.append(png_array)
-    for i, move in tqdm.tqdm(enumerate(board.move_stack)):
+    for i, move in tqdm.tqdm(enumerate(board.move_stack), total=len(board.move_stack)):
         stack[i + 1].restore(new_board)
         svg = cchess.svg.board(new_board, size=size,
                                orientation=orientation,
