@@ -2142,7 +2142,8 @@ class Board(BaseBoard):
                 pgn.append(result + " {和棋}")
         return "\n".join(pgn)
 
-    def from_pgn(self, pgn_file: str, *,
+    @classmethod
+    def from_pgn(cls, pgn_file: str, *,
                  to_gif=False, gif_file=None, duration=2,
                  to_html=False, html_file=None):
         try:
@@ -2161,11 +2162,11 @@ class Board(BaseBoard):
         if fen:
             end = fen.end()
             fen = fen.groups()[0]
-            self.set_fen(fen)
         else:
             warnings.warn("No FEN string found! Use default starting fen.")
-            self.reset()
+            fen = STARTING_FEN
             end = - 1
+        board = cls(fen=fen)
         data = data[end + 1:]
         data = data.translate(str.maketrans("１２３４５６７８９", "123456789"))
         data = re.sub("{(?:.|\n)*?}", "", data)
@@ -2176,16 +2177,19 @@ class Board(BaseBoard):
         if not notations:
             raise ValueError("Find no legal notations!")
         for notation in notations:
-            self.push_notation(notation.translate(notation_filter[self.turn]))
+            board.push_notation(notation.translate(notation_filter[board.turn]))
         filename = pgn_file[:pgn_file.rfind('.')]
         if to_gif:
             import cchess.svg
             gif_file = gif_file or f'{filename}.gif'
-            cchess.svg.to_gif(self, filename=gif_file, axes_type=1, duration=duration)
+            cchess.svg.to_gif(board, filename=gif_file, axes_type=1, duration=duration)
+            print(f"GIF generated: {gif_file!r}")
         if to_html:
             import cchess.svg
             html_file = html_file or f'{filename}.html'
-            cchess.svg.to_html(self, filename=html_file, title=title)
+            cchess.svg.to_html(board, filename=html_file, title=title)
+            print(f"HTML generated: {html_file!r}")
+        return board
 
 
 def get_unique_piece_square(board: Board, piece_type, color, piece_unicode, column_index):
