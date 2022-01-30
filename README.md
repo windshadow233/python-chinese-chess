@@ -487,6 +487,7 @@ GIF generated: 'images/cg245.gif'
 >>> cchess.svg.to_html(board=board, filename="html/cg245.html", title="Chinese Chess Board")
 
 >>> board = cchess.Board.from_pgn("pgn/cg245.pgn", to_html=True, html_file="html/cg245.html")  # 或直接由PGN文件生成HTML棋谱。
+HTML generated: 'html/cg245.html'
 ```
 
 效果详见[245关.三国演义.三战吕布](https://windshadow233.github.io/python-chinese-chess/html/cg245.html)
