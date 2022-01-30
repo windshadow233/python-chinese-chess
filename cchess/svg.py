@@ -332,7 +332,10 @@ def to_gif(board: cchess.Board, filename, *,
         return
     if not board.move_stack:
         return
-    new_board = cchess.Board(getattr(board, "_starting_fen"))
+    stack = getattr(board, "_stack")
+    stack.append(getattr(board, "_board_state")())
+    new_board = cchess.Board()
+    stack[0].restore(new_board)
     gif_images = []
     svg = cchess.svg.board(new_board, size=size,
                            orientation=orientation,
@@ -343,13 +346,13 @@ def to_gif(board: cchess.Board, filename, *,
     png_bytes = cairosvg.svg2png(svg)
     png_array = np.array(Image.open(io.BytesIO(png_bytes)))
     gif_images.append(png_array)
-    for move in tqdm.tqdm(board.move_stack):
-        new_board.push(move)
+    for i, move in tqdm.tqdm(enumerate(board.move_stack)):
+        stack[i + 1].restore(new_board)
         svg = cchess.svg.board(new_board, size=size,
                                orientation=orientation,
                                coordinates=coordinates,
                                axes_type=axes_type,
-                               lastmove=new_board.peek() if lastmove else None,
+                               lastmove=move if lastmove else None,
                                checkers=new_board.checkers() if checkers else None,
                                style=style)
         png_bytes = cairosvg.svg2png(svg)
@@ -358,40 +361,41 @@ def to_gif(board: cchess.Board, filename, *,
     imageio.mimsave(filename, gif_images, duration=duration)
 
 
-def _get_state(board: cchess.Board):
+def _get_pieces(state):
     pieces_dict = {
-        "pawn": board.pawns,
-        "rook": board.rooks,
-        "knight": board.knights,
-        "bishop": board.bishops,
-        "advisor": board.advisors,
-        "king": board.kings,
-        "cannon": board.cannons
+        "pawn": state.pawns,
+        "rook": state.rooks,
+        "knight": state.knights,
+        "bishop": state.bishops,
+        "advisor": state.advisors,
+        "king": state.kings,
+        "cannon": state.cannons
     }
-    all_pieces = {"red": {}, "black": {}}
+    pieces = {"red": {}, "black": {}}
     for key, value in pieces_dict.items():
-        for color in cchess.COLORS:
-            pieces = list(cchess.scan_forward(value & board.occupied_co[color]))
-            all_pieces[cchess.COLOR_NAMES[color]][key] = pieces
-    lastmove = board.peek() if board.move_stack else None
-    state = {
-        "pieces": all_pieces,
-        "lastmove": [lastmove.from_square, lastmove.to_square] if lastmove else None
-    }
-    return state
+        red_pieces = list(cchess.scan_forward(value & state.occupied_r))
+        black_pieces = list(cchess.scan_forward(value & state.occupied_b))
+        pieces["red"][key] = red_pieces
+        pieces["black"][key] = black_pieces
+    return pieces
 
 
 def to_html(board: cchess.Board, filename, title=None):
     title = title or "Chinese Chess Board"
     states = []
     notations = []
-    new_board = cchess.Board(getattr(board, "_starting_fen"))
-    states.append(_get_state(new_board))
-    for move in board.move_stack:
+    stack = getattr(board, "_stack")
+    stack.append(getattr(board, "_board_state")())
+    new_board = cchess.Board()
+    stack[0].restore(new_board)
+    pieces = _get_pieces(stack[0])
+    states.append({"pieces": pieces, "lastmove": None})
+    for i, move in enumerate(board.move_stack):
         notation = new_board.move_to_notation(move)
         notations.append(notation)
-        new_board.push(move)
-        states.append(_get_state(new_board))
+        stack[i + 1].restore(new_board)
+        pieces = _get_pieces(stack[i + 1])
+        states.append({"pieces": pieces, "lastmove": [move.from_square, move.to_square]})
     with open(os.path.join(os.path.dirname(__file__), "resources", "board.html"), "r") as f:
         html = f.read()
     html += (f"<script>document.title = {json.dumps(title)};"
