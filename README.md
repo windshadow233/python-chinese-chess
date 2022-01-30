@@ -473,7 +473,9 @@ Move.from_uci('c2e3')
 **注** 由于各象棋软件产生的PGN文件规范不同，在“多枚相同棋子在同一条纵线上”时的着法表示可能与本程序不一致，此时需要手动对文件进行修改。
 
 ```python
->>> board.from_pgn("pgn/cg245.pgn", to_gif=True, gif_file="images/cg245.gif", duration=2)
+>>> board = cchess.Board.from_pgn("pgn/cg245.pgn", to_gif=True, gif_file="images/cg245.gif", duration=2)
+100%|██████████| 27/27 [00:02<00:00, 11.32it/s]
+GIF generated: 'images/cg245.gif'
 ```
 <img width="400" height="400" src="images/cg245.gif"/>
 
@@ -481,11 +483,10 @@ Move.from_uci('c2e3')
 
 ```python
 >>> import cchess.svg
->>> board = cchess.Board()
->>> board.from_pgn("pgn/cg245.pgn")
+>>> board = cchess.Board.from_pgn("pgn/cg245.pgn")
 >>> cchess.svg.to_html(board=board, filename="html/cg245.html", title="Chinese Chess Board")
 
->>> board.from_pgn("pgn/cg245.pgn", to_html=True, html_file="html/cg245.html")  # 或直接由PGN文件生成HTML棋谱。
+>>> board = cchess.Board.from_pgn("pgn/cg245.pgn", to_html=True, html_file="html/cg245.html")  # 或直接由PGN文件生成HTML棋谱。
 ```
 
 效果详见[245关.三国演义.三战吕布](https://windshadow233.github.io/python-chinese-chess/html/cg245.html)
