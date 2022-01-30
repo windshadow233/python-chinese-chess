@@ -2111,7 +2111,7 @@ class Board(BaseBoard):
         return "".join([piece_notation, direction_notation, move_notation])
 
     def to_pgn(self, *, red="", black="", generator="Python-Chinese-Chess"):
-        board = Board(self._starting_fen)
+        board = Board()
         pgn = ["""[Game "Chinese Chess"]""", f"""[Round: "{self.fullmove_number}"]""",
                f"""[PlyCount "{self.ply()}"]""",
                f"""[Date "{datetime.datetime.today().strftime("%Y-%m-%d")}"]""",
@@ -2122,9 +2122,11 @@ class Board(BaseBoard):
         result = outcome.result() if outcome else ""
         pgn.extend([f"""[Result "{result}"]""", f"""[FEN "{self._starting_fen}"]"""])
         notations = ""
-        i = 1
         turn = board.turn
-        for move in self.move_stack:
+        stack = copy.copy(self._stack)
+        stack.append(self._board_state())
+        for i, move in enumerate(self.move_stack):
+            stack[i].restore(board)
             if board.turn == turn:
                 notations += f"{i}."
             notations += board.move_to_notation(move)
@@ -2133,7 +2135,6 @@ class Board(BaseBoard):
             else:
                 notations += "\n"
                 i += 1
-            board.push(move)
         pgn.append(notations[:-1])
         if result:
             if outcome.winner is not None:
