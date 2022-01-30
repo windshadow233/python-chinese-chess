@@ -19,7 +19,30 @@
     }
     #moves{
         position: fixed;
-        right: 0;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 0;
+        top: 0;
+        bottom: 0;
+        width: 250px;
+        box-shadow: 0 0 15px #666;
+        float: right;
+    }
+    #hide-show{
+        background-color: rgba(255,255,255,0.5);
+        border-radius: 15px 0 0 15px;
+        top: 50%;
+        left: 0;
+        z-index: 100;
+        padding: 0;
+        position: relative;
+        transform: translate(-50px, -50%);
+        width: 30px;
+        height: 60px;
+        cursor: pointer;
+    }
+    #moves-list{
+        position: fixed;
         border-radius: 10px;
         padding: 20px;
         margin: 0;
@@ -30,30 +53,30 @@
         overflow-y: scroll;
         box-shadow: 0 0 15px #666;
     }
-    #moves li{
+    #moves-list li{
         margin-left: 30px;
         text-align: center;
     }
-    #moves li a{
+    #moves-list li a{
         padding: 5px 10px 5px 10px;
         text-decoration: none;
         color: black;
         border-radius: 10px;
         font-size: 20px;
     }
-    #moves li .selected{
+    #moves-list li .selected{
         background: #00c4b6;
         color: #fff;
         font-weight: bold;
     }
-    #moves::-webkit-scrollbar {
+    #moves-list::-webkit-scrollbar {
         width: 8px;
         height: 0;
     }
-    #moves::-webkit-scrollbar-track-piece {
+    #moves-list::-webkit-scrollbar-track-piece {
         background: #aaa;
     }
-    #moves::-webkit-scrollbar-thumb {
+    #moves-list::-webkit-scrollbar-thumb {
         background-color: #1E90FF;
         background-image:-webkit-linear-gradient(45deg, rgba(50,205,50) 25%, transparent 25%, transparent 50%, rgba(50,205,50) 50%, rgba(    50,205,50) 75%, transparent 75%, transparent);
     }
@@ -131,7 +154,7 @@
         document.getElementById("board-window").innerHTML = html;
     }
     function move_to(id){
-      let moves = document.getElementById("moves");
+      let moves = document.getElementById("moves-list");
       for (let item of moves.children){
         for (let link of item.children){
           if (link.id !== id) link.classList.remove("selected");
@@ -150,7 +173,7 @@
         if (!turn) html += "</li>";
         turn = !turn;
       }
-      document.getElementById("moves").innerHTML = html;
+      document.getElementById("moves-list").innerHTML = html;
     }
     function loaded(){
       set_svg(STATES[0]);
@@ -172,9 +195,39 @@
         move_to((CURRENT_STATE - 1).toString());
       }
     }
+    let timer, right=0;
+    function display_moves(display){
+      if (display){
+        timer = setInterval(slide_left, 2);
+      }
+      else{
+        timer = setInterval(slide_right, 2);
+      }
+      document.getElementById("hide-show").value = !display;
+    }
+    function slide_right(){
+      let obj1 = document.getElementById("moves"), obj2 = document.getElementById("moves-list");
+      if (right <= -290){
+        clearInterval(timer);
+      }
+      else{
+        right -= 5;
+        obj1.style.right = obj2.style.right = right + 'px';
+      }
+    }
+    function slide_left(){
+      let obj1 = document.getElementById("moves"), obj2 = document.getElementById("moves-list");
+      if (right >= 0){
+        clearInterval(timer);
+      }
+      else{
+        right += 5;
+        obj1.style.right = obj2.style.right = right + 'px';
+      }
+    }
 </script>
 <body style="background-color: #2f4f4f" onload="loaded();">
-<ol id="moves"></ol>
+<div id="moves" style="right: 0;"><div id="hide-show" value="false" onclick="display_moves(this.value);"></div><ol id="moves-list" style="right: 0;"></ol></div>
 <div id="buttons">
     <button id="flip" onclick="flip();">翻转</button>
     <button id="first" onclick="move_to(-1);">局初</button>
