@@ -147,8 +147,8 @@ class Termination(enum.Enum):
     """See :func:`cchess.Board.is_stalemate()`."""
     INSUFFICIENT_MATERIAL = enum.auto()
     """See :func:`cchess.Board.is_insufficient_material()`."""
-    SIXFOLD_REPETITION = enum.auto()
-    """See :func:`cchess.Board.is_sixfold_repetition()`."""
+    FOURFOLD_REPETITION = enum.auto()
+    """See :func:`cchess.Board.is_fourfold_repetition()`."""
     SIXTY_MOVES = enum.auto()
     """See :func:`cchess.Board.is_sixty_moves()`."""
     PERPETUAL_CHECK = enum.auto()
@@ -1688,7 +1688,7 @@ class Board(BaseBoard):
         if not self.is_check():
             return False
         # Fast check, based on occupancy only.
-        count = 4
+        count = 3
         maybe_repetitions = 1
         for state in reversed(self._stack):
             if state.occupied == self.occupied:
@@ -1706,7 +1706,7 @@ class Board(BaseBoard):
         try:
             while True:
                 if count <= 1:
-                    if checks_num >= 7:
+                    if checks_num >= 5:
                         return True
                     return False
 
@@ -1757,7 +1757,7 @@ class Board(BaseBoard):
         :func:`stalemate <cchess.Board.is_stalemate()>`,
         :func:`perpetual_check <cchess.Board.is_perpetual_check()>`,
         the :func:`sixty-move rule <cchess.Board.is_sixty_moves()>`,
-        :func:`sixfold repetition <cchess.Board.is_sixfold_repetition()>`,
+        :func:`sixfold repetition <cchess.Board.is_fourfold_repetition()>`,
         Returns the :class:`cchess.Outcome` if the game has ended, otherwise
         ``None``.
 
@@ -1776,8 +1776,8 @@ class Board(BaseBoard):
             return Outcome(Termination.PERPETUAL_CHECK, self.turn)
 
         # Automatic draws.
-        if self.is_sixfold_repetition():
-            return Outcome(Termination.SIXFOLD_REPETITION, None)
+        if self.is_fourfold_repetition():
+            return Outcome(Termination.FOURFOLD_REPETITION, None)
         if self.is_sixty_moves():
             return Outcome(Termination.SIXTY_MOVES, None)
 

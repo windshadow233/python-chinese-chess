@@ -11,9 +11,9 @@
 - 实现了传统四字记谱法与坐标表示法的相互转换。
 - 采用经典的棋盘与棋子的 svg 代码渲染UI。
 - 支持生成棋局的GIF（需安装一些第三方库）。
-- 和棋判断默认采用60步自然限着、5次以上循环局面不变着(允许出现5次)或双方子力均不足以将死对方。
+- 和棋判断默认采用60步自然限着、3次以上循环局面不变着(允许出现3次)或双方子力均不足以将死对方。
 - 由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，且十分复杂，因此代码中几乎没有对其进行实现，若实现了会加以说明，但提供了判定循环局面以及将军的接口。
-- 长将(产生3次以上循环局面(允许出现3次)且单方连续将军)判负
+- 长将(单方连续将军达到五次且造成循环局面)判负
 - 对于“子力不足以将死对方”这一强制和棋条件，本项目草率地采用“双方均无能过河的棋子”作为判定方法，因中国象棋残局的变化非常复杂，以鄙人的能力尚不足以对其加以细致的讨论。
 - 生成、解析PGN文件。
 - 生成可交互HTML棋谱。
@@ -255,20 +255,12 @@ True
 >>> board.push_uci("d6f5")
 >>> board.push_uci("e7f7")
 >>> board.push_uci("f5d6")
->>> board.push_uci("f7e7")
->>> board.push_uci("d6f5")
->>> board.push_uci("e7f7")
->>> board.push_uci("f5d6")
 >>> board.is_perpetual_check()
 True
 
 >>> board = cchess.Board("5c3/9/5k3/9/5N3/9/5c3/9/5K3/9")
 >>> board.push_uci("f5d6")
 >>> board.push_uci("f7e7")  # 黑方平將存在解将还将
->>> board.push_uci("d6f5")
->>> board.push_uci("e7f7")
->>> board.push_uci("f5d6")
->>> board.push_uci("f7e7")
 >>> board.push_uci("d6f5")
 >>> board.push_uci("e7f7")
 >>> board.push_uci("f5d6")
@@ -283,7 +275,7 @@ False
 ### 循环局面检测
 
 ```python
->>> board.is_sixfold_repetition()  # 一般比赛规定出现五次循环局面后,不变着作和
+>>> board.is_fourfold_repetition()  # 一般比赛规定出现三次循环局面后,不变着作和
 False
 >>> n = 7
 >>> board.is_repetition(n)  # 也可以根据情况任意指定不变作和需要达到的循环次数
