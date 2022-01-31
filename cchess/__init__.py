@@ -1699,6 +1699,7 @@ class Board(BaseBoard):
             return False
         current_checker = not self.turn
         checks_num = 1
+        oppo_checks_num = 1
         # Check full replay.
         transposition_key = self._transposition_key()
         switchyard = []
@@ -1706,7 +1707,7 @@ class Board(BaseBoard):
         try:
             while True:
                 if count <= 1:
-                    if checks_num >= 5:
+                    if checks_num >= 5 and oppo_checks_num < 5:
                         return True
                     return False
 
@@ -1728,7 +1729,7 @@ class Board(BaseBoard):
                     if self.turn != current_checker:
                         checks_num += 1
                     else:
-                        checks_num = 0
+                        oppo_checks_num += 1
         finally:
             while switchyard:
                 self.push(switchyard.pop())

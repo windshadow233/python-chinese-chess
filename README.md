@@ -245,7 +245,7 @@ True
 单方连续将军，形成三次以上(允许三次)循环局面时，判为“长将”。判定方法比较naive。
 
 ```python
->>> board = cchess.Board("5r3/9/5k3/9/5N3/9/5c3/9/5K3/9")
+>>> board = cchess.Board("3akn3/5c3/1P2b4/4R4/9/9/9/9/9/4CK3")
 >>> board.push_uci("f5d6")
 >>> board.push_uci("f7e7")
 >>> board.push_uci("d6f5")
@@ -254,9 +254,25 @@ True
 >>> board.push_uci("f7e7")
 >>> board.push_uci("d6f5")
 >>> board.push_uci("e7f7")
->>> board.push_uci("f5d6")
->>> board.is_perpetual_check()
+>>> board.push_uci("f5d6")  # 红方连续将军造成循环局面
+>>> board.is_perpetual_check()  # 红方长将作负
 True
+
+>>> board = cchess.Board("3akr3/5c3/1P2b4/4R4/9/9/9/9/9/4CK3")
+>>> board.push_uci("e6e7")
+>>> board.push_uci("f8e8")  # 黑方存在解将还将
+>>> board.push_uci("e7f7")
+>>> board.push_uci("e8f8")
+>>> board.push_uci("f7e7")
+>>> board.push_uci("f8e8")
+>>> board.push_uci("e7f7")
+>>> board.push_uci("e8f8")
+>>> board.push_uci("f7e7")
+>>> board.push_uci("f8e8")
+>>> board.push_uci("e7f7")
+>>> board.is_perpetual_check()  # 双方均循环长将，故此时红方不构成长将
+False
+
 
 >>> board = cchess.Board("5c3/9/5k3/9/5N3/9/5c3/9/5K3/9")
 >>> board.push_uci("f5d6")
@@ -268,8 +284,8 @@ True
 >>> board.push_uci("d6f5")
 >>> board.push_uci("e7f7")
 >>> board.push_uci("f5d6")
->>> board.is_perpetual_check()  # 故红方不构成长将
-False
+>>> board.is_perpetual_check()  # 黑方虽有解将还将，但属于一将一闲，故红方仍构成长将
+True
 ```
 
 ### 循环局面检测
