@@ -281,7 +281,7 @@ False
 >>> board.push_uci("d6f5")
 >>> board.push_uci("e7f7")
 >>> board.push_uci("f5d6")
->>> board.is_perpetual_check()  # 黑方虽有解将还将，但属于一将一闲，故红方仍构成长将
+>>> board.is_perpetual_check()  # 黑方虽有解将还将，但每走两步仅有一步还将，故红方仍构成长将
 True
 ```
 
