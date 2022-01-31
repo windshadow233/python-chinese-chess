@@ -271,7 +271,6 @@ True
 >>> board.is_perpetual_check()  # 双方均循环长将，故此时红方不构成长将
 False
 
-
 >>> board = cchess.Board("5c3/9/5k3/9/5N3/9/5c3/9/5K3/9")
 >>> board.push_uci("f5d6")
 >>> board.push_uci("f7e7")  # 黑方平將存在解将还将
