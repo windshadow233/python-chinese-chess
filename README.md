@@ -246,15 +246,15 @@ True
 
 ```python
 >>> board = cchess.Board("3akn3/5c3/1P2b4/4R4/9/9/9/9/9/4CK3")
->>> board.push_uci("f5d6")
->>> board.push_uci("f7e7")
->>> board.push_uci("d6f5")
+>>> board.push_uci("e6e7")
+>>> board.push_uci("f8e8")
 >>> board.push_uci("e7f7")
->>> board.push_uci("f5d6")
+>>> board.push_uci("e8f8")
 >>> board.push_uci("f7e7")
->>> board.push_uci("d6f5")
+>>> board.push_uci("f8e8")
 >>> board.push_uci("e7f7")
->>> board.push_uci("f5d6")  # 红方连续将军造成循环局面
+>>> board.push_uci("e8f8")
+>>> board.push_uci("f7e7")  # 红方连续将军造成循环局面
 >>> board.is_perpetual_check()  # 红方长将作负
 True
 
@@ -268,8 +268,6 @@ True
 >>> board.push_uci("e7f7")
 >>> board.push_uci("e8f8")
 >>> board.push_uci("f7e7")
->>> board.push_uci("f8e8")
->>> board.push_uci("e7f7")
 >>> board.is_perpetual_check()  # 双方均循环长将，故此时红方不构成长将
 False
 
