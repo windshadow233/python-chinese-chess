@@ -2111,14 +2111,18 @@ class Board(BaseBoard):
                     move_notation = VERTICAL_MOVE_ARABIC_TO_CHINESE[move_notation]
         return "".join([piece_notation, direction_notation, move_notation])
 
-    def to_pgn(self, *, red="", black="", generator="Python-Chinese-Chess"):
+    def to_pgn(self, *, red="", black="", format="Chinese", generator="Python-Chinese-Chess"):
+        if format not in ['Chinese', 'ICCS']:
+            warnings.warn(f"Unsupported Format: {format!r}, Use default 'Chinese'.")
+            format = 'Chinese'
         board = Board()
         pgn = ["""[Game "Chinese Chess"]""", f"""[Round: "{self.fullmove_number}"]""",
                f"""[PlyCount "{self.ply()}"]""",
                f"""[Date "{datetime.datetime.today().strftime("%Y-%m-%d")}"]""",
                f"""[Red "{red}"]""",
                f"""[Black "{black}"]""",
-               f"""[Generator: "{generator}"]"""]
+               f"""[Generator "{generator}"]""",
+               f"""[Format "{format}"]"""]
         outcome = self.outcome()
         result = outcome.result() if outcome else ""
         pgn.extend([f"""[Result "{result}"]""", f"""[FEN "{self._starting_fen}"]"""])
@@ -2130,7 +2134,11 @@ class Board(BaseBoard):
             state.restore(board)
             if board.turn == turn:
                 notations += f"{i // 2 + 1}."
-            notations += board.move_to_notation(move)
+            if format == 'Chinese':
+                notations += board.move_to_notation(move)
+            elif format == 'ICCS':
+                iccs_move = move.uci().upper()
+                notations += iccs_move[:2] + '-' + iccs_move[2:]
             if board.turn == turn:
                 notations += " "
             else:
@@ -2190,7 +2198,7 @@ class Board(BaseBoard):
             for notation in notations:
                 board.push_notation(notation.translate(notation_filter[board.turn]))
         elif format_ == 'ICCS':
-            moves = re.findall("[A-I]\\d-[A-I]\\d", data.lower())
+            moves = re.findall("[a-i]\\d-[a-i]\\d", data.lower())
             for move in moves:
                 board.push_uci(move.replace('-', ''))
         filename = pgn_file[:pgn_file.rfind('.')]
