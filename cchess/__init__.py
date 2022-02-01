@@ -2157,8 +2157,6 @@ class Board(BaseBoard):
         except UnicodeDecodeError:
             with open(pgn_file, 'r', encoding='gbk') as f:
                 data = f.read()
-        notation_filter = [str.maketrans("车马炮将", "車馬砲將"),
-                           str.maketrans("车马帅士", "俥傌帥仕")]
         if to_html:
             title = re.search("\\[Event \"(.+)\"\\]", data)
             if title:
@@ -2191,7 +2189,7 @@ class Board(BaseBoard):
             if not notations:
                 raise ValueError("Find no legal notations!")
             for notation in notations:
-                board.push_notation(notation.translate(notation_filter[board.turn]))
+                board.push_notation(notation)
         elif format_ == 'ICCS':
             moves = re.findall("[a-i]\\d-[a-i]\\d", data.lower())
             for move in moves:
