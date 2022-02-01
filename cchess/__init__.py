@@ -33,6 +33,8 @@ CHINESE_NUMBERS = '九八七六五四三二一'
 COORDINATES_MODERN_TO_TRADITIONAL = [dict(zip(range(9), ARABIC_NUMBERS)), dict(zip(range(9), CHINESE_NUMBERS))]
 COORDINATES_TRADITIONAL_TO_MODERN = [dict(zip(ARABIC_NUMBERS, range(9))), dict(zip(CHINESE_NUMBERS, range(9)))]
 
+PIECE_SYMBOL_TRANSLATOR = [str.maketrans("车马炮将", "車馬砲將"), str.maketrans("车马士帅", "俥傌仕帥")]
+
 ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN = {
     "仕六进五": "d0e1", "仕六退五": "d2e1", "仕四进五": "f0e1", "仕四退五": "f2e1",
     "仕五退六": "e1d0", "仕五进六": "e1d2", "仕五退四": "e1f0", "仕五进四": "e1f2",
@@ -1904,6 +1906,7 @@ class Board(BaseBoard):
 
     def parse_notation(self, notation: str) -> Move:
         assert len(notation) == 4, "记号的长度不为4"
+        notation = notation.translate(PIECE_SYMBOL_TRANSLATOR[self.turn])
         if notation in ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN:
             move = Move.from_uci(ADVISOR_BISHOP_MOVES_TRADITIONAL_TO_MODERN[notation])
             piece = self.piece_type_at(move.from_square)
