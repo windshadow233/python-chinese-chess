@@ -1106,6 +1106,18 @@ class _BoardState:
         self.halfmove_clock = board.halfmove_clock
         self.fullmove_number = board.fullmove_number
 
+    def __eq__(self, other) -> bool:
+        return all([self.turn == other.turn,
+                    self.pawns == other.pawns,
+                    self.rooks == other.rooks,
+                    self.knights == other.knights,
+                    self.bishops == other.bishops,
+                    self.advisors == other.advisors,
+                    self.kings == other.kings,
+                    self.cannons == other.cannons,
+                    self.occupied_r == other.occupied_r,
+                    self.occupied_b == other.occupied_b])
+
     def restore(self, board) -> None:
         board.pawns = self.pawns
         board.rooks = self.rooks
@@ -1687,49 +1699,29 @@ class Board(BaseBoard):
     def is_perpetual_check(self) -> bool:
         if not self.is_check():
             return False
-        # Fast check, based on occupancy only.
-        count = 3
-        maybe_repetitions = 1
-        for state in reversed(self._stack):
-            if state.occupied == self.occupied:
-                maybe_repetitions += 1
-                if maybe_repetitions >= count:
-                    break
-        if maybe_repetitions < count:
+        if len(self._stack) <= 6:
             return False
-        current_checker = not self.turn
-        checks_num = 1
-        oppo_checks_num = 1
-        # Check full replay.
-        transposition_key = self._transposition_key()
+        state = self._transposition_key()
+        oppo_is_perpetual_check = True
+        check_num = 1
         switchyard = []
-
+        is_repetition = False
         try:
             while True:
-                if count <= 1:
-                    if checks_num >= 5 and oppo_checks_num < 5:
-                        return True
-                    return False
-
-                if len(self.move_stack) < count - 1:
-                    return False
-
+                switchyard.append(self.pop())
+                if oppo_is_perpetual_check and not self.is_check():
+                    oppo_is_perpetual_check = False
                 move = self.pop()
                 switchyard.append(move)
-
-                if self.is_irreversible(move):
+                if not self.is_check() or self.is_irreversible(move):
                     return False
-
-                if self._transposition_key() == transposition_key:
-                    count -= 1
-                if not self.is_check():
-                    if self.turn != current_checker:
-                        return False
-                else:
-                    if self.turn != current_checker:
-                        checks_num += 1
-                    else:
-                        oppo_checks_num += 1
+                check_num += 1
+                if not is_repetition and self._transposition_key() == state:
+                    is_repetition = True
+                if check_num >= 4 and is_repetition and not oppo_is_perpetual_check:
+                    return True
+        except IndexError:
+            return False
         finally:
             while switchyard:
                 self.push(switchyard.pop())

@@ -13,7 +13,7 @@
 - 支持生成棋局的GIF（需安装一些第三方库）。
 - 和棋判断默认采用60步自然限着、3次以上循环局面不变着(允许出现3次)或双方子力均不足以将死对方。
 - 由于中国象棋部分规则，例如长将、长捉、闲着等着法的判定尚无统一定论，且十分复杂，因此代码中几乎没有对其进行实现，若实现了会加以说明，但提供了判定循环局面以及将军的接口。
-- 长将(单方连续将军达到五次且造成循环局面)判负
+- 长将判负，具体而言，是指：单方连续将军达到三次且造成循环局面时，如果在下一着继续将军，则判负。
 - 对于“子力不足以将死对方”这一强制和棋条件，本项目草率地采用“双方均无能过河的棋子”作为判定方法，因中国象棋残局的变化非常复杂，以鄙人的能力尚不足以对其加以细致的讨论。
 - 生成、解析PGN文件。
 - 生成可交互HTML棋谱。
@@ -252,9 +252,7 @@ True
 >>> board.push_uci("e8f8")
 >>> board.push_uci("f7e7")
 >>> board.push_uci("f8e8")
->>> board.push_uci("e7f7")
->>> board.push_uci("e8f8")
->>> board.push_uci("f7e7")  # 红方连续将军造成循环局面
+>>> board.push_uci("e7f7")  # 红方连续将军造成循环局面
 >>> board.is_perpetual_check()  # 红方长将作负
 True
 
@@ -266,9 +264,7 @@ True
 >>> board.push_uci("f7e7")
 >>> board.push_uci("f8e8")
 >>> board.push_uci("e7f7")
->>> board.push_uci("e8f8")
->>> board.push_uci("f7e7")
->>> board.is_perpetual_check()  # 双方均循环长将，故此时红方不构成长将
+>>> board.is_perpetual_check()  # 双方交替长将，故此时红方不构成长将
 False
 
 >>> board = cchess.Board("5c3/9/5k3/9/5N3/9/5c3/9/5K3/9")
@@ -279,9 +275,7 @@ False
 >>> board.push_uci("f5d6")
 >>> board.push_uci("f7e7")
 >>> board.push_uci("d6f5")
->>> board.push_uci("e7f7")
->>> board.push_uci("f5d6")
->>> board.is_perpetual_check()  # 黑方虽有解将还将，但每走两步仅有一步还将，故红方仍构成长将
+>>> board.is_perpetual_check()  # 黑方虽有解将还将，但属于一将一闲，故红方仍构成长将
 True
 ```
 
