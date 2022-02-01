@@ -2169,18 +2169,18 @@ class Board(BaseBoard):
             warnings.warn("No FEN string found! Use default starting fen.")
             fen = STARTING_FEN
             end = - 1
-        format_ = re.search("\\[Format \"(.+)\"\\]", data)
-        if format_:
-            format_ = format_.groups()[0]
-            if format_ not in ['Chinese', 'ICCS']:
-                warnings.warn(f"Unsupported Format: {format_!r}, Use default 'Chinese'.")
-                format_ = 'Chinese'
+        format = re.search("\\[Format \"(.+)\"\\]", data)
+        if format:
+            format = format.groups()[0]
+            if format not in ['Chinese', 'ICCS']:
+                warnings.warn(f"Unsupported Format: {format!r}, Use default 'Chinese'.")
+                format = 'Chinese'
         else:
-            format_ = 'Chinese'
+            format = 'Chinese'
         board = cls(fen=fen)
         data = data[end + 1:]
         data = re.sub("{(?:.|\n)*?}", "", data)
-        if format_ == 'Chinese':
+        if format == 'Chinese':
             data = data.translate(str.maketrans("１２３４５６７８９", "123456789"))
             notations = re.findall("(?:(?:[兵卒车俥車马馬傌炮砲仕士象相帅帥将將][1-9一二三四五六七八九])|"
                                    "(?:[前后][车俥車马馬傌炮砲])|"
@@ -2190,7 +2190,7 @@ class Board(BaseBoard):
                 raise ValueError("Find no legal notations!")
             for notation in notations:
                 board.push_notation(notation)
-        elif format_ == 'ICCS':
+        elif format == 'ICCS':
             moves = re.findall("[a-i]\\d-[a-i]\\d", data.lower())
             for move in moves:
                 board.push_uci(move.replace('-', ''))
