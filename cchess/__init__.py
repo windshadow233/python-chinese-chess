@@ -2157,10 +2157,6 @@ class Board(BaseBoard):
         except UnicodeDecodeError:
             with open(pgn_file, 'r', encoding='gbk') as f:
                 data = f.read()
-        if to_html:
-            title = re.search("\\[Event \"(.+)\"\\]", data)
-            if title:
-                title = title.groups()[0]
         fen = re.search("\\[FEN \"(.+)\"\\]", data)
         if fen:
             end = fen.end()
@@ -2178,20 +2174,20 @@ class Board(BaseBoard):
         else:
             format = 'Chinese'
         board = cls(fen=fen)
-        data = data[end + 1:]
-        data = re.sub("{(?:.|\n)*?}", "", data)
+        move_lines = data[end + 1:]
+        move_lines = re.sub("{(?:.|\n)*?}", "", move_lines)
         if format == 'Chinese':
-            data = data.translate(str.maketrans("１２３４５６７８９", "123456789"))
+            move_lines = move_lines.translate(str.maketrans("１２３４５６７８９", "123456789"))
             notations = re.findall("(?:(?:[兵卒车俥車马馬傌炮砲仕士象相帅帥将將][1-9一二三四五六七八九])|"
                                    "(?:[前后][车俥車马馬傌炮砲])|"
                                    "(?:[前中后二三四五][兵卒1-9一二三四五六七八九]))"
-                                   "[进退平][1-9一二三四五六七八九]", data)
+                                   "[进退平][1-9一二三四五六七八九]", move_lines)
             if not notations:
                 raise ValueError("Find no legal notations!")
             for notation in notations:
                 board.push_notation(notation)
         elif format == 'ICCS':
-            moves = re.findall("[a-i]\\d-[a-i]\\d", data.lower())
+            moves = re.findall("[a-i]\\d-[a-i]\\d", move_lines.lower())
             for move in moves:
                 board.push_uci(move.replace('-', ''))
         filename = pgn_file[:pgn_file.rfind('.')]
@@ -2202,6 +2198,9 @@ class Board(BaseBoard):
             print(f"GIF generated: {gif_file!r}")
         if to_html:
             import cchess.svg
+            title = re.search("\\[Event \"(.+)\"\\]", data)
+            if title:
+                title = title.groups()[0]
             html_file = html_file or f'{filename}.html'
             cchess.svg.to_html(board, filename=html_file, title=title)
             print(f"HTML generated: {html_file!r}")
