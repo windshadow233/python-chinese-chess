@@ -246,14 +246,18 @@ True
 
 ```python
 >>> board = cchess.Board("3akn3/5c3/1P2b4/4R4/9/9/9/9/9/4CK3")
->>> board.push_uci("e6e7")
+>>> board.push_uci("e6e7")  # 第一着有吃子，不计入将军次数
 >>> board.push_uci("f8e8")
 >>> board.push_uci("e7f7")
 >>> board.push_uci("e8f8")
 >>> board.push_uci("f7e7")
 >>> board.push_uci("f8e8")
->>> board.push_uci("e7f7")  # 红方连续将军造成循环局面
->>> board.is_perpetual_check()  # 红方长将作负
+>>> board.push_uci("e7f7")  # 此时尚未构成长将，但下一着若仍继续循环将军，则构成长将
+>>> board.is_perpetual_check()
+False
+>>> board.push_uci("e8f8")
+>>> board.push_uci("f7e7")  # 红方连续将军造成循环局面
+>>> board.is_perpetual_check()
 True
 
 >>> board = cchess.Board("3akr3/5c3/1P2b4/4R4/9/9/9/9/9/4CK3")

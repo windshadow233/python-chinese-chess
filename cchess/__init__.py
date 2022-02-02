@@ -1708,18 +1708,24 @@ class Board(BaseBoard):
         check_num = 1
         switchyard = []
         is_repetition = False
+        move = self.pop()
+        switchyard.append(move)
+        if self.is_irreversible(move):
+            return False
         try:
             while True:
-                switchyard.append(self.pop())
                 if oppo_is_perpetual_check and not self.is_check():
                     oppo_is_perpetual_check = False
-                move = self.pop()
-                switchyard.append(move)
-                if not self.is_check() or self.is_irreversible(move):
+                switchyard.append(self.pop())
+                if not self.is_check():
                     return False
                 check_num += 1
                 if not is_repetition and self._transposition_key() == state:
                     is_repetition = True
+                move = self.pop()
+                switchyard.append(move)
+                if self.is_irreversible(move):
+                    return False
                 if check_num >= 4 and is_repetition and not oppo_is_perpetual_check:
                     return True
         except IndexError:
