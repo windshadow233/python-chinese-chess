@@ -281,6 +281,19 @@ False
 >>> board.push_uci("d6f5")
 >>> board.is_perpetual_check()  # 黑方虽有解将还将，但属于一将一闲，故红方仍构成长将
 True
+
+>>> board = cchess.Board("4R4/3k5/5R3/9/9/9/9/9/4A4/4K4")
+>>> board.push_notation("车四进一")
+>>> board.push_notation("将4进1")
+>>> board.push_notation("车五平六")
+>>> board.push_notation("将4平5")
+>>> board.push_notation("车六平五")
+>>> board.push_notation("将5平4")
+>>> board.push_notation("车四退一")
+>>> board.push_notation("将4退1")
+>>> board.push_notation("车四进一")  # 红方两子交替循环将军，构成长将
+>>> board.is_perpetual_check()
+True
 ```
 
 ### 循环局面检测
