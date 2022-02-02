@@ -1708,11 +1708,11 @@ class Board(BaseBoard):
         check_num = 1
         switchyard = []
         is_repetition = False
-        move = self.pop()
-        switchyard.append(move)
-        if self.is_irreversible(move):
-            return False
         try:
+            move = self.pop()
+            switchyard.append(move)
+            if self.is_irreversible(move):
+                return False
             while True:
                 if oppo_is_perpetual_check and not self.is_check():
                     oppo_is_perpetual_check = False
