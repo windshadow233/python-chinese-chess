@@ -504,7 +504,7 @@ GIF generated: 'images/cg245.gif'
 >>> import cchess.svg
 >>> board = cchess.Board.from_pgn("pgn/cg245.pgn")
 >>> cchess.svg.to_html(board=board, filename="html/cg245.html", title="Chinese Chess Board")
-
+HTML generated: 'html/cg245.html'
 >>> board = cchess.Board.from_pgn("pgn/cg245.pgn", to_html=True, html_file="html/cg245.html")  # 或直接由PGN文件生成HTML棋谱。
 HTML generated: 'html/cg245.html'
 ```
