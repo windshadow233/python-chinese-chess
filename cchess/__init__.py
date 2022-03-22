@@ -105,7 +105,7 @@ class Status(enum.IntFlag):
     TOO_MANY_RED_CANNONS = 1 << 25
     TOO_MANY_BLACK_CANNONS = 1 << 26
     OPPOSITE_CHECK = 1 << 27
-    KING_LING_OF_SIGHT = 1 << 28
+    KING_LINE_OF_SIGHT = 1 << 28
 
 
 STATUS_VALID = Status.VALID
@@ -137,7 +137,7 @@ STATUS_BLACK_ADVISORS_PLACE_WRONG = Status.BLACK_ADVISORS_PLACE_WRONG
 STATUS_TOO_MANY_RED_CANNONS = Status.TOO_MANY_RED_CANNONS
 STATUS_TOO_MANY_BLACK_CANNONS = Status.TOO_MANY_BLACK_CANNONS
 STATUS_OPPOSITE_CHECK = Status.OPPOSITE_CHECK
-STATUS_KING_LING_OF_SIGHT = Status.KING_LING_OF_SIGHT
+STATUS_KING_LINE_OF_SIGHT = Status.KING_LINE_OF_SIGHT
 
 
 class Termination(enum.Enum):
@@ -1887,7 +1887,7 @@ class Board(BaseBoard):
             errors |= STATUS_OPPOSITE_CHECK
 
         if self.is_king_line_of_sight():
-            errors |= STATUS_KING_LING_OF_SIGHT
+            errors |= STATUS_KING_LINE_OF_SIGHT
 
         return errors
 

@@ -238,7 +238,7 @@ Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)
 >>> board.is_king_line_of_sight()
 True
 >>> board.status()
-<Status.KING_LING_OF_SIGHT: 268435456>
+<Status.KING_LINE_OF_SIGHT: 268435456>
 ```
 
 ### 长将检测
