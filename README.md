@@ -509,6 +509,6 @@ HTML generated: 'html/cg245.html'
 HTML generated: 'html/cg245.html'
 ```
 
-效果详见[245关.三国演义.三战吕布](https://windshadow233.github.io/python-chinese-chess/html/cg245.html)
+效果详见[此示例](https://windshadow233.github.io/python-chinese-chess/html/cg245.html)
 
 ## 待补充...
