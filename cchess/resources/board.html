@@ -82,20 +82,19 @@
     }
     #buttons{
         position: fixed;
-        bottom: 50%;
-        transform: translate(-350px, 50%);
-        left: 50%;
+        bottom: 20px;
+        width: 100%;
+        text-align: center;
     }
     #buttons button{
-        display: block;
-        margin: 50px 20px;
-        padding: 15px;
+        margin: 10px 20px;
+        padding: 20px;
         border-radius: 20px;
         line-height: 0;
         font-family: "'微软雅黑','Helvetica Neue',Helvetica,Arial,sans-serif";
         font-size: 13px!important;
         height: 30px;
-        vertical-align: middle;
+        display: inline-block;
         font-weight: normal;
         border: 1px solid #3383da;
         color: #ffffff;
@@ -125,7 +124,7 @@
         return [x, y];
     }
     function set_svg(board){
-        let html = '<svg baseProfile="tiny" height="700" version="1.2" viewBox="-600 -600 1200 1200" width="700" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' +
+        let html = '<svg baseProfile="tiny" height="600" version="1.2" viewBox="-600 -600 1200 1200" width="700" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' +
             '<use xlink:href="#board-body"/>';
         if (ORIENTATION) html += '<use xlink:href="#red-axes" />';
         else html += '<use xlink:href="#black-axes" />';
