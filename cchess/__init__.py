@@ -2244,7 +2244,18 @@ def get_multiply_pawn_square(board: Board, color, rank_notation, pawn_column=Non
     if multi_pawns_col_number == 0:
         raise ValueError("未找到存在多个兵(卒)的列")
     if multi_pawns_col_number > 1 and pawn_column is None:
-        raise ValueError("记号存在歧义(未指明兵(卒)所在列)")
+        # 可能是新的兵(卒)记法
+        count = ['一', '二', '三', '四', '五'].index(rank_notation)
+        for i, num in enumerate(reversed(pawn_nums) if color else pawn_nums):
+            if num >= 2:
+                if count >= num:
+                    count -= num
+                else:
+                    pawn_column = 8 - i if color else i
+                    rank_notation = (['前', '后'] if num == 2 else ['前', '中', '后'])[count]
+                    break
+        else:
+            raise ValueError("旧记法:记号存在歧义(未指明兵(卒)所在列) 或 新记法:记号中兵(卒)的数量超出实际兵(卒)的数量")
     if multi_pawns_col_number == 1 and pawn_column is not None:
         raise ValueError("记号不规范(无需指明列号)")
     if rank_notation == '前':
