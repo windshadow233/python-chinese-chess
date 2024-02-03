@@ -388,7 +388,7 @@ def _bishop_attacks(square: Square, occupied: BitBoard, color: int):
             continue
         if not occupied & BB_SQUARES[eye_sq]:
             sq = square + delta
-            if not (0 <= sq <= 90) or square_distance(sq, square) > 2:
+            if not (0 <= sq < 90) or square_distance(sq, square) > 2:
                 continue
             attacks |= BB_SQUARES[sq]
 
