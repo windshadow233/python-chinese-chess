@@ -2186,7 +2186,7 @@ class Board(BaseBoard):
             move_lines = move_lines.translate(str.maketrans("１２３４５６７８９", "123456789"))
             notations = re.findall("(?:(?:[兵卒车俥車马馬傌炮砲仕士象相帅帥将將][1-9一二三四五六七八九])|"
                                    "(?:[前后][车俥車马馬傌炮砲])|"
-                                   "(?:[前中后二三四五][兵卒1-9一二三四五六七八九]))"
+                                   "(?:[前中后一二三四五][兵卒1-9一二三四五六七八九]))"
                                    "[进退平][1-9一二三四五六七八九]", move_lines)
             if not notations:
                 raise ValueError("Find no legal notations!")
