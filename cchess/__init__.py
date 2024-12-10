@@ -1595,6 +1595,7 @@ class Board(BaseBoard):
         if not self.is_legal(move):
             raise ValueError(f"illegal uci: {uci!r} in {self.fen()!r}")
         self.push(move)
+        return move
 
     def find_move(self, from_square: Square, to_square: Square) -> Move:
         """
