@@ -40,10 +40,27 @@ Board('rnb1kaCnr/4a4/1c5c1/p1p1p3p/6p2/9/P1P1P1P1P/1C7/9/RNBAKABNR b - - 0 3')
 >>> svg = cchess.svg.board(board, size=600, coordinates=True, orientation=cchess.RED, lastmove=board.peek(), checkers=board.checkers())
 ```
 
+## 配合 Uci Engine 使用
+```python
+>>> import cchess
+>>> import cchess.engine
+
+>>> engine = cchess.engine.SimpleEngine.popen_uci("/path/to/pikafish")
+
+>>> board = cchess.Board()
+>>> limit = cchess.engine.Limit(time=2.0)
+>>> engine.play(board, limit)
+<PlayResult at 0x7f47747ff6e0 (move=h2e2, ponder=h9g7, info={}, draw_offered=False, resigned=False)>
+
+>>> engine.quit()
+```
+
 ## 安装方法
 
 ```shell script
 git clone https://github.com/windshadow233/python-chinese-chess.git
+cd python-chinese-chess
+pip install .
 ```
 
 ## 功能
@@ -365,7 +382,7 @@ Move.from_uci('a4b6')
 
 ```python
 >>> board = cchess.Board()
- 
+
 >>> board.push_notation('炮二平五')
 Move.from_uci('h2e2')
 >>> board.push_notation('砲8平5')
