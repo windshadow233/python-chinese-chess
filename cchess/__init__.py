@@ -589,7 +589,9 @@ class Move:
 
     @classmethod
     def from_uci(cls, uci: str):
-        if len(uci) == 4:
+        if uci == "0000":
+            return cls.null() 
+        elif len(uci) == 4:
             from_square = SQUARE_NAMES.index(uci[0:2])
             to_square = SQUARE_NAMES.index(uci[2:4])
             return cls(from_square, to_square)
