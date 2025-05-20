@@ -568,7 +568,7 @@ class Piece:
         return cls.from_symbol(UNICODE_TO_PIECE_SYMBOLS[unicode])
 
 
-@dataclasses.dataclass(unsafe_hash=True)
+@dataclasses.dataclass
 class Move:
     def __init__(self, from_square: Square, to_square: Square):
         assert from_square in SQUARES, f"from_square out of range: {from_square!r}"
@@ -613,6 +613,9 @@ class Move:
     @classmethod
     def null(cls):
         return cls(0, 0)
+
+    def __hash__(self):
+        return hash((self.from_square, self.to_square))
 
 
 class BaseBoard:
