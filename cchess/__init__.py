@@ -1,4 +1,4 @@
-from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple, Dict, Optional
+from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple, Dict, TypeVar,Optional
 import copy
 import dataclasses
 import enum
@@ -306,6 +306,30 @@ BB_START_OCCUPIED_BLACK = 0x3fe00415540000000000000
 BB_START_OCCUPIED = 0x3fe00415540000aaa0801ff
 
 
+def flip_vertical(bb: BitBoard) -> BitBoard:
+    # https://www.chessprogramming.org/Flipping_Mirroring_and_Rotating#FlipVertically
+    K1 = 0x1FF00003FE00FF80001FF
+    K2 = 0xFF8000000007FC0000
+    bb = ((bb >> 9) & K1) | ((bb & K1) << 9) | (bb & K2)
+    K3 = 0x7FFFE0000003FFFF
+    bb = (bb >> 9*3) & K3 | (bb & K3)  << 9*3 | (bb & K2)
+    
+    K4 = 0x1FFFFFFFFFFF
+    bb= (bb >> 9*5) & K4 | (bb & K4)  << 9*5 
+
+    return bb  
+    
+def flip_horizontal(bb: BitBoard) -> BitBoard:
+    # https://www.chessprogramming.org/Flipping_Mirroring_and_Rotating#MirrorHorizontally
+    FH1 = 0x14AA552A954AA552A954AA5
+    FH2 = 0x2010080402010080402010
+    FH3 = 0xC6633198CC6633198CC663
+    FH4 = 0x1E0F0783C1E0F0783C1E0F
+    bb = ((bb >> 1) & FH1) | ((bb & FH1)  << 1) | (bb & FH2)
+    bb = ((bb >> 2) & FH3) | ((bb & FH3)  << 2) | (bb & FH2)
+    bb = ((bb >> 5) & FH4) | ((bb & FH4)  << 5)
+    return bb  
+    
 def _sliding_attacks(square: Square, occupied: BitBoard, deltas: Iterable[int]):
     attacks = BB_EMPTY
 
@@ -617,6 +641,7 @@ class Move:
     def __hash__(self):
         return hash((self.from_square, self.to_square))
 
+BaseBoardT = TypeVar("BaseBoardT", bound="BaseBoard")
 
 class BaseBoard:
     def __init__(self, board_fen: Optional[str] = STARTING_BOARD_FEN):
@@ -906,6 +931,55 @@ class BaseBoard:
         elif bb_square & self.cannons:
             return _cannon_attacks(square, self.occupied)
         return 0
+
+
+        def apply_transform(self, f: Callable[[BitBoard], BitBoard]) -> None:
+        self.pawns = f(self.pawns)
+        self.knights = f(self.knights)
+        self.bishops = f(self.bishops)
+        self.rooks = f(self.rooks)
+        self.advisors = f(self.advisors)
+        self.kings = f(self.kings)
+        self.cannons = f(self.cannons)
+
+        self.occupied_co[RED] = f(self.occupied_co[RED])
+        self.occupied_co[BLACK] = f(self.occupied_co[BLACK])
+        self.occupied = f(self.occupied)
+       
+
+    def transform(self: BaseBoardT, f: Callable[[BitBoard], BitBoard]) -> BaseBoardT:
+        """
+        Returns a transformed copy of the board (without move stack)
+        by applying a bitboard transformation function.
+
+        Available transformations include :func:`chess.flip_vertical()`,
+        :func:`chess.flip_horizontal()`, :func:`chess.flip_vertical()`,
+
+
+        Alternatively, :func:`~chess.BaseBoard.apply_transform()` can be used
+        to apply the transformation on the board.
+        """
+        board = self.copy()
+        board.apply_transform(f)
+        return board
+    
+    def apply_mirror(self: BaseBoardT) -> None:
+        self.apply_transform(flip_vertical)
+        self.occupied_co[RED], self.occupied_co[BLACK] = self.occupied_co[BLACK], self.occupied_co[RED]
+
+    def mirror(self: BaseBoardT) -> BaseBoardT:
+        """
+        Returns a mirrored copy of the board (without move stack).
+
+        The board is mirrored vertically and piece colors are swapped, so that
+        the position is equivalent modulo color.
+
+        Alternatively, :func:`~chess.BaseBoard.apply_mirror()` can be used
+        to mirror the board.
+        """
+        board = self.copy()
+        board.apply_mirror()
+        return board
 
     def attacks(self, square: Square):
         """
