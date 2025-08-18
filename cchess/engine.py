@@ -1769,7 +1769,7 @@ class UciProtocol(Protocol):
         await asyncio.shield(self.returncode)
 
 
-UCI_REGEX = re.compile(r"^[a-h][1-8][a-h][1-8][pnbrqk]?|[PNBRQK]@[a-h][1-8]|0000\Z")
+UCI_REGEX = re.compile(r"^[a-i][0-9][a-i][0-9][pnbrack]?|[PNBRACK]@[a-i][0-9]|0000\Z")
 
 def _create_variation_line(root_board: cchess.Board, line: str) -> tuple[list[cchess.Move], str]:
     board = root_board.copy(stack=False)
