@@ -933,7 +933,7 @@ class BaseBoard:
         return 0
 
 
-        def apply_transform(self, f: Callable[[BitBoard], BitBoard]) -> None:
+    def apply_transform(self, f: Callable[[BitBoard], BitBoard]) -> None:
         self.pawns = f(self.pawns)
         self.knights = f(self.knights)
         self.bishops = f(self.bishops)
