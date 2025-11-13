@@ -1,4 +1,4 @@
-from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple, Dict, TypeVar,Optional
+from typing import Iterable, Union, SupportsInt, Iterator, Callable, List, Tuple, Dict, TypeVar, Optional
 import copy
 import dataclasses
 import enum
@@ -312,24 +312,26 @@ def flip_vertical(bb: BitBoard) -> BitBoard:
     K2 = 0xFF8000000007FC0000
     bb = ((bb >> 9) & K1) | ((bb & K1) << 9) | (bb & K2)
     K3 = 0x7FFFE0000003FFFF
-    bb = (bb >> 9*3) & K3 | (bb & K3)  << 9*3 | (bb & K2)
-    
-    K4 = 0x1FFFFFFFFFFF
-    bb= (bb >> 9*5) & K4 | (bb & K4)  << 9*5 
+    bb = (bb >> 9 * 3) & K3 | (bb & K3) << 9 * 3 | (bb & K2)
 
-    return bb  
-    
+    K4 = 0x1FFFFFFFFFFF
+    bb = (bb >> 9 * 5) & K4 | (bb & K4) << 9 * 5
+
+    return bb
+
+
 def flip_horizontal(bb: BitBoard) -> BitBoard:
     # https://www.chessprogramming.org/Flipping_Mirroring_and_Rotating#MirrorHorizontally
     FH1 = 0x14AA552A954AA552A954AA5
     FH2 = 0x2010080402010080402010
     FH3 = 0xC6633198CC6633198CC663
     FH4 = 0x1E0F0783C1E0F0783C1E0F
-    bb = ((bb >> 1) & FH1) | ((bb & FH1)  << 1) | (bb & FH2)
-    bb = ((bb >> 2) & FH3) | ((bb & FH3)  << 2) | (bb & FH2)
-    bb = ((bb >> 5) & FH4) | ((bb & FH4)  << 5)
-    return bb  
-    
+    bb = ((bb >> 1) & FH1) | ((bb & FH1) << 1) | (bb & FH2)
+    bb = ((bb >> 2) & FH3) | ((bb & FH3) << 2) | (bb & FH2)
+    bb = ((bb >> 5) & FH4) | ((bb & FH4) << 5)
+    return bb
+
+
 def _sliding_attacks(square: Square, occupied: BitBoard, deltas: Iterable[int]):
     attacks = BB_EMPTY
 
@@ -614,7 +616,7 @@ class Move:
     @classmethod
     def from_uci(cls, uci: str):
         if uci == "0000":
-            return cls.null() 
+            return cls.null()
         elif len(uci) == 4:
             from_square = SQUARE_NAMES.index(uci[0:2])
             to_square = SQUARE_NAMES.index(uci[2:4])
@@ -641,7 +643,9 @@ class Move:
     def __hash__(self):
         return hash((self.from_square, self.to_square))
 
+
 BaseBoardT = TypeVar("BaseBoardT", bound="BaseBoard")
+
 
 class BaseBoard:
     def __init__(self, board_fen: Optional[str] = STARTING_BOARD_FEN):
@@ -932,8 +936,7 @@ class BaseBoard:
             return _cannon_attacks(square, self.occupied)
         return 0
 
-
-        def apply_transform(self, f: Callable[[BitBoard], BitBoard]) -> None:
+    def apply_transform(self, f: Callable[[BitBoard], BitBoard]) -> None:
         self.pawns = f(self.pawns)
         self.knights = f(self.knights)
         self.bishops = f(self.bishops)
@@ -945,7 +948,6 @@ class BaseBoard:
         self.occupied_co[RED] = f(self.occupied_co[RED])
         self.occupied_co[BLACK] = f(self.occupied_co[BLACK])
         self.occupied = f(self.occupied)
-       
 
     def transform(self: BaseBoardT, f: Callable[[BitBoard], BitBoard]) -> BaseBoardT:
         """
@@ -962,7 +964,7 @@ class BaseBoard:
         board = self.copy()
         board.apply_transform(f)
         return board
-    
+
     def apply_mirror(self: BaseBoardT) -> None:
         self.apply_transform(flip_vertical)
         self.occupied_co[RED], self.occupied_co[BLACK] = self.occupied_co[BLACK], self.occupied_co[RED]
